@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --lucy-charcoal: #2D3436;
+  --lucy-sage: #7B9E87;
+  --lucy-blush: #E8B4B8;
+  --lucy-cream: #FAF8F5;
+  --lucy-gold: #C8A96E;
+  --lucy-grey: #8B8B8B;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); color: var(--lucy-charcoal); background: #ffffff; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4 { font-family: var(--font-heading); }
