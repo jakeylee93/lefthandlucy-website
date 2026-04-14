@@ -275,47 +275,34 @@ export default function HomePage() {
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
             </div>
 
-            <div className="space-y-20">
+            <div className="grid md:grid-cols-3 gap-8">
               {SERVICES.map((s, i) => {
                 const SIcon = s.Icon
-                const isEven = i % 2 === 1
                 return (
                   <motion.div
                     key={s.titleKey}
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5 }}
-                    className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center ${isEven ? 'md:direction-rtl' : ''}`}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-lucy-cream rounded-2xl p-7 sm:p-8 hover:shadow-xl transition-all hover:-translate-y-1"
                   >
-                    {/* Icon side */}
-                    <div className={`${isEven ? 'md:order-2' : ''}`}>
-                      <div className="bg-lucy-cream rounded-3xl p-12 sm:p-16 flex items-center justify-center aspect-square max-w-[400px] mx-auto">
-                        <div className="w-24 h-24 rounded-3xl flex items-center justify-center" style={{ backgroundColor: s.color + '20' }}>
-                          <SIcon size={48} style={{ color: s.color }} strokeWidth={1.5} />
-                        </div>
-                      </div>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: s.color + '15' }}>
+                      <SIcon size={22} style={{ color: s.color }} strokeWidth={1.5} />
                     </div>
-
-                    {/* Content side */}
-                    <div className={`${isEven ? 'md:order-1' : ''}`}>
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: s.color + '15' }}>
-                        <SIcon size={20} style={{ color: s.color }} strokeWidth={1.5} />
-                      </div>
-                      <h3 className="text-2xl sm:text-3xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
-                      <p className="text-lucy-grey text-base leading-relaxed mb-6">{t(s.descKey)}</p>
-                      <div className="grid grid-cols-2 gap-3 mb-8">
-                        {s.includes.map(item => (
-                          <div key={item} className="flex items-start gap-2.5 text-sm text-lucy-charcoal">
-                            <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: s.color }} />
-                            {item}
-                          </div>
-                        ))}
-                      </div>
-                      <a href="#contact" className="inline-flex items-center gap-2 text-sm font-bold transition-all hover:gap-3" style={{ color: s.color }}>
-                        Get in touch <ArrowRight size={14} />
-                      </a>
-                    </div>
+                    <h3 className="text-xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
+                    <p className="text-lucy-grey text-sm leading-relaxed mb-5">{t(s.descKey)}</p>
+                    <ul className="space-y-2 mb-6">
+                      {s.includes.map(item => (
+                        <li key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
+                          <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: s.color }} />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <a href="#contact" className="inline-flex items-center gap-1.5 text-sm font-bold transition-all hover:gap-2.5" style={{ color: s.color }}>
+                      Get in touch <ArrowRight size={14} />
+                    </a>
                   </motion.div>
                 )
               })}
