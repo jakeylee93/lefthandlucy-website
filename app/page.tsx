@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, createContext, useContext } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Users, Calendar } from 'lucide-react'
 import { translations, Lang } from './translations'
 import Image from 'next/image'
 
@@ -13,80 +13,56 @@ function useLang() { return useContext(LangContext) }
 
 const LANG_FLAGS: Record<Lang, string> = { en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', de: '🇩🇪' }
 
-// ── Service modal data ────────────────────────────────────
-const SERVICE_TILES = [
+// ── Services data ─────────────────────────────────────────
+const SERVICES = [
   {
-    emoji: '💼',
+    Icon: Briefcase,
     titleKey: 'services.ps.title',
-    tagline: 'The extra pair of hands you need',
+    descKey: 'services.ps.desc',
     color: '#C8A96E',
-    modal: {
-      description: "When life gets busy, I step in. Whether it's managing your inbox, organising your calendar, researching suppliers, or keeping a project on track — I handle the details so you can focus on the big picture.",
-      secondPara: "I've supported high net worth executives and small business owners alike. No task is too small, no project too complex. I bring calm, structure, and reliability to everything I do.",
-      includes: ['Email & inbox management', 'Calendar & scheduling', 'Research & analysis', 'Task coordination & deadlines', 'Document preparation', 'Travel arrangements'],
-    }
+    includes: [
+      'Email & inbox management',
+      'Calendar & scheduling',
+      'Research & analysis',
+      'Task coordination & deadlines',
+      'Document preparation',
+      'Travel arrangements',
+    ],
   },
   {
-    emoji: '📚',
+    Icon: BookOpen,
     titleKey: 'services.el.title',
-    tagline: 'Build confidence, one lesson at a time',
+    descKey: 'services.el.desc',
     color: '#E8B4B8',
-    modal: {
-      description: "English coaching designed around you. Whether you're preparing for a meeting, helping your child with school, or simply want to feel more confident in conversation — I adapt every lesson to your goals.",
-      secondPara: "As a qualified teacher (QTS), I bring structure and creativity to every session. Lessons are relaxed, engaging, and always tailored to your level and learning style. Available in person in Madrid or online worldwide.",
-      includes: ['Conversational English', 'Business & professional English', 'Children & young adults', 'Exam preparation (Cambridge, IELTS)', 'Pronunciation & accent coaching', 'Flexible scheduling'],
-    }
+    includes: [
+      'Conversational English',
+      'Business & professional English',
+      'Children & young adults',
+      'Exam preparation (Cambridge, IELTS)',
+      'Pronunciation & accent coaching',
+      'Flexible online or in-person',
+    ],
   },
   {
-    emoji: '🎉',
-    titleKey: 'services.ep.title',
-    tagline: 'From first idea to final toast',
+    Icon: Compass,
+    titleKey: 'services.ee.title',
+    descKey: 'services.ee.desc',
     color: '#7B9E87',
-    modal: {
-      description: "Whether it's an intimate dinner, a milestone birthday, or a full-scale celebration — I bring calm creativity and meticulous organisation to every event. You enjoy the day; I handle everything else.",
-      secondPara: "From venue sourcing and supplier coordination to on-the-day management, I take the stress out of planning so you can focus on what matters: being present with your guests.",
-      includes: ['Venue sourcing & coordination', 'Budget planning & management', 'Vendor & supplier liaison', 'Creative theming & styling', 'On-the-day coordination', 'Post-event wrap-up'],
-    }
-  },
-  {
-    emoji: '🌍',
-    titleKey: 'services.lang.title',
-    tagline: 'Spanish, French & beyond',
-    color: '#6B8EC4',
-    modal: {
-      description: "Moving to a new country? Need to brush up before a trip? I offer language support beyond English — helping you get comfortable with Spanish for life in Madrid, or French and German for work and travel.",
-      secondPara: "Sessions are practical and conversation-focused. No boring textbooks — just real situations, real confidence, and a patient teacher who's been through the expat experience herself.",
-      includes: ['Spanish for daily life', 'French conversation practice', 'German basics & travel prep', 'Expat survival language skills', 'Cultural tips & integration support', 'Online or in-person'],
-    }
-  },
-  {
-    emoji: '🎾',
-    titleKey: 'services.padel.title',
-    tagline: 'Get active, meet people',
-    color: '#E07B5A',
-    modal: {
-      description: "Padel is the fastest-growing sport in Spain — and the best way to meet new people. I organise regular padel meetups for all levels, from complete beginners to experienced players.",
-      secondPara: "It's social, it's fun, and it's a brilliant way to stay active while making real connections. All equipment can be provided, and everyone's welcome.",
-      includes: ['Weekly group sessions', 'All levels welcome', 'Equipment available', 'Social drinks afterwards', 'Madrid-based courts', 'Great way to meet people'],
-    }
-  },
-  {
-    emoji: '🤝',
-    titleKey: 'services.community.title',
-    tagline: 'Connect with your people',
-    color: '#9B7EC8',
-    modal: {
-      description: "Through Conectados, I bring together expats and locals in Madrid for paint nights, food walks, wine tastings, cultural tours, and more. Life's better when you know your people.",
-      secondPara: "Whether you've just arrived in Madrid or have been here for years, there's always room for new connections. Events are relaxed, inclusive, and designed to help you feel at home.",
-      includes: ['Paint & sip evenings', 'Food & tapas walks', 'Wine tasting socials', 'Cultural tours & day trips', 'Networking events', 'Open to everyone'],
-    }
+    includes: [
+      'Venue sourcing & coordination',
+      'Madrid city experiences & tours',
+      'Concierge planning for visitors',
+      'Group events & social gatherings',
+      'Restaurant & activity bookings',
+      'On-the-day coordination',
+    ],
   },
 ]
 
 const TESTIMONIALS = [
   { text: "I moved to Madrid recently, and Lucy's lessons helped me feel at home so quickly. Her explanations are simple, her examples practical, and she makes learning fun. I feel far more confident speaking now.", name: 'Amelia Grant', role: 'English student', service: 'English Lessons' },
   { text: "I've tried a few English tutors over the years, but Lucy stands out immediately. Her teaching style is clear, patient, and completely tailored to what I need. I genuinely look forward to our sessions each week.", name: 'Marco Hernández', role: 'Professional in Madrid', service: 'English Lessons' },
-  { text: "Lucy is an absolute gem. She took my scattered ideas and turned them into a beautifully organised event that felt effortless from start to finish. Her calm approach and attention to detail made the whole experience stress-free.", name: 'Sophie Aldridge', role: 'Private event client', service: 'Event Planning' },
+  { text: "Lucy is an absolute gem. She took my scattered ideas and turned them into a beautifully organised event that felt effortless from start to finish. Her calm approach and attention to detail made the whole experience stress-free.", name: 'Sophie Aldridge', role: 'Private event client', service: 'Events & Experiences' },
   { text: "I was drowning in admin and deadlines. Lucy stepped in and within a week everything was organised and running smoothly. She's incredibly reliable and nothing is too much trouble.", name: 'David Chen', role: 'Small business owner', service: 'Project Support' },
   { text: "My daughter's confidence in English has absolutely soared since starting lessons with Lucy. She makes it feel like fun, not work. We couldn't be happier.", name: 'Isabel Moreno', role: 'Parent', service: 'English Lessons' },
 ]
@@ -163,80 +139,12 @@ function Nav() {
   )
 }
 
-// ── Service Modal ─────────────────────────────────────────
-function ServiceModal({ service, onClose }: { service: typeof SERVICE_TILES[0] | null; onClose: () => void }) {
-  const { t } = useLang()
-  if (!service) return null
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
-        onClick={onClose}
-      >
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-        <motion.div
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 50 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto shadow-2xl"
-          onClick={e => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="sticky top-0 bg-white/95 backdrop-blur-md px-6 pt-6 pb-4 border-b border-black/5 z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style={{ backgroundColor: service.color + '15' }}>
-                  {service.emoji}
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t(service.titleKey)}</h3>
-                  <p className="text-xs text-lucy-grey italic">{service.tagline}</p>
-                </div>
-              </div>
-              <button onClick={onClose} className="w-8 h-8 bg-lucy-cream rounded-full flex items-center justify-center text-lucy-grey hover:text-lucy-charcoal transition-colors">
-                <X size={16} />
-              </button>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="px-6 py-5">
-            <p className="text-lucy-charcoal text-sm leading-relaxed mb-4">{service.modal.description}</p>
-            <p className="text-lucy-grey text-sm leading-relaxed mb-6">{service.modal.secondPara}</p>
-
-            <h4 className="text-xs font-bold text-lucy-grey uppercase tracking-wide mb-3">What&apos;s included</h4>
-            <div className="grid grid-cols-2 gap-2 mb-6">
-              {service.modal.includes.map(item => (
-                <div key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
-                  <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: service.color }} />
-                  {item}
-                </div>
-              ))}
-            </div>
-
-            <a href="#contact" onClick={onClose}
-              className="block w-full text-center py-3.5 rounded-full font-bold text-white text-sm transition-all hover:scale-[1.02] shadow-lg"
-              style={{ backgroundColor: service.color }}>
-              Enquire about this →
-            </a>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  )
-}
-
 // ── Testimonial Carousel ──────────────────────────────────
 function TestimonialCarousel() {
   const [active, setActive] = useState(0)
   const next = () => setActive(a => (a + 1) % TESTIMONIALS.length)
   const prev = () => setActive(a => (a - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
-  useEffect(() => { const t = setInterval(next, 6000); return () => clearInterval(t) }, [])
+  useEffect(() => { const interval = setInterval(next, 6000); return () => clearInterval(interval) }, [])
   const tm = TESTIMONIALS[active]
   return (
     <div className="max-w-2xl mx-auto">
@@ -265,8 +173,7 @@ function ContactForm() {
   const serviceOptions = [
     { key: 'contact.service.ps', value: 'Project Support' },
     { key: 'contact.service.el', value: 'English Lessons' },
-    { key: 'contact.service.ep', value: 'Event Planning' },
-    { key: 'contact.service.padel', value: 'Padel Meetups' },
+    { key: 'contact.service.ee', value: 'Events & Experiences' },
     { key: 'contact.service.other', value: 'Other' },
   ]
 
@@ -320,7 +227,6 @@ function ContactForm() {
 // ── Main Page ─────────────────────────────────────────────
 export default function HomePage() {
   const [lang, setLang] = useState<Lang>('en')
-  const [activeService, setActiveService] = useState<typeof SERVICE_TILES[0] | null>(null)
   const t = (key: string) => translations[lang][key] || translations['en'][key] || key
 
   return (
@@ -328,66 +234,96 @@ export default function HomePage() {
       <div className="min-h-screen bg-white">
         <Nav />
 
-        {/* ── HERO — Full screen, centered text, minimal ──── */}
-        <section className="h-screen relative overflow-hidden">
+        {/* ── HERO — Left-aligned, white text, Lucy bg ────── */}
+        <section className="min-h-screen flex items-center relative overflow-hidden">
           <div className="absolute inset-0">
             <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[center_20%]" priority />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
           </div>
-          <div className="relative z-10 h-full flex flex-col items-center justify-end pb-16 sm:pb-24 px-6 text-center">
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              className="text-xs sm:text-sm font-bold tracking-[0.35em] uppercase mb-5"
-              style={{ color: '#E07B5A' }}>
-              {t('hero.tags')}
-            </motion.p>
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-semibold mb-4"
-              style={{ fontFamily: 'var(--font-heading)', color: '#E07B5A' }}>
-              Left Hand Lucy
-            </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-              className="text-white/60 text-sm sm:text-base max-w-md italic mb-3" style={{ fontFamily: 'var(--font-heading)' }}>
-              {t('hero.tagline')}
-            </motion.p>
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              className="text-white/50 text-xs sm:text-sm max-w-lg leading-relaxed">
-              {t('hero.intro')}
-            </motion.p>
+          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pt-24 pb-16 w-full">
+            <div className="max-w-2xl">
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-6">
+                {t('hero.tags')}
+              </motion.p>
+              <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight mb-6 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                {t('hero.tagline')}
+              </motion.h1>
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                className="text-white/70 text-lg leading-relaxed mb-8 max-w-lg">
+                {t('hero.intro')}
+              </motion.p>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 mb-10">
+                <a href="#services" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta1')}</a>
+                <a href="#contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3.5 rounded-full font-bold transition-all text-sm">{t('hero.cta2')}</a>
+              </motion.div>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="flex items-center gap-2 text-sm text-white/50">
+                <MapPin size={14} className="text-lucy-sage" />
+                <span>Based in Madrid, Spain</span>
+                <span className="mx-2 text-white/20">·</span>
+                <span>Available worldwide online</span>
+              </motion.div>
+            </div>
           </div>
         </section>
 
-        {/* ── SERVICES — 6 clickable tiles ─────────────────── */}
+        {/* ── SERVICES — 3 full sections, no modals ────────── */}
         <section id="services" className="py-20 sm:py-28 px-6 sm:px-8 bg-white">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-14">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
               <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('services.label')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-              {SERVICE_TILES.map((s, i) => (
-                <motion.button
-                  key={s.titleKey}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  onClick={() => setActiveService(s)}
-                  className="group bg-lucy-cream rounded-2xl p-6 sm:p-8 text-left hover:shadow-xl transition-all hover:-translate-y-1 hover:scale-[1.02] cursor-pointer"
-                >
-                  <div className="text-3xl sm:text-4xl mb-4">{s.emoji}</div>
-                  <h3 className="text-base sm:text-lg font-bold text-lucy-charcoal mb-1.5" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
-                  <p className="text-lucy-grey text-xs sm:text-sm leading-relaxed">{s.tagline}</p>
-                  <div className="mt-3 flex items-center gap-1 text-xs font-bold transition-all group-hover:gap-2" style={{ color: s.color }}>
-                    Find out more <ArrowRight size={12} />
-                  </div>
-                </motion.button>
-              ))}
+
+            <div className="space-y-20">
+              {SERVICES.map((s, i) => {
+                const SIcon = s.Icon
+                const isEven = i % 2 === 1
+                return (
+                  <motion.div
+                    key={s.titleKey}
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center ${isEven ? 'md:direction-rtl' : ''}`}
+                  >
+                    {/* Icon side */}
+                    <div className={`${isEven ? 'md:order-2' : ''}`}>
+                      <div className="bg-lucy-cream rounded-3xl p-12 sm:p-16 flex items-center justify-center aspect-square max-w-[400px] mx-auto">
+                        <div className="w-24 h-24 rounded-3xl flex items-center justify-center" style={{ backgroundColor: s.color + '20' }}>
+                          <SIcon size={48} style={{ color: s.color }} strokeWidth={1.5} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Content side */}
+                    <div className={`${isEven ? 'md:order-1' : ''}`}>
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: s.color + '15' }}>
+                        <SIcon size={20} style={{ color: s.color }} strokeWidth={1.5} />
+                      </div>
+                      <h3 className="text-2xl sm:text-3xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
+                      <p className="text-lucy-grey text-base leading-relaxed mb-6">{t(s.descKey)}</p>
+                      <div className="grid grid-cols-2 gap-3 mb-8">
+                        {s.includes.map(item => (
+                          <div key={item} className="flex items-start gap-2.5 text-sm text-lucy-charcoal">
+                            <div className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: s.color }} />
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                      <a href="#contact" className="inline-flex items-center gap-2 text-sm font-bold transition-all hover:gap-3" style={{ color: s.color }}>
+                        Get in touch <ArrowRight size={14} />
+                      </a>
+                    </div>
+                  </motion.div>
+                )
+              })}
             </div>
           </div>
         </section>
-
-        {/* Service Modal */}
-        <ServiceModal service={activeService} onClose={() => setActiveService(null)} />
 
         {/* ── ABOUT ────────────────────────────────────────── */}
         <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 bg-lucy-cream">
@@ -420,9 +356,10 @@ export default function HomePage() {
                   {t('about.cta')} <ArrowRight size={14} />
                 </a>
                 <div className="flex flex-wrap gap-3 mt-6">
-                  {['about.tag.english', 'about.tag.madrid', 'about.tag.teacher', 'about.tag.planner'].map(key => (
-                    <span key={key} className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5">{t(key)}</span>
-                  ))}
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Globe size={12} className="text-lucy-sage" /> {t('about.tag.english')}</span>
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><MapPin size={12} className="text-lucy-blush" /> {t('about.tag.madrid')}</span>
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><BookOpen size={12} className="text-lucy-gold" /> {t('about.tag.teacher')}</span>
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Calendar size={12} className="text-lucy-sage" /> {t('about.tag.planner')}</span>
                 </div>
               </motion.div>
             </div>
@@ -432,16 +369,15 @@ export default function HomePage() {
         {/* ── CONECTADOS — Video background ────────────────── */}
         <section className="py-20 sm:py-24 px-6 sm:px-8 relative overflow-hidden">
           <div className="absolute inset-0">
-            <video
-              autoPlay muted loop playsInline
-              className="w-full h-full object-cover"
-              poster=""
-            >
+            <video autoPlay muted loop playsInline className="w-full h-full object-cover">
               <source src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-black/65" />
           </div>
           <div className="max-w-4xl mx-auto text-center relative z-10">
+            <div className="flex justify-center mb-4">
+              <Users size={28} className="text-lucy-gold" />
+            </div>
             <p className="text-lucy-gold font-bold text-sm tracking-wide uppercase mb-3">{t('conectados.label')}</p>
             <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('conectados.title')}</h2>
             <p className="text-white/60 text-base mb-8 max-w-lg mx-auto">{t('conectados.desc')}</p>
@@ -455,6 +391,9 @@ export default function HomePage() {
         <section id="testimonials" className="py-20 sm:py-28 px-6 sm:px-8 bg-lucy-cream">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
+              <div className="flex justify-center mb-3">
+                <MessageSquare size={20} className="text-lucy-blush" />
+              </div>
               <p className="text-lucy-blush font-bold text-sm tracking-wide uppercase mb-3">{t('testimonials.label')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('testimonials.title')}</h2>
             </div>
@@ -466,21 +405,24 @@ export default function HomePage() {
         <section id="contact" className="py-20 sm:py-28 px-6 sm:px-8 bg-white">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
+              <div className="flex justify-center mb-3">
+                <Send size={20} className="text-lucy-sage" />
+              </div>
               <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('contact.label')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('contact.title')}</h2>
               <p className="text-lucy-grey max-w-lg mx-auto">{t('contact.desc')}</p>
             </div>
             <div className="grid sm:grid-cols-3 gap-6 mb-12">
               {[
-                { icon: Mail, label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#7B9E87' },
-                { icon: MapPin, label: 'Location', value: 'Madrid, Spain', href: '#', color: '#E8B4B8' },
-                { icon: MessageSquare, label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/message', color: '#C8A96E' },
+                { Icon: Mail, label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#7B9E87' },
+                { Icon: MapPin, label: 'Location', value: 'Madrid, Spain', href: '#', color: '#E8B4B8' },
+                { Icon: MessageSquare, label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/message', color: '#C8A96E' },
               ].map(c => {
-                const Icon = c.icon
+                const CIcon = c.Icon
                 return (
                   <a key={c.label} href={c.href} className="bg-lucy-cream rounded-2xl p-6 text-center hover:shadow-lg transition-all group">
                     <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: c.color + '15' }}>
-                      <Icon size={20} style={{ color: c.color }} />
+                      <CIcon size={20} style={{ color: c.color }} />
                     </div>
                     <p className="text-lucy-grey text-xs font-bold uppercase tracking-wide mb-1">{c.label}</p>
                     <p className="text-lucy-charcoal font-medium text-sm group-hover:text-lucy-sage transition-colors">{c.value}</p>
