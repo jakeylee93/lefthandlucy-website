@@ -234,36 +234,34 @@ export default function HomePage() {
       <div className="min-h-screen bg-white">
         <Nav />
 
-        {/* ── HERO — Left-aligned, white text, Lucy bg ────── */}
-        <section className="min-h-screen flex items-center relative overflow-hidden">
+        {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
+        <section className="min-h-screen flex items-end relative overflow-hidden">
           <div className="absolute inset-0">
-            <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[center_20%]" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
+            <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[70%_20%]" priority />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent sm:from-black/75 sm:via-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
-          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pt-24 pb-16 w-full">
-            <div className="max-w-2xl">
+          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 pt-24 w-full">
+            <div className="max-w-xl">
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-6">
+                className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4">
                 {t('hero.tags')}
               </motion.p>
               <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-tight mb-6 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
-                {t('hero.tagline')}
+                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1] mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                Left Hand Lucy
               </motion.h1>
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+                className="text-white/50 text-sm italic mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
+                {t('hero.tagline')}
+              </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="text-white/70 text-lg leading-relaxed mb-8 max-w-lg">
+                className="text-white/65 text-sm sm:text-base leading-relaxed mb-8 max-w-md">
                 {t('hero.intro')}
               </motion.p>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 mb-10">
-                <a href="#services" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta1')}</a>
-                <a href="#contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3.5 rounded-full font-bold transition-all text-sm">{t('hero.cta2')}</a>
-              </motion.div>
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="flex items-center gap-2 text-sm text-white/50">
-                <MapPin size={14} className="text-lucy-sage" />
-                <span>Based in Madrid, Spain</span>
-                <span className="mx-2 text-white/20">·</span>
-                <span>Available worldwide online</span>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
+                <a href="#services" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta1')}</a>
+                <a href="#contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm">{t('hero.cta2')}</a>
               </motion.div>
             </div>
           </div>
