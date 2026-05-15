@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Left Hand Lucy — A trusted hand for life's busy corners",
-  description: "Event planning, English lessons, and project support in Madrid. Lucy brings calm structure and thoughtful creativity to everything she does.",
+  title: "Left Hand Lucy — A steady hand for life's busy corners",
+  description: "Multilingual executive assistance, English lessons, project support, and events or experiences in Madrid with Lucy.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

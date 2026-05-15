@@ -27,6 +27,7 @@ const SERVICES = [
       'Task coordination & deadlines',
       'Document preparation',
       'Travel arrangements',
+      '& more',
     ],
   },
   {
@@ -37,10 +38,9 @@ const SERVICES = [
     includes: [
       'Conversational English',
       'Business & professional English',
-      'Children & young adults',
-      'Exam preparation (Cambridge, IELTS)',
+      "Children's lessons",
+      'Exam preparation',
       'Pronunciation & accent coaching',
-      'Flexible online or in-person',
     ],
   },
   {
@@ -50,8 +50,8 @@ const SERVICES = [
     color: '#7B9E87',
     includes: [
       'Venue sourcing & coordination',
-      'Madrid city experiences & tours',
-      'Concierge planning for visitors',
+      'Madrid experiences & local recommendations',
+      'Concierge support for visitors',
       'Group events & social gatherings',
       'Restaurant & activity bookings',
       'On-the-day coordination',
@@ -83,7 +83,7 @@ function Nav() {
   const navLinks = [
     { l: t('nav.home'), h: '#' },
     { l: t('nav.services'), h: '#services' },
-    { l: t('nav.faq'), h: '#about' },
+    { l: t('nav.meet'), h: '#meet-lucy' },
     { l: t('nav.contact'), h: '#contact' },
   ]
 
@@ -180,8 +180,8 @@ function ContactForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSending(true)
-    const subject = `Website Enquiry: ${form.service || 'General'}`
-    const body = `Name: ${form.name}\nEmail: ${form.email}\nService: ${form.service}\n\n${form.message}`
+    const subject = `Left Hand Lucy enquiry: ${form.service || 'General'}`
+    const body = `Hi Lucy,\n\nLet's talk about how you can help.\n\nName: ${form.name}\nEmail: ${form.email}\nService: ${form.service || 'General'}\n\nMessage:\n${form.message}\n\nSent from lefthandlucy.com`
     window.location.href = `mailto:Lucy@lefthandlucy.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     setTimeout(() => { setSent(true); setSending(false) }, 500)
   }
@@ -260,8 +260,13 @@ export default function HomePage() {
                 {t('hero.intro')}
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
-                <a href="#services" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta1')}</a>
-                <a href="#contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm">{t('hero.cta2')}</a>
+                <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
+                <a href="#services" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm">{t('hero.cta1')}</a>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex flex-wrap gap-2 mt-6">
+                {['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner'].map(tag => (
+                  <span key={tag} className="bg-white/10 border border-white/15 backdrop-blur-sm text-white/80 px-3 py-1.5 rounded-full text-xs font-bold">{tag}</span>
+                ))}
               </motion.div>
             </div>
           </div>
@@ -271,7 +276,7 @@ export default function HomePage() {
         <section id="services" className="py-20 sm:py-28 px-6 sm:px-8 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('services.label')}</p>
+              <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3">{t('services.mode')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
             </div>
 
@@ -301,7 +306,7 @@ export default function HomePage() {
                       ))}
                     </ul>
                     <a href="#contact" className="inline-flex items-center gap-1.5 text-sm font-bold transition-all hover:gap-2.5" style={{ color: s.color }}>
-                      Get in touch <ArrowRight size={14} />
+                      {i === 0 ? 'Ask about project support' : i === 1 ? 'Book an English lesson' : 'Plan an event or Madrid experience'} <ArrowRight size={14} />
                     </a>
                   </motion.div>
                 )
@@ -311,7 +316,7 @@ export default function HomePage() {
         </section>
 
         {/* ── ABOUT ────────────────────────────────────────── */}
-        <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 bg-lucy-cream">
+        <section id="meet-lucy" className="py-20 sm:py-28 px-6 sm:px-8 bg-lucy-cream">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
               <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
@@ -401,7 +406,7 @@ export default function HomePage() {
               {[
                 { Icon: Mail, label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#7B9E87' },
                 { Icon: MapPin, label: 'Location', value: 'Madrid, Spain', href: '#', color: '#E8B4B8' },
-                { Icon: MessageSquare, label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/message', color: '#C8A96E' },
+                { Icon: MessageSquare, label: 'Reply time', value: 'Usually 1-2 working days', href: '#contact', color: '#C8A96E' },
               ].map(c => {
                 const CIcon = c.Icon
                 return (
@@ -429,7 +434,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-6">
                 <a href="#services" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.services')}</a>
-                <a href="#about" className="text-white/40 hover:text-white text-sm transition-colors">{t('about.label')}</a>
+                <a href="#meet-lucy" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.meet')}</a>
                 <a href="https://connect-cardos.vercel.app" className="text-white/40 hover:text-white text-sm transition-colors">Conectados</a>
                 <a href="#contact" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.contact')}</a>
               </div>

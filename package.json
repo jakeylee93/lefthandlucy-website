@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "test": "node scripts/test-left-hand-lucy-content.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
