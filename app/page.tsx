@@ -252,18 +252,25 @@ function ContactForm() {
 // ── Main Page ─────────────────────────────────────────────
 export default function HomePage() {
   const [lang, setLang] = useState<Lang>('en')
-  const [selectedService, setSelectedService] = useState<number | null>(null)
   const [activeService, setActiveService] = useState(0)
   const [pauseServiceSlider, setPauseServiceSlider] = useState(false)
+  const [serviceProgressKey, setServiceProgressKey] = useState(0)
   const t = (key: string) => translations[lang][key] || translations['en'][key] || key
 
   useEffect(() => {
     if (pauseServiceSlider) return
     const timer = window.setInterval(() => {
       setActiveService((current) => (current + 1) % SERVICES.length)
-    }, 3000)
+      setServiceProgressKey((key) => key + 1)
+    }, 6500)
     return () => window.clearInterval(timer)
   }, [pauseServiceSlider])
+
+  const handleServiceTab = (index: number) => {
+    setActiveService(index)
+    setPauseServiceSlider(true)
+    setServiceProgressKey((key) => key + 1)
+  }
 
   return (
     <LangContext.Provider value={{ lang, t, setLang }}>
@@ -307,28 +314,30 @@ export default function HomePage() {
               </motion.div>
             </div>
           </div>
+          <div className="lucy-hero-blend pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent via-white/20 to-white" />
         </section>
 
         {/* ── SERVICES — hero overlap frame ───────────────────────────── */}
-        <section id="services" className="px-4 sm:px-8 -mt-10 sm:-mt-12 relative z-20 bg-white">
+        <section id="services" className="lucy-service-pattern px-4 sm:px-8 -mt-16 sm:-mt-20 relative z-20 bg-white pb-6">
           <div
             id="serviceSpotlight"
-            className="relative max-w-6xl mx-auto overflow-hidden rounded-[2.25rem] bg-white shadow-2xl shadow-black/10 ring-1 ring-black/5"
+            className="relative max-w-6xl mx-auto overflow-hidden rounded-[2.5rem] bg-white/95 shadow-2xl shadow-black/12 ring-1 ring-black/5 backdrop-blur-md"
             onMouseEnter={() => setPauseServiceSlider(true)}
             onMouseLeave={() => setPauseServiceSlider(false)}
             onFocus={() => setPauseServiceSlider(true)}
             onBlur={() => setPauseServiceSlider(false)}
           >
-            <div className="absolute -top-10 left-8 h-24 w-24 rounded-full bg-lucy-gold/15 blur-2xl" />
-            <div className="absolute -right-12 top-8 h-32 w-32 rounded-full bg-lucy-sage/15 blur-2xl" />
+            <div className="absolute inset-x-0 -top-10 h-20 bg-gradient-to-b from-white/30 to-white/0" />
+            <div className="absolute -left-10 top-8 h-32 w-32 rounded-full bg-lucy-gold/18 blur-2xl" />
+            <div className="absolute -right-12 top-20 h-36 w-36 rounded-full bg-lucy-sage/18 blur-2xl" />
             <div className="relative px-4 py-7 sm:p-10">
               <div className="text-center mb-5 sm:mb-8">
                 <p className="text-lucy-sage font-bold text-[11px] sm:text-sm tracking-[0.22em] uppercase mb-3">{t('services.mode')}</p>
                 <h2 className="text-[2rem] leading-tight sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
-                <p className="mx-auto mt-3 max-w-md text-sm text-lucy-grey">Tap a tab to preview the service, or open the full detail.</p>
+                <p className="mx-auto mt-3 max-w-md text-sm text-lucy-grey">Tap a tab to preview the service. The full detail appears below.</p>
               </div>
 
-              <div className="mb-4 rounded-full bg-lucy-cream p-1.5 shadow-inner" aria-label="Service tabs" role="tablist">
+              <div className="mb-4 rounded-[1.7rem] bg-lucy-cream/95 p-1.5 shadow-inner" aria-label="Service tabs" role="tablist">
                 <div className="grid grid-cols-3 gap-1">
                   {SERVICES.map((service, i) => {
                     const active = activeService === i
@@ -338,9 +347,14 @@ export default function HomePage() {
                         type="button"
                         role="tab"
                         aria-selected={active}
-                        onClick={() => { setActiveService(i); setPauseServiceSlider(true) }}
-                        className={`rounded-full px-2 py-2.5 text-center text-[11px] font-black leading-tight transition-all sm:text-sm ${active ? 'bg-white text-lucy-charcoal shadow-md shadow-black/10' : 'text-lucy-charcoal/55 hover:text-lucy-charcoal'}`}
+                        aria-label={`${active ? 'Pause on selection. ' : ''}${t(service.titleKey)}`}
+                        onClick={() => handleServiceTab(i)}
+                        className={`relative overflow-hidden rounded-[1.35rem] px-2 py-3 text-center text-[10px] font-black leading-tight transition-all sm:text-sm ${active ? 'bg-white text-lucy-charcoal shadow-md shadow-black/10' : 'text-lucy-charcoal/70 hover:text-lucy-charcoal'}`}
+                        style={active ? { boxShadow: `0 12px 28px ${service.color}22` } : undefined}
                       >
+                        {active && (
+                          <span key={`${serviceProgressKey}-${i}`} className="lucy-service-progress absolute inset-x-0 bottom-0 h-1" style={{ backgroundColor: service.color, animationPlayState: pauseServiceSlider ? 'paused' : 'running' }} />
+                        )}
                         <span className="block text-[9px] tracking-[0.18em] opacity-45">0{i + 1}</span>
                         {t(service.titleKey)}
                       </button>
@@ -349,31 +363,35 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-[1.75rem] bg-lucy-charcoal p-5 text-white shadow-xl shadow-black/10 sm:p-8">
+              <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-lucy-cream to-white p-5 text-lucy-charcoal shadow-xl shadow-black/8 ring-1 ring-black/5 sm:p-8">
                 <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: SERVICES[activeService].color }} />
-                <div className="absolute -right-10 -bottom-10 h-36 w-36 rounded-full opacity-20" style={{ backgroundColor: SERVICES[activeService].color }} />
+                <div className="absolute -right-14 -bottom-14 h-44 w-44 rounded-full opacity-20" style={{ backgroundColor: SERVICES[activeService].color }} />
+                <div className="absolute left-0 top-0 h-full w-full opacity-[0.07]" style={{ backgroundImage: `radial-gradient(circle at 20% 20%, ${SERVICES[activeService].color} 0 2px, transparent 2px), linear-gradient(135deg, ${SERVICES[activeService].color} 0 1px, transparent 1px)`, backgroundSize: '26px 26px, 18px 18px' }} />
                 <motion.div
                   key={activeService}
-                  initial={{ opacity: 0, x: 18 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.35 }}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45 }}
                   className="relative"
                 >
-                  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.28em] text-white/45">Service spotlight</p>
+                  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.28em] text-lucy-charcoal/45">Service spotlight</p>
                   <h3 className="mb-3 text-3xl font-semibold leading-tight sm:text-4xl" style={{ fontFamily: 'var(--font-heading)' }}>{t(SERVICES[activeService].titleKey)}</h3>
-                  <p className="mb-5 text-sm leading-relaxed text-white/72 sm:text-base">{t(SERVICES[activeService].descKey)}</p>
-                  <div className="mb-5 grid gap-2">
-                    {SERVICES[activeService].includes.slice(0, 3).map((item) => (
-                      <div key={item} className="flex items-start gap-2 rounded-2xl bg-white/7 px-3 py-2 text-xs text-white/82 sm:text-sm">
-                        <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: SERVICES[activeService].color }} />
-                        <span>{item}</span>
-                      </div>
-                    ))}
+                  <p className="mb-5 text-sm leading-relaxed text-lucy-grey sm:text-base">{t(SERVICES[activeService].descKey)}</p>
+                  <div className="rounded-[1.5rem] bg-white/80 p-4 shadow-inner ring-1 ring-black/5">
+                    <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-lucy-charcoal/45">What this can include</p>
+                    <div className="grid gap-2">
+                      {SERVICES[activeService].includes.map((item) => (
+                        <div key={item} className="flex items-start gap-2 rounded-2xl bg-lucy-cream/70 px-3 py-2 text-xs text-lucy-charcoal sm:text-sm">
+                          <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: SERVICES[activeService].color }} />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <button type="button" onClick={() => setSelectedService(activeService)} className="inline-flex w-full items-center justify-between rounded-full bg-white px-5 py-4 text-sm font-black text-lucy-charcoal transition-transform active:scale-[0.98] sm:w-auto sm:min-w-48">
-                    <span>See more</span>
-                    <ArrowRight size={16} style={{ color: SERVICES[activeService].color }} />
-                  </button>
+                  <a href="#contact" className="mt-5 inline-flex w-full items-center justify-between rounded-full px-5 py-4 text-sm font-black text-white transition-transform active:scale-[0.98] sm:w-auto sm:min-w-48" style={{ backgroundColor: SERVICES[activeService].color }}>
+                    <span>Ask Lucy about this</span>
+                    <ArrowRight size={16} />
+                  </a>
                 </motion.div>
               </div>
             </div>
@@ -570,37 +588,6 @@ export default function HomePage() {
           </div>
         </footer>
 
-        {selectedService !== null && (() => {
-          const service = SERVICES[selectedService]
-          return (
-            <div className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center bg-black/55 px-4 py-4 backdrop-blur-sm" onClick={() => setSelectedService(null)}>
-              <motion.div initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                <button type="button" aria-label="Close service details" onClick={() => setSelectedService(null)} className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-lucy-cream text-lucy-charcoal">
-                  <X size={18} />
-                </button>
-                <div className="mb-5 h-1.5 w-20 rounded-full" style={{ backgroundColor: service.color }} />
-                <p className="mb-2 text-xs font-black uppercase tracking-[0.25em]" style={{ color: service.color }}>Service details</p>
-                <h3 className="mb-4 pr-10 text-3xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t(service.titleKey)}</h3>
-                <p className="mb-5 text-sm leading-relaxed text-lucy-grey">{t(service.descKey)}</p>
-                <div className="rounded-2xl bg-lucy-cream p-4">
-                  <p className="mb-3 text-xs font-black uppercase tracking-wide text-lucy-charcoal/60">What this can include</p>
-                  <ul className="grid gap-2">
-                    {service.includes.map(item => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
-                        <CheckCircle size={15} className="mt-0.5 flex-shrink-0" style={{ color: service.color }} />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-5 flex gap-3">
-                  <a href="#contact" onClick={() => setSelectedService(null)} className="flex-1 bg-lucy-charcoal px-5 py-4 text-center text-sm font-extrabold text-white" style={{ borderRadius: '18px 18px 18px 4px' }}>Let's talk?</a>
-                  <button type="button" onClick={() => setSelectedService(null)} className="px-5 py-4 text-sm font-bold text-lucy-grey">Close</button>
-                </div>
-              </motion.div>
-            </div>
-          )
-        })()}
       </div>
     </LangContext.Provider>
   )

@@ -17,3 +17,31 @@
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-body); color: var(--lucy-charcoal); background: #ffffff; -webkit-font-smoothing: antialiased; }
 h1,h2,h3,h4 { font-family: var(--font-heading); }
+
+.lucy-service-progress {
+  transform-origin: left center;
+  animation: lucy-service-progress 6.5s linear forwards;
+}
+
+.lucy-service-pattern::before {
+  content: '';
+  position: absolute;
+  inset: -80px 0 auto 0;
+  height: 220px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 34%, rgba(200, 169, 110, 0.16) 0 2px, transparent 2.5px),
+    radial-gradient(circle at 72% 22%, rgba(123, 158, 135, 0.14) 0 2px, transparent 2.5px),
+    linear-gradient(135deg, rgba(45, 52, 54, 0.045) 0 1px, transparent 1px);
+  background-size: 34px 34px, 42px 42px, 22px 22px;
+  mask-image: linear-gradient(to bottom, transparent, black 22%, black 62%, transparent);
+}
+
+.lucy-hero-blend {
+  mix-blend-mode: normal;
+}
+
+@keyframes lucy-service-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
