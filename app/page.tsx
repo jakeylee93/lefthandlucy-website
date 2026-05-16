@@ -299,95 +299,66 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── PROMISE STRIP ─────────────────────────────────── */}
-        <section className="px-4 sm:px-8 -mt-8 sm:-mt-10 relative z-20">
-          <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl shadow-black/10 border border-black/5 p-4 sm:p-8">
-            <div className="grid grid-cols-3 gap-2 sm:gap-5">
-              {[
-                ['Project support', 'Inbox, diary, research, planning and practical organisation that keeps things moving.'],
-                ['English lessons', 'Friendly, confidence-building lessons for children, adults and professionals.'],
-                ['Events & experiences', 'Thoughtful Madrid events, local plans, bookings and on-the-day coordination.'],
-              ].map(([title, text]) => (
-                <div key={title} className="rounded-2xl bg-lucy-cream p-3 sm:p-5">
-                  <p className="text-lucy-charcoal font-bold text-xs sm:text-base mb-1 sm:mb-2" style={{ fontFamily: 'var(--font-heading)' }}>{title}</p>
-                  <p className="hidden sm:block text-lucy-grey text-sm leading-relaxed">{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── SERVICES — compact mobile cards + full desktop cards ────────── */}
-        <section id="services" className="py-12 sm:py-28 px-4 sm:px-8 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8 sm:mb-16">
-              <p className="text-lucy-sage font-bold text-xs sm:text-sm tracking-[0.25em] uppercase mb-3">{t('services.mode')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
-              <p className="mt-3 text-sm text-lucy-grey md:hidden">Tap a card for more detail.</p>
+        {/* ── SERVICES — hero overlap frame ───────────────────────────── */}
+        <section id="services" className="px-4 sm:px-8 -mt-8 sm:-mt-10 relative z-20 bg-white">
+          <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl shadow-black/10 border border-black/5 px-4 py-7 sm:p-10">
+            <div className="text-center mb-6 sm:mb-10">
+              <p className="text-lucy-sage font-bold text-[11px] sm:text-sm tracking-[0.22em] uppercase mb-3">{t('services.mode')}</p>
+              <h2 className="text-[2rem] leading-tight sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
+              <p className="mt-3 text-sm text-lucy-grey">Tap a card to see the full detail.</p>
             </div>
 
             <div className="grid grid-cols-3 gap-2 md:hidden">
-              {SERVICES.map((service, i) => {
-                const SIcon = service.Icon
-                return (
-                  <button
-                    key={service.titleKey}
-                    type="button"
-                    onClick={() => setSelectedService(i)}
-                    className="relative min-h-[145px] overflow-hidden rounded-2xl bg-white p-3 text-left shadow-lg shadow-black/[0.05] ring-1 ring-black/5 active:scale-[0.98] transition-transform"
-                  >
-                    <div className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: service.color }} />
-                    <span className="absolute right-2 top-3 text-[10px] font-black tracking-widest text-lucy-charcoal/20">0{i + 1}</span>
-                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl" style={{ backgroundColor: service.color + '18' }}>
-                      <SIcon size={17} style={{ color: service.color }} strokeWidth={1.8} />
-                    </div>
-                    <h3 className="text-[15px] font-semibold leading-tight text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t(service.titleKey)}</h3>
-                    <p className="mt-2 text-[11px] leading-snug text-lucy-grey">{SERVICE_SUMMARIES[i]}</p>
-                    <span className="absolute bottom-3 left-3 right-3 inline-flex items-center justify-between text-[11px] font-black text-lucy-charcoal">
-                      More <ArrowRight size={13} style={{ color: service.color }} />
-                    </span>
-                  </button>
-                )
-              })}
+              {SERVICES.map((service, i) => (
+                <button
+                  key={service.titleKey}
+                  type="button"
+                  onClick={() => setSelectedService(i)}
+                  className="relative min-h-[132px] overflow-hidden rounded-2xl bg-lucy-cream p-3 text-left shadow-sm ring-1 ring-black/5 active:scale-[0.98] transition-transform"
+                  aria-label={`See more about ${t(service.titleKey)}`}
+                >
+                  <div className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: service.color }} />
+                  <span className="absolute right-2 top-3 text-[10px] font-black tracking-widest text-lucy-charcoal/20">0{i + 1}</span>
+                  <h3 className="pr-6 text-[15px] font-semibold leading-tight text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t(service.titleKey)}</h3>
+                  <p className="mt-2 text-[11px] leading-snug text-lucy-grey">{SERVICE_SUMMARIES[i]}</p>
+                  <span className="absolute bottom-3 left-3 right-3 inline-flex items-center justify-between text-[11px] font-black text-lucy-charcoal">
+                    See more <ArrowRight size={13} style={{ color: service.color }} />
+                  </span>
+                </button>
+              ))}
             </div>
 
             <div className="hidden md:grid md:grid-cols-3 gap-8">
-              {SERVICES.map((s, i) => {
-                const SIcon = s.Icon
-                return (
-                  <motion.div
-                    key={s.titleKey}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="group relative overflow-hidden rounded-[2rem] bg-white p-7 sm:p-8 shadow-xl shadow-black/[0.04] ring-1 ring-black/5 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/10"
-                  >
-                    <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: s.color }} />
-                    <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-10 transition-transform group-hover:scale-125" style={{ backgroundColor: s.color }} />
-                    <div className="mb-7 flex items-start justify-between gap-4">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner" style={{ backgroundColor: s.color + '18' }}>
-                        <SIcon size={24} style={{ color: s.color }} strokeWidth={1.7} />
-                      </div>
-                      <span className="text-xs font-black tracking-[0.24em] text-lucy-charcoal/20">0{i + 1}</span>
-                    </div>
-                    <h3 className="text-2xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
-                    <p className="text-lucy-grey text-sm leading-relaxed mb-6">{t(s.descKey)}</p>
-                    <ul className="space-y-2.5 mb-7 border-t border-black/5 pt-5">
-                      {s.includes.slice(0, 5).map(item => (
-                        <li key={item} className="flex items-start gap-2.5 text-sm text-lucy-charcoal">
-                          <CheckCircle size={15} className="mt-0.5 flex-shrink-0" style={{ color: s.color }} />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button type="button" onClick={() => setSelectedService(i)} className="inline-flex w-full items-center justify-between gap-3 bg-lucy-charcoal px-5 py-4 text-sm font-extrabold text-white transition-all group-hover:pr-4" style={{ borderRadius: '18px 18px 18px 4px' }}>
-                      <span>{i === 0 ? 'Ask about project support' : i === 1 ? 'Book an English lesson' : 'Plan an event'}</span>
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ backgroundColor: s.color }}><ArrowRight size={15} /></span>
-                    </button>
-                  </motion.div>
-                )
-              })}
+              {SERVICES.map((s, i) => (
+                <motion.div
+                  key={s.titleKey}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group relative overflow-hidden rounded-[2rem] bg-lucy-cream p-7 sm:p-8 shadow-xl shadow-black/[0.04] ring-1 ring-black/5 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/10"
+                >
+                  <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: s.color }} />
+                  <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-10 transition-transform group-hover:scale-125" style={{ backgroundColor: s.color }} />
+                  <div className="mb-5 flex justify-end">
+                    <span className="text-xs font-black tracking-[0.24em] text-lucy-charcoal/20">0{i + 1}</span>
+                  </div>
+                  <h3 className="text-2xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
+                  <p className="text-lucy-grey text-sm leading-relaxed mb-6">{t(s.descKey)}</p>
+                  <ul className="space-y-2.5 mb-7 border-t border-black/5 pt-5">
+                    {s.includes.slice(0, 5).map(item => (
+                      <li key={item} className="flex items-start gap-2.5 text-sm text-lucy-charcoal">
+                        <CheckCircle size={15} className="mt-0.5 flex-shrink-0" style={{ color: s.color }} />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button type="button" onClick={() => setSelectedService(i)} className="inline-flex w-full items-center justify-between gap-3 bg-lucy-charcoal px-5 py-4 text-sm font-extrabold text-white transition-all group-hover:pr-4" style={{ borderRadius: '18px 18px 18px 4px' }}>
+                    <span>{i === 0 ? 'Ask about project support' : i === 1 ? 'Book an English lesson' : 'Plan an event'}</span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ backgroundColor: s.color }}><ArrowRight size={15} /></span>
+                  </button>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
@@ -584,16 +555,13 @@ export default function HomePage() {
 
         {selectedService !== null && (() => {
           const service = SERVICES[selectedService]
-          const SIcon = service.Icon
           return (
             <div className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center bg-black/55 px-4 py-4 backdrop-blur-sm" onClick={() => setSelectedService(null)}>
               <motion.div initial={{ opacity: 0, y: 24, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="relative max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
                 <button type="button" aria-label="Close service details" onClick={() => setSelectedService(null)} className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-lucy-cream text-lucy-charcoal">
                   <X size={18} />
                 </button>
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ backgroundColor: service.color + '18' }}>
-                  <SIcon size={24} style={{ color: service.color }} strokeWidth={1.8} />
-                </div>
+                <div className="mb-5 h-1.5 w-20 rounded-full" style={{ backgroundColor: service.color }} />
                 <p className="mb-2 text-xs font-black uppercase tracking-[0.25em]" style={{ color: service.color }}>Service details</p>
                 <h3 className="mb-4 pr-10 text-3xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t(service.titleKey)}</h3>
                 <p className="mb-5 text-sm leading-relaxed text-lucy-grey">{t(service.descKey)}</p>
