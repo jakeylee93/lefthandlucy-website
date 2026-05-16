@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, createContext, useContext } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Users, Calendar } from 'lucide-react'
+import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Users, Calendar, Sparkles } from 'lucide-react'
 import { translations, Lang } from './translations'
 import Image from 'next/image'
 
@@ -115,7 +115,7 @@ function Nav() {
           </a>
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map(i => (
-              <a key={i.l} href={i.h} className={`text-sm font-medium transition-colors ${scrolled ? 'text-lucy-grey hover:text-lucy-charcoal' : 'text-white/70 hover:text-white'}`}>{i.l}</a>
+              <a key={i.l} href={i.h} className={`text-sm font-extrabold tracking-[0.12em] uppercase transition-colors ${scrolled ? 'text-lucy-charcoal/75 hover:text-lucy-charcoal' : 'text-white/80 hover:text-white'}`}>{i.l}</a>
             ))}
             <div className="relative">
               <button onClick={() => setLangOpen(!langOpen)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-lucy-cream text-lucy-charcoal' : 'bg-white/10 text-white'}`}>
@@ -132,7 +132,7 @@ function Nav() {
                 </div>
               )}
             </div>
-            <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all hover:scale-105">{t('nav.contact')}</a>
+            <a href="#contact" className="group relative overflow-hidden bg-lucy-charcoal text-white px-5 py-3 text-xs font-extrabold tracking-[0.14em] uppercase shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5" style={{ borderRadius: '18px 18px 18px 4px' }}><span className="relative z-10 flex items-center gap-2">{t('nav.contact')} <Sparkles size={13} /></span><span className="absolute inset-0 bg-lucy-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300" /></a>
           </div>
           <button className="md:hidden" onClick={() => setOpen(!open)}>
             {open ? <X size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} /> : <Menu size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} />}
@@ -151,7 +151,7 @@ function Nav() {
               </button>
             ))}
           </div>
-          <a href="#contact" className="block mt-2 bg-lucy-sage text-white px-5 py-3 rounded-full text-center font-bold" onClick={() => setOpen(false)}>{t('nav.contact')}</a>
+          <a href="#contact" className="block mt-2 bg-lucy-charcoal text-white px-5 py-3 text-center font-extrabold tracking-wide" onClick={() => setOpen(false)}>{t('nav.contact')}</a>
         </div>
       )}
     </nav>
@@ -327,23 +327,29 @@ export default function HomePage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-lucy-cream rounded-2xl p-7 sm:p-8 hover:shadow-xl transition-all hover:-translate-y-1"
+                    className="group relative overflow-hidden rounded-[2rem] bg-white p-7 sm:p-8 shadow-xl shadow-black/[0.04] ring-1 ring-black/5 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/10"
                   >
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: s.color + '15' }}>
-                      <SIcon size={22} style={{ color: s.color }} strokeWidth={1.5} />
+                    <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: s.color }} />
+                    <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-10 transition-transform group-hover:scale-125" style={{ backgroundColor: s.color }} />
+                    <div className="mb-7 flex items-start justify-between gap-4">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner" style={{ backgroundColor: s.color + '18' }}>
+                        <SIcon size={24} style={{ color: s.color }} strokeWidth={1.7} />
+                      </div>
+                      <span className="text-xs font-black tracking-[0.24em] text-lucy-charcoal/20">0{i + 1}</span>
                     </div>
-                    <h3 className="text-xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
-                    <p className="text-lucy-grey text-sm leading-relaxed mb-5">{t(s.descKey)}</p>
-                    <ul className="space-y-2 mb-6">
-                      {s.includes.map(item => (
-                        <li key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
-                          <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: s.color }} />
-                          {item}
+                    <h3 className="text-2xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
+                    <p className="text-lucy-grey text-sm leading-relaxed mb-6">{t(s.descKey)}</p>
+                    <ul className="space-y-2.5 mb-7 border-t border-black/5 pt-5">
+                      {s.includes.slice(0, 5).map(item => (
+                        <li key={item} className="flex items-start gap-2.5 text-sm text-lucy-charcoal">
+                          <CheckCircle size={15} className="mt-0.5 flex-shrink-0" style={{ color: s.color }} />
+                          <span>{item}</span>
                         </li>
                       ))}
                     </ul>
-                    <a href="#contact" className="inline-flex items-center gap-1.5 text-sm font-bold transition-all hover:gap-2.5" style={{ color: s.color }}>
-                      {i === 0 ? 'Ask about project support' : i === 1 ? 'Book an English lesson' : 'Plan an event or Madrid experience'} <ArrowRight size={14} />
+                    <a href="#contact" className="inline-flex w-full items-center justify-between gap-3 bg-lucy-charcoal px-5 py-4 text-sm font-extrabold text-white transition-all group-hover:pr-4" style={{ borderRadius: '18px 18px 18px 4px' }}>
+                      <span>{i === 0 ? 'Ask about project support' : i === 1 ? 'Book an English lesson' : 'Plan an event'}</span>
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full transition-transform group-hover:translate-x-1" style={{ backgroundColor: s.color }}><ArrowRight size={15} /></span>
                     </a>
                   </motion.div>
                 )
@@ -397,8 +403,10 @@ export default function HomePage() {
             <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
               <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
                 <div className="relative">
-                  <div className="rounded-3xl overflow-hidden aspect-[4/5]">
-                    <Image src="/images/lucy.jpg" alt="Lucy" width={600} height={750} className="w-full h-full object-cover object-top" />
+                  <div className="rounded-[2rem] overflow-hidden aspect-[4/5] shadow-2xl shadow-black/10 ring-1 ring-black/5 rotate-[-1.5deg] bg-white p-2">
+                    <div className="h-full w-full overflow-hidden rounded-[1.55rem]">
+                      <Image src="/images/lucy-meet.jpg" alt="Lucy smiling in Madrid" width={900} height={1100} className="w-full h-full object-cover object-[68%_32%]" />
+                    </div>
                   </div>
                   <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-lg">
                     <p className="text-lucy-charcoal font-bold text-sm" style={{ fontFamily: 'var(--font-heading)' }}>{t('about.badge')}</p>
