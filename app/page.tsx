@@ -59,6 +59,25 @@ const SERVICES = [
   },
 ]
 
+const WHO_I_HELP = [
+  'Busy founders and professionals who need calm, discreet support behind the scenes',
+  'Families, children and adults building confidence with English in Madrid',
+  'Hosts and visitors who want thoughtful events, local plans and smooth logistics',
+]
+
+const WORKING_MODES = [
+  { title: 'In person', text: 'Madrid-based support for lessons, meetings, errands, events and on-the-ground organisation.' },
+  { title: 'Virtual', text: 'Remote executive assistance, research, scheduling, planning and English support wherever you are.' },
+  { title: 'Flexible', text: 'One-off help, regular sessions or a steady extra pair of hands when life gets busy.' },
+]
+
+const FAQS = [
+  { q: 'Can Lucy help with one-off projects?', a: 'Yes. Left Hand Lucy is designed to be flexible, from a single task or event to ongoing project support.' },
+  { q: 'Does Lucy work virtually as well as in Madrid?', a: 'Yes. Support can be in person, virtual or a mix of both depending on the project.' },
+  { q: 'Who are the English lessons for?', a: 'Children, adults and professionals who want practical, confidence-building English support.' },
+  { q: 'Can Lucy help with events from planning to the day itself?', a: 'Yes. She can help with ideas, venues, guest lists, bookings, logistics and calm on-the-day coordination.' },
+]
+
 const TESTIMONIALS = [
   { text: "I moved to Madrid recently, and Lucy's lessons helped me feel at home so quickly. Her explanations are simple, her examples practical, and she makes learning fun. I feel far more confident speaking now.", name: 'Amelia Grant', role: 'English student', service: 'English Lessons' },
   { text: "I've tried a few English tutors over the years, but Lucy stands out immediately. Her teaching style is clear, patient, and completely tailored to what I need. I genuinely look forward to our sessions each week.", name: 'Marco Hernández', role: 'Professional in Madrid', service: 'English Lessons' },
@@ -237,8 +256,8 @@ export default function HomePage() {
         {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
         <section className="min-h-screen flex items-end relative overflow-hidden">
           <div className="absolute inset-0">
-            <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[70%_20%]" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent sm:from-black/75 sm:via-black/30" />
+            <Image src="/images/lucy-hero.jpg" alt="Lucy smiling on a bench in Madrid" fill className="object-cover object-[72%_34%]" priority />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/5 sm:from-black/80 sm:via-black/35" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
           <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 pt-24 w-full">
@@ -252,11 +271,11 @@ export default function HomePage() {
                 Left Hand Lucy
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-                className="text-white/50 text-sm italic mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
+                className="text-white/80 text-xl sm:text-2xl italic mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
                 {t('hero.tagline')}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="text-white/65 text-sm sm:text-base leading-relaxed mb-8 max-w-md">
+                className="text-white/80 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
                 {t('hero.intro')}
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
@@ -268,6 +287,24 @@ export default function HomePage() {
                   <span key={tag} className="bg-white/10 border border-white/15 backdrop-blur-sm text-white/80 px-3 py-1.5 rounded-full text-xs font-bold">{tag}</span>
                 ))}
               </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── PROMISE STRIP ─────────────────────────────────── */}
+        <section className="px-6 sm:px-8 -mt-10 relative z-20">
+          <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl shadow-black/10 border border-black/5 p-6 sm:p-8">
+            <div className="grid md:grid-cols-3 gap-5">
+              {[
+                ['Project support', 'Inbox, diary, research, planning and practical organisation that keeps things moving.'],
+                ['English lessons', 'Friendly, confidence-building lessons for children, adults and professionals.'],
+                ['Events & experiences', 'Thoughtful Madrid events, local plans, bookings and on-the-day coordination.'],
+              ].map(([title, text]) => (
+                <div key={title} className="rounded-2xl bg-lucy-cream p-5">
+                  <p className="text-lucy-charcoal font-bold mb-2" style={{ fontFamily: 'var(--font-heading)' }}>{title}</p>
+                  <p className="text-lucy-grey text-sm leading-relaxed">{text}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -311,6 +348,45 @@ export default function HomePage() {
                   </motion.div>
                 )
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* ── WHO I HELP ───────────────────────────────────── */}
+        <section className="py-20 sm:py-24 px-6 sm:px-8 bg-lucy-charcoal text-white">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-start">
+              <div>
+                <p className="text-lucy-gold font-bold text-sm tracking-[0.25em] uppercase mb-3">Who I help</p>
+                <h2 className="text-3xl sm:text-4xl font-semibold leading-tight mb-5" style={{ fontFamily: 'var(--font-heading)' }}>Calm support for busy people, growing confidence and memorable plans.</h2>
+                <p className="text-white/65 leading-relaxed">Left Hand Lucy brings together executive support, teaching and event experience, so the help feels practical, personal and easy to work with.</p>
+              </div>
+              <div className="grid gap-4">
+                {WHO_I_HELP.map((item, index) => (
+                  <motion.div key={item} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="bg-white/8 border border-white/10 rounded-2xl p-5 flex gap-4">
+                    <CheckCircle size={20} className="text-lucy-gold flex-shrink-0 mt-0.5" />
+                    <p className="text-white/85 leading-relaxed">{item}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── WAYS TO WORK ─────────────────────────────────── */}
+        <section className="py-20 sm:py-24 px-6 sm:px-8 bg-white">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3">Ways we can work together</p>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>In person, virtual and flexible around real life.</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {WORKING_MODES.map((mode) => (
+                <div key={mode.title} className="border border-black/5 rounded-3xl p-7 bg-white shadow-lg shadow-black/[0.03]">
+                  <p className="text-lucy-sage font-bold text-lg mb-3" style={{ fontFamily: 'var(--font-heading)' }}>{mode.title}</p>
+                  <p className="text-lucy-grey text-sm leading-relaxed">{mode.text}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -388,6 +464,24 @@ export default function HomePage() {
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('testimonials.title')}</h2>
             </div>
             <TestimonialCarousel />
+          </div>
+        </section>
+
+        {/* ── FAQS ────────────────────────────────────────── */}
+        <section id="faqs" className="py-20 sm:py-24 px-6 sm:px-8 bg-white">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3">FAQs</p>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>A few useful things to know.</h2>
+            </div>
+            <div className="space-y-4">
+              {FAQS.map((item) => (
+                <div key={item.q} className="bg-lucy-cream rounded-2xl p-6">
+                  <h3 className="text-lucy-charcoal font-bold mb-2" style={{ fontFamily: 'var(--font-heading)' }}>{item.q}</h3>
+                  <p className="text-lucy-grey text-sm leading-relaxed">{item.a}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

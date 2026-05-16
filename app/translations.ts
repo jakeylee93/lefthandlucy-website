@@ -12,13 +12,13 @@ export const translations: Record<Lang, Record<string, string>> = {
     'hero.tags': 'IN PERSON. VIRTUAL. FLEXIBLE.',
     'hero.title': 'Left Hand Lucy',
     'hero.tagline': "A steady hand for life's busy corners.",
-    'hero.intro': "I'm Lucy - an experienced multilingual Executive Assistant, qualified teacher, event planner and organiser based in Madrid. I help people learn, connect and get things done.",
-    'hero.cta1': 'How I can help',
+    'hero.intro': "I'm Lucy - a multilingual Executive Assistant, qualified teacher, event planner and organiser based in Madrid. I help busy people feel clearer, more confident and more in control, whether that means project support, English lessons, or a beautifully organised event.",
+    'hero.cta1': 'See how I can help',
     'hero.cta2': "Let's talk?",
 
     // Services
     'services.mode': 'IN PERSON. VIRTUAL. FLEXIBLE.',
-    'services.title': 'How I can help',
+    'services.title': 'Three ways Lucy can help',
     'services.ps.title': 'Project Support',
     'services.ps.desc': 'Let Lucy take care of the to-do list. From inboxes and schedules to research and organisation, I offer support that helps keep things moving. I enjoy getting involved in different projects and helping bring ideas to life - offering calm, flexible support wherever it is needed.',
     'services.el.title': 'English Lessons',
@@ -62,7 +62,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     // Contact
     'contact.label': 'Get in Touch',
     'contact.title': "Let's talk about how I can help",
-    'contact.desc': "Whether you have a question, want to book a lesson, or are planning something special - I'd love to hear from you. I usually reply within 1-2 working days.",
+    'contact.desc': "Whether you have a project to organise, English confidence to build, or an event to plan - I'd love to hear from you. I usually reply within 1-2 working days.",
     'contact.name': 'Your name',
     'contact.email': 'Your email',
     'contact.service': 'What can I help with?',
