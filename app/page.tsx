@@ -60,15 +60,9 @@ const SERVICES = [
 ]
 
 const SERVICE_SUMMARIES = [
-  'Inbox, diary, research and practical organisation.',
-  'Friendly English support for real-life confidence.',
-  'Bookings, planning and Madrid experiences handled smoothly.',
-]
-
-const SERVICE_CTAS = [
-  'Ask about project support',
-  'Book an English lesson',
-  'Plan an event',
+  'Inboxes, diaries, research and calm organisation.',
+  'Confidence-building English for real life.',
+  'Events, bookings and Madrid experiences made smoother.',
 ]
 
 const WHO_I_HELP = [
@@ -267,97 +261,91 @@ export default function HomePage() {
         <Nav />
 
         {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
-        <section className="min-h-[100svh] flex items-end relative overflow-hidden">
+        <section className="min-h-screen flex items-end relative overflow-hidden">
           <div className="absolute inset-0">
             <Image src="/images/lucy-meet.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[56%_24%] md:hidden" priority />
             <Image src="/images/lucy-hero.jpg" alt="Lucy smiling on a bench in Madrid" fill className="hidden md:block object-cover object-[72%_34%]" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/82 via-black/48 to-black/10 sm:from-black/80 sm:via-black/35" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/20 to-black/18" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/5 sm:from-black/80 sm:via-black/35" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
-          <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pb-[7.5rem] sm:pb-20 pt-24 w-full">
-            <div className="max-w-xl md:max-w-xl -translate-y-4 sm:translate-y-0">
+          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 pt-24 w-full">
+            <div className="max-w-xl">
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="text-lucy-sage font-bold text-[11px] sm:text-xs tracking-[0.22em] sm:tracking-[0.25em] uppercase mb-3 sm:mb-4">
+                className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4">
                 {t('hero.tags')}
               </motion.p>
               <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="text-[3.15rem] sm:text-5xl lg:text-6xl font-semibold leading-[0.98] sm:leading-[1.1] mb-3 sm:mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1] mb-4 sm:mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                 Left Hand Lucy
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-                className="text-white/84 text-lg sm:text-2xl italic mb-4 sm:mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
+                className="text-white/80 text-xl sm:text-2xl italic mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
                 {t('hero.tagline')}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="text-white/82 text-[13px] sm:text-lg leading-[1.55] mb-5 sm:mb-8 max-w-[34ch] sm:max-w-lg">
+                className="text-white/80 text-sm sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-lg">
                 {t('hero.intro')}
               </motion.p>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
-                <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/95 px-4 py-3 text-center text-sm font-extrabold text-lucy-charcoal shadow-lg shadow-black/10 transition-all hover:bg-white sm:px-7">{t('hero.cta2')}</a>
-                <a href="#services" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/10 px-4 py-3 text-center text-sm font-extrabold text-white backdrop-blur-sm transition-all hover:bg-white/18 sm:px-7">{t('hero.cta1')}</a>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
+                <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
+                <a href="#services" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm">{t('hero.cta1')}</a>
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="lucy-mobile-marquee mt-5 sm:mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)] sm:[mask-image:none]">
-                <div className="flex w-max gap-2 whitespace-nowrap sm:flex-wrap sm:w-auto">
-                  {[...['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner'], ...['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner']].map((tag, index) => (
-                    <span key={`${tag}-${index}`} className={`rounded-full border border-white/18 bg-white/10 px-3.5 py-1.5 text-[11px] font-bold text-white/82 backdrop-blur-sm sm:text-xs ${index > 3 ? 'sm:hidden' : ''}`}>{tag}</span>
-                  ))}
-                </div>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex flex-wrap gap-2 mt-5 sm:mt-6">
+                {['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner'].map(tag => (
+                  <span key={tag} className="bg-white/10 border border-white/15 backdrop-blur-sm text-white/80 px-3 py-1.5 rounded-full text-xs font-bold">{tag}</span>
+                ))}
               </motion.div>
             </div>
           </div>
         </section>
 
         {/* ── PROMISE STRIP ─────────────────────────────────── */}
-        <section className="px-4 sm:px-8 -mt-10 sm:-mt-10 relative z-20">
-          <div className="max-w-6xl mx-auto rounded-[1.75rem] border border-black/5 bg-white/96 p-3 shadow-2xl shadow-black/10 backdrop-blur sm:rounded-3xl sm:p-8">
-            <div className="flex gap-2 overflow-x-auto pb-1 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:pb-0">
+        <section className="px-4 sm:px-8 -mt-8 sm:-mt-10 relative z-20">
+          <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl shadow-black/10 border border-black/5 p-4 sm:p-8">
+            <div className="grid grid-cols-3 gap-2 sm:gap-5">
               {[
                 ['Project support', 'Inbox, diary, research, planning and practical organisation that keeps things moving.'],
                 ['English lessons', 'Friendly, confidence-building lessons for children, adults and professionals.'],
                 ['Events & experiences', 'Thoughtful Madrid events, local plans, bookings and on-the-day coordination.'],
               ].map(([title, text]) => (
-                <a key={title} href="#services" className="min-w-[46%] rounded-2xl border border-black/5 bg-lucy-cream px-4 py-3 text-center transition-colors hover:bg-white sm:min-w-0 sm:p-5 sm:text-left">
-                  <p className="text-lucy-charcoal font-bold text-[13px] leading-tight sm:text-base mb-0 sm:mb-2" style={{ fontFamily: 'var(--font-heading)' }}>{title}</p>
+                <div key={title} className="rounded-2xl bg-lucy-cream p-3 sm:p-5">
+                  <p className="text-lucy-charcoal font-bold text-xs sm:text-base mb-1 sm:mb-2" style={{ fontFamily: 'var(--font-heading)' }}>{title}</p>
                   <p className="hidden sm:block text-lucy-grey text-sm leading-relaxed">{text}</p>
-                </a>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
         {/* ── SERVICES — compact mobile cards + full desktop cards ────────── */}
-        <section id="services" className="py-10 sm:py-28 px-4 sm:px-8 bg-white">
+        <section id="services" className="py-12 sm:py-28 px-4 sm:px-8 bg-white">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-6 sm:mb-16">
+            <div className="text-center mb-8 sm:mb-16">
               <p className="text-lucy-sage font-bold text-xs sm:text-sm tracking-[0.25em] uppercase mb-3">{t('services.mode')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
               <p className="mt-3 text-sm text-lucy-grey md:hidden">Tap a card for more detail.</p>
             </div>
 
-            <div className="grid gap-3 md:hidden">
+            <div className="grid grid-cols-3 gap-2 md:hidden">
               {SERVICES.map((service, i) => {
+                const SIcon = service.Icon
                 return (
                   <button
                     key={service.titleKey}
                     type="button"
                     onClick={() => setSelectedService(i)}
-                    className="mobile-service-cta group relative overflow-hidden rounded-[1.35rem] border border-black/5 bg-white px-4 py-4 text-left shadow-lg shadow-black/[0.045] active:scale-[0.99] transition-transform"
+                    className="relative min-h-[145px] overflow-hidden rounded-2xl bg-white p-3 text-left shadow-lg shadow-black/[0.05] ring-1 ring-black/5 active:scale-[0.98] transition-transform"
                   >
-                    <div className="absolute inset-y-0 left-0 w-1.5" style={{ backgroundColor: service.color }} />
-                    <div className="absolute -right-8 -top-10 h-24 w-24 rounded-full opacity-[0.08]" style={{ backgroundColor: service.color }} />
-                    <div className="flex items-center justify-between gap-4 pl-2">
-                      <div className="min-w-0">
-                        <div className="mb-1 flex items-center gap-2">
-                          <span className="text-[10px] font-black tracking-[0.22em] text-lucy-charcoal/30">0{i + 1}</span>
-                          <span className="h-px w-7" style={{ backgroundColor: service.color }} />
-                        </div>
-                        <h3 className="text-[1.25rem] font-semibold leading-none text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t(service.titleKey)}</h3>
-                        <p className="mt-1.5 max-w-[28ch] text-[12px] leading-snug text-lucy-grey">{SERVICE_SUMMARIES[i]}</p>
-                      </div>
-                      <span className="flex shrink-0 items-center gap-2 rounded-full bg-lucy-charcoal px-3.5 py-2 text-[11px] font-black text-white">
-                        {SERVICE_CTAS[i].replace('Ask about ', '').replace('Book an ', '').replace('Plan an ', 'Plan ')} <ArrowRight size={12} style={{ color: service.color }} />
-                      </span>
+                    <div className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: service.color }} />
+                    <span className="absolute right-2 top-3 text-[10px] font-black tracking-widest text-lucy-charcoal/20">0{i + 1}</span>
+                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl" style={{ backgroundColor: service.color + '18' }}>
+                      <SIcon size={17} style={{ color: service.color }} strokeWidth={1.8} />
                     </div>
+                    <h3 className="text-[15px] font-semibold leading-tight text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t(service.titleKey)}</h3>
+                    <p className="mt-2 text-[11px] leading-snug text-lucy-grey">{SERVICE_SUMMARIES[i]}</p>
+                    <span className="absolute bottom-3 left-3 right-3 inline-flex items-center justify-between text-[11px] font-black text-lucy-charcoal">
+                      More <ArrowRight size={13} style={{ color: service.color }} />
+                    </span>
                   </button>
                 )
               })}
@@ -405,19 +393,19 @@ export default function HomePage() {
         </section>
 
         {/* ── WHO I HELP ───────────────────────────────────── */}
-        <section className="py-12 sm:py-24 px-5 sm:px-8 bg-lucy-charcoal text-white">
+        <section className="py-20 sm:py-24 px-6 sm:px-8 bg-lucy-charcoal text-white">
           <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-7 lg:gap-16 items-start">
+            <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-start">
               <div>
                 <p className="text-lucy-gold font-bold text-sm tracking-[0.25em] uppercase mb-3">Who I help</p>
-                <h2 className="text-[2rem] sm:text-4xl font-semibold leading-[1.05] mb-4" style={{ fontFamily: 'var(--font-heading)' }}>Calm support for busy people, growing confidence and memorable plans.</h2>
-                <p className="text-sm leading-relaxed text-white/65 sm:text-base">Left Hand Lucy brings together executive support, teaching and event experience, so the help feels practical, personal and easy to work with.</p>
+                <h2 className="text-3xl sm:text-4xl font-semibold leading-tight mb-5" style={{ fontFamily: 'var(--font-heading)' }}>Calm support for busy people, growing confidence and memorable plans.</h2>
+                <p className="text-white/65 leading-relaxed">Left Hand Lucy brings together executive support, teaching and event experience, so the help feels practical, personal and easy to work with.</p>
               </div>
               <div className="grid gap-4">
                 {WHO_I_HELP.map((item, index) => (
-                  <motion.div key={item} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="bg-white/8 border border-white/10 rounded-2xl p-4 sm:p-5 flex gap-3 sm:gap-4">
+                  <motion.div key={item} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="bg-white/8 border border-white/10 rounded-2xl p-5 flex gap-4">
                     <CheckCircle size={20} className="text-lucy-gold flex-shrink-0 mt-0.5" />
-                    <p className="text-sm leading-relaxed text-white/85 sm:text-base">{item}</p>
+                    <p className="text-white/85 leading-relaxed">{item}</p>
                   </motion.div>
                 ))}
               </div>

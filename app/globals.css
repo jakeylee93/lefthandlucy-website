@@ -17,25 +17,3 @@
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-body); color: var(--lucy-charcoal); background: #ffffff; -webkit-font-smoothing: antialiased; }
 h1,h2,h3,h4 { font-family: var(--font-heading); }
-
-@media (max-width: 767px) {
-  .lucy-mobile-marquee > div {
-    animation: lucy-pill-marquee 24s linear infinite;
-  }
-
-  .lucy-mobile-marquee:hover > div,
-  .lucy-mobile-marquee:focus-within > div {
-    animation-play-state: paused;
-  }
-}
-
-@keyframes lucy-pill-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .lucy-mobile-marquee > div {
-    animation: none !important;
-  }
-}
