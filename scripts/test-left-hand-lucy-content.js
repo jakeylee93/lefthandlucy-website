@@ -38,6 +38,10 @@ function mustNotInclude(needle) {
   'lucy-hero.jpg',
   'lucy-meet.jpg',
   'Tap a card for more detail.',
+  'How I can help',
+  'lucy-mobile-marquee',
+  'mobile-service-cta',
+  'SERVICE_CTAS',
   'Service details',
   'What this can include',
   'SERVICE_SUMMARIES',
@@ -66,6 +70,7 @@ function mustNotInclude(needle) {
   'What I Do',
   "Let's talk about what you need",
   'Tell me a bit about what you need',
+  'See how I can help',
 ].forEach(mustNotInclude);
 
 console.log('Left Hand Lucy content checks passed.');
