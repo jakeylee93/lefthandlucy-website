@@ -278,15 +278,16 @@ export default function HomePage() {
         <Nav />
 
         {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
-        <section className="min-h-screen flex items-end relative overflow-hidden">
+        <section className="min-h-[104svh] flex items-center relative overflow-hidden">
           <div className="absolute inset-0">
             <Image src="/images/lucy-meet.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[56%_24%] md:hidden" priority />
             <Image src="/images/lucy-hero.jpg" alt="Lucy smiling on a bench in Madrid" fill className="hidden md:block object-cover object-[72%_34%]" priority />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/5 sm:from-black/80 sm:via-black/35" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent opacity-95" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
           </div>
-          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 pt-24 w-full">
-            <div className="max-w-xl">
+          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-28 pt-28 sm:pb-36 sm:pt-32 w-full">
+            <div className="max-w-xl -translate-y-5 sm:-translate-y-8">
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4">
                 {t('hero.tags')}
@@ -307,18 +308,18 @@ export default function HomePage() {
                 <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
                 <a href="#services" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm">{t('hero.cta1')}</a>
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex flex-wrap gap-2 mt-5 sm:mt-6">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex flex-wrap gap-2.5 mt-7 sm:mt-8 max-w-lg">
                 {['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner'].map(tag => (
-                  <span key={tag} className="bg-white/10 border border-white/15 backdrop-blur-sm text-white/80 px-3 py-1.5 rounded-full text-xs font-bold">{tag}</span>
+                  <span key={tag} className="bg-white/[0.14] border border-white/25 backdrop-blur-md text-white/90 px-3.5 py-2 rounded-full text-xs font-bold shadow-lg shadow-black/10">{tag}</span>
                 ))}
               </motion.div>
             </div>
           </div>
-          <div className="lucy-hero-blend pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent via-white/20 to-white" />
+          <div className="lucy-hero-blend pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent via-white/60 to-white" />
         </section>
 
         {/* ── SERVICES — hero overlap frame ───────────────────────────── */}
-        <section id="services" className="lucy-service-pattern px-4 sm:px-8 -mt-16 sm:-mt-20 relative z-20 bg-white pb-6">
+        <section id="services" className="lucy-service-pattern px-4 sm:px-8 -mt-24 sm:-mt-28 relative z-20 bg-transparent pb-10 sm:pb-14">
           <div
             id="serviceSpotlight"
             className="relative max-w-6xl mx-auto overflow-hidden rounded-[2.5rem] bg-white/95 shadow-2xl shadow-black/12 ring-1 ring-black/5 backdrop-blur-md"
@@ -483,19 +484,23 @@ export default function HomePage() {
         {/* ── CONECTADOS — Video background ────────────────── */}
         <section className="py-20 sm:py-24 px-6 sm:px-8 relative overflow-hidden">
           <div className="absolute inset-0">
-            <video autoPlay muted loop playsInline className="w-full h-full object-cover">
-              <source src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+            <video autoPlay muted loop playsInline className="w-full h-full object-cover scale-105">
+              <source src="https://assets.mixkit.co/videos/2597/2597-1080.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-black/65" />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-lucy-charcoal/[0.58] to-lucy-gold/[0.28]" />
+            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-lucy-cream/25 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/45 to-transparent" />
           </div>
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <div className="flex justify-center mb-4">
-              <Users size={28} className="text-lucy-gold" />
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25 backdrop-blur-md shadow-xl shadow-black/20">
+                <Users size={28} className="text-lucy-gold" />
+              </span>
             </div>
-            <p className="text-lucy-gold font-bold text-sm tracking-wide uppercase mb-3">{t('conectados.label')}</p>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('conectados.title')}</h2>
-            <p className="text-white/60 text-base mb-8 max-w-lg mx-auto">{t('conectados.desc')}</p>
-            <a href="https://connect-cardos.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-lucy-gold hover:bg-lucy-gold/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 text-sm">
+            <p className="text-lucy-gold font-black text-sm tracking-[0.22em] uppercase mb-3 drop-shadow-sm">{t('conectados.label')}</p>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4 drop-shadow-md" style={{ fontFamily: 'var(--font-heading)' }}>{t('conectados.title')}</h2>
+            <p className="text-white/[0.82] text-base mb-8 max-w-lg mx-auto leading-relaxed drop-shadow-sm">{t('conectados.desc')}</p>
+            <a href="https://connect-cardos.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-lucy-gold hover:bg-lucy-gold/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 text-sm shadow-xl shadow-black/20 ring-1 ring-white/15">
               {t('conectados.cta')} <ExternalLink size={14} />
             </a>
           </div>
