@@ -287,7 +287,7 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90 md:bg-gradient-to-t md:from-white md:via-white/10 md:to-transparent md:opacity-95" />
             <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent md:bg-gradient-to-b md:from-black/20 md:via-transparent md:to-transparent" />
           </div>
-          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-28 pt-[47vh] sm:pb-36 sm:pt-32 w-full">
+          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-36 pt-[47vh] sm:pb-36 sm:pt-32 w-full">
             <div className="max-w-xl md:-translate-y-8">
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4">
@@ -306,7 +306,7 @@ export default function HomePage() {
                 <span className="sm:hidden">{t('hero.mobileIntro')}</span>
                 <span className="hidden sm:inline">{t('hero.intro')}</span>
               </motion.p>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 pb-2 sm:pb-0">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 pb-5 sm:pb-0">
                 <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
                 <a href="#services" className="bg-white/85 hover:bg-white text-lucy-charcoal sm:bg-white/80 sm:hover:bg-white backdrop-blur-sm border border-white/70 px-7 py-3 rounded-full font-bold transition-all text-sm shadow-lg shadow-black/10 sm:shadow-none">{t('hero.cta1')}</a>
               </motion.div>
