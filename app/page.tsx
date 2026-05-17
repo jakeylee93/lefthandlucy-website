@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, createContext, useContext } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Users, Calendar, Sparkles } from 'lucide-react'
+import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Calendar, Sparkles } from 'lucide-react'
 import { translations, Lang } from './translations'
 import Image from 'next/image'
 
@@ -116,8 +116,8 @@ function Nav() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
       <div className="max-w-6xl mx-auto px-6 sm:px-8">
         <div className="flex items-center justify-between h-20">
-          <a href="/" className="flex items-center gap-2">
-            <span className={`text-xl font-semibold italic transition-colors ${scrolled ? 'text-lucy-charcoal' : 'text-white'}`} style={{ fontFamily: 'var(--font-heading)' }}>Left Hand Lucy</span>
+          <a href="/" className="group flex items-center gap-2" aria-label="Left Hand Lucy home">
+            <span className={`inline-flex h-11 w-11 items-center justify-center rounded-full border text-[1.05rem] font-semibold italic tracking-[-0.08em] shadow-lg shadow-black/10 transition-all group-hover:-translate-y-0.5 ${scrolled ? 'border-lucy-charcoal/10 bg-lucy-cream text-lucy-charcoal' : 'border-white/25 bg-white/10 text-white backdrop-blur-md'}`} style={{ fontFamily: 'var(--font-heading)' }}>LHL</span>
           </a>
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map(i => (
@@ -278,37 +278,37 @@ export default function HomePage() {
         <Nav />
 
         {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
-        <section className="min-h-[104svh] flex items-center relative overflow-hidden">
+        <section className="min-h-[112svh] md:min-h-[104svh] flex items-end md:items-center relative overflow-hidden">
           <div className="absolute inset-0">
-            <Image src="/images/lucy-meet.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[56%_24%] md:hidden" priority />
+            <Image src="/images/lucy-meet.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[58%_12%] md:hidden" priority />
             <Image src="/images/lucy-hero.jpg" alt="Lucy smiling on a bench in Madrid" fill className="hidden md:block object-cover object-[72%_34%]" priority />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/5 sm:from-black/80 sm:via-black/35" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent opacity-95" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-white/95 md:bg-gradient-to-t md:from-white md:via-white/10 md:to-transparent md:opacity-95" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-black/25 to-transparent md:bg-gradient-to-b md:from-black/30 md:via-transparent md:to-transparent" />
           </div>
-          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-28 pt-28 sm:pb-36 sm:pt-32 w-full">
-            <div className="max-w-xl -translate-y-5 sm:-translate-y-8">
+          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-28 pt-[47vh] sm:pb-36 sm:pt-32 w-full">
+            <div className="max-w-xl md:-translate-y-8">
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4">
                 {t('hero.tags')}
               </motion.p>
               <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1] mb-4 sm:mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                className="text-[2.45rem] sm:text-5xl lg:text-6xl font-semibold leading-[1.05] mb-3 sm:mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
                 Left Hand Lucy
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-                className="text-white/80 text-xl sm:text-2xl italic mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
+                className="text-white/85 text-lg sm:text-2xl italic mb-4 sm:mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
                 {t('hero.tagline')}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="text-white/80 text-sm sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-lg">
+                className="max-w-lg rounded-3xl border border-white/15 bg-black/[0.18] p-4 text-sm leading-relaxed text-white/[0.82] shadow-xl shadow-black/10 backdrop-blur-[2px] sm:mb-8 sm:bg-transparent sm:p-0 sm:text-lg sm:text-white/80 sm:shadow-none sm:backdrop-blur-0 mb-5">
                 {t('hero.intro')}
               </motion.p>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 pb-2 sm:pb-0">
                 <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
-                <a href="#services" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm">{t('hero.cta1')}</a>
+                <a href="#services" className="bg-lucy-charcoal/55 hover:bg-lucy-charcoal/70 sm:bg-white/10 sm:hover:bg-white/20 backdrop-blur-sm text-white border border-white/30 px-7 py-3 rounded-full font-bold transition-all text-sm shadow-lg shadow-black/10 sm:shadow-none">{t('hero.cta1')}</a>
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex flex-wrap gap-2.5 mt-7 sm:mt-8 max-w-lg">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="hidden sm:flex flex-wrap gap-2.5 mt-8 max-w-lg">
                 {['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner'].map(tag => (
                   <span key={tag} className="bg-white/[0.14] border border-white/25 backdrop-blur-md text-white/90 px-3.5 py-2 rounded-full text-xs font-bold shadow-lg shadow-black/10">{tag}</span>
                 ))}
@@ -481,31 +481,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── CONECTADOS — Video background ────────────────── */}
-        <section className="py-20 sm:py-24 px-6 sm:px-8 relative overflow-hidden">
-          <div className="absolute inset-0">
-            <video autoPlay muted loop playsInline className="w-full h-full object-cover scale-105">
-              <source src="https://assets.mixkit.co/videos/2597/2597-1080.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-lucy-charcoal/[0.58] to-lucy-gold/[0.28]" />
-            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-lucy-cream/25 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/45 to-transparent" />
-          </div>
-          <div className="max-w-4xl mx-auto text-center relative z-10">
-            <div className="flex justify-center mb-4">
-              <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25 backdrop-blur-md shadow-xl shadow-black/20">
-                <Users size={28} className="text-lucy-gold" />
-              </span>
-            </div>
-            <p className="text-lucy-gold font-black text-sm tracking-[0.22em] uppercase mb-3 drop-shadow-sm">{t('conectados.label')}</p>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4 drop-shadow-md" style={{ fontFamily: 'var(--font-heading)' }}>{t('conectados.title')}</h2>
-            <p className="text-white/[0.82] text-base mb-8 max-w-lg mx-auto leading-relaxed drop-shadow-sm">{t('conectados.desc')}</p>
-            <a href="https://connect-cardos.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-lucy-gold hover:bg-lucy-gold/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 text-sm shadow-xl shadow-black/20 ring-1 ring-white/15">
-              {t('conectados.cta')} <ExternalLink size={14} />
-            </a>
-          </div>
-        </section>
-
         {/* ── TESTIMONIALS ─────────────────────────────────── */}
         <section id="testimonials" className="py-20 sm:py-28 px-6 sm:px-8 bg-lucy-cream">
           <div className="max-w-6xl mx-auto">
@@ -582,7 +557,6 @@ export default function HomePage() {
               <div className="flex items-center gap-6">
                 <a href="#services" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.services')}</a>
                 <a href="#meet-lucy" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.meet')}</a>
-                <a href="https://connect-cardos.vercel.app" className="text-white/40 hover:text-white text-sm transition-colors">Conectados</a>
                 <a href="#contact" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.contact')}</a>
               </div>
             </div>
