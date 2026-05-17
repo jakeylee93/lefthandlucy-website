@@ -301,8 +301,9 @@ export default function HomePage() {
                 {t('hero.tagline')}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="max-w-lg rounded-3xl border border-white/15 bg-black/[0.18] p-4 text-sm leading-relaxed text-white/[0.82] shadow-xl shadow-black/10 backdrop-blur-[2px] sm:mb-8 sm:bg-transparent sm:p-0 sm:text-lg sm:text-white/80 sm:shadow-none sm:backdrop-blur-0 mb-5">
-                {t('hero.intro')}
+                className="w-full max-w-[18.75rem] overflow-visible rounded-3xl border border-white/15 bg-black/[0.18] p-3.5 text-[13px] leading-relaxed text-white/[0.84] shadow-xl shadow-black/10 backdrop-blur-[2px] sm:mb-8 sm:max-w-lg sm:bg-transparent sm:p-0 sm:text-lg sm:text-white/80 sm:shadow-none sm:backdrop-blur-0 mb-5">
+                <span className="sm:hidden">{t('hero.mobileIntro')}</span>
+                <span className="hidden sm:inline">{t('hero.intro')}</span>
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 pb-2 sm:pb-0">
                 <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
