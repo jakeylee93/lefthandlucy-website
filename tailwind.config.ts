@@ -6,11 +6,11 @@ const config: Config = {
     extend: {
       colors: {
         lucy: {
-          charcoal: '#2D3436',
-          sage: '#7B9E87',
-          blush: '#E8B4B8',
-          cream: '#FAF8F5',
-          gold: '#C8A96E',
+          charcoal: '#32283F',
+          sage: '#8B5CF6',
+          blush: '#F4B8D8',
+          cream: '#FCFAFF',
+          gold: '#F4C95D',
           grey: '#8B8B8B',
         }
       }

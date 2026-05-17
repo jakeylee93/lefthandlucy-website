@@ -5,11 +5,11 @@
 :root {
   --font-heading: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
-  --lucy-charcoal: #2D3436;
-  --lucy-sage: #7B9E87;
-  --lucy-blush: #E8B4B8;
-  --lucy-cream: #FAF8F5;
-  --lucy-gold: #C8A96E;
+  --lucy-charcoal: #32283F;
+  --lucy-sage: #8B5CF6;
+  --lucy-blush: #F4B8D8;
+  --lucy-cream: #FCFAFF;
+  --lucy-gold: #F4C95D;
   --lucy-grey: #8B8B8B;
 }
 
@@ -30,9 +30,9 @@ h1,h2,h3,h4 { font-family: var(--font-heading); }
   height: 220px;
   pointer-events: none;
   background:
-    radial-gradient(circle at 18% 34%, rgba(200, 169, 110, 0.16) 0 2px, transparent 2.5px),
-    radial-gradient(circle at 72% 22%, rgba(123, 158, 135, 0.14) 0 2px, transparent 2.5px),
-    linear-gradient(135deg, rgba(45, 52, 54, 0.045) 0 1px, transparent 1px);
+    radial-gradient(circle at 18% 34%, rgba(244, 201, 93, 0.18) 0 2px, transparent 2.5px),
+    radial-gradient(circle at 72% 22%, rgba(139, 92, 246, 0.14) 0 2px, transparent 2.5px),
+    linear-gradient(135deg, rgba(50, 40, 63, 0.04) 0 1px, transparent 1px);
   background-size: 34px 34px, 42px 42px, 22px 22px;
   mask-image: linear-gradient(to bottom, transparent, black 22%, black 62%, transparent);
 }

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, createContext, useContext } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Calendar, Sparkles } from 'lucide-react'
+import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Calendar, Sparkles, Languages } from 'lucide-react'
 import { translations, Lang } from './translations'
 import Image from 'next/image'
 
@@ -11,7 +11,8 @@ const LangContext = createContext<{ lang: Lang; t: (key: string) => string; setL
 })
 function useLang() { return useContext(LangContext) }
 
-const LANG_FLAGS: Record<Lang, string> = { en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', de: '🇩🇪' }
+const LANG_LABELS: Record<Lang, string> = { en: 'EN', es: 'ES', fr: 'FR', de: 'DE' }
+const LANG_NAMES: Record<Lang, string> = { en: 'English', es: 'Spanish', fr: 'French', de: 'German' }
 
 // ── Services data ─────────────────────────────────────────
 const SERVICES = [
@@ -19,7 +20,7 @@ const SERVICES = [
     Icon: Briefcase,
     titleKey: 'services.ps.title',
     descKey: 'services.ps.desc',
-    color: '#C8A96E',
+    color: '#F4C95D',
     includes: [
       'Email & inbox management',
       'Calendar & scheduling',
@@ -34,7 +35,7 @@ const SERVICES = [
     Icon: BookOpen,
     titleKey: 'services.el.title',
     descKey: 'services.el.desc',
-    color: '#E8B4B8',
+    color: '#F4B8D8',
     includes: [
       'Conversational English',
       'Business & professional English',
@@ -47,7 +48,7 @@ const SERVICES = [
     Icon: Compass,
     titleKey: 'services.ee.title',
     descKey: 'services.ee.desc',
-    color: '#7B9E87',
+    color: '#8B5CF6',
     includes: [
       'Venue sourcing & coordination',
       'Madrid experiences & local recommendations',
@@ -124,21 +125,21 @@ function Nav() {
               <a key={i.l} href={i.h} className={`text-sm font-extrabold tracking-[0.12em] uppercase transition-colors ${scrolled ? 'text-lucy-charcoal/75 hover:text-lucy-charcoal' : 'text-white/80 hover:text-white'}`}>{i.l}</a>
             ))}
             <div className="relative">
-              <button onClick={() => setLangOpen(!langOpen)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-lucy-cream text-lucy-charcoal' : 'bg-white/10 text-white'}`}>
-                {LANG_FLAGS[lang]} {lang.toUpperCase()}
+              <button onClick={() => setLangOpen(!langOpen)} aria-label={`Current language: ${LANG_NAMES[lang]}`} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-lucy-cream text-lucy-charcoal' : 'bg-white/10 text-white'}`}>
+                <Languages size={13} /> {LANG_LABELS[lang]}
                 <svg className={`w-3 h-3 transition-transform ${langOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
               </button>
               {langOpen && (
                 <div className="absolute right-0 mt-2 bg-white rounded-xl shadow-xl border border-black/5 overflow-hidden">
-                  {(Object.keys(LANG_FLAGS) as Lang[]).map(l => (
-                    <button key={l} onClick={() => { setLang(l); setLangOpen(false) }} className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium w-full hover:bg-lucy-cream transition-colors ${l === lang ? 'bg-lucy-cream text-lucy-sage font-bold' : 'text-lucy-charcoal'}`}>
-                      {LANG_FLAGS[l]} {l.toUpperCase()}
+                  {(Object.keys(LANG_LABELS) as Lang[]).map(l => (
+                    <button key={l} onClick={() => { setLang(l); setLangOpen(false) }} aria-label={`Select language: ${LANG_NAMES[l]}`} className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium w-full hover:bg-lucy-cream transition-colors ${l === lang ? 'bg-lucy-cream text-lucy-sage font-bold' : 'text-lucy-charcoal'}`}>
+                      <Languages size={13} /> {LANG_LABELS[l]}
                     </button>
                   ))}
                 </div>
               )}
             </div>
-            <a href="#contact" className="group relative overflow-hidden bg-lucy-charcoal text-white px-5 py-3 text-xs font-extrabold tracking-[0.14em] uppercase shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5" style={{ borderRadius: '18px 18px 18px 4px' }}><span className="relative z-10 flex items-center gap-2">{t('nav.contact')} <Sparkles size={13} /></span><span className="absolute inset-0 bg-lucy-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300" /></a>
+            <a href="#contact" className="group relative overflow-hidden bg-lucy-sage text-white px-5 py-3 text-xs font-extrabold tracking-[0.14em] uppercase shadow-lg shadow-lucy-sage/20 transition-all hover:-translate-y-0.5" style={{ borderRadius: '18px 18px 18px 4px' }}><span className="relative z-10 flex items-center gap-2">{t('nav.contact')} <Sparkles size={13} /></span><span className="absolute inset-0 bg-lucy-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300" /></a>
           </div>
           <button className="md:hidden" onClick={() => setOpen(!open)}>
             {open ? <X size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} /> : <Menu size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} />}
@@ -151,13 +152,13 @@ function Nav() {
             <a key={i.l} href={i.h} className="block py-2 text-lucy-grey text-base font-medium" onClick={() => setOpen(false)}>{i.l}</a>
           ))}
           <div className="flex gap-2 mt-3 mb-2">
-            {(Object.keys(LANG_FLAGS) as Lang[]).map(l => (
-              <button key={l} onClick={() => { setLang(l); setOpen(false) }} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${l === lang ? 'bg-lucy-sage text-white' : 'bg-lucy-cream text-lucy-charcoal'}`}>
-                {LANG_FLAGS[l]}
+            {(Object.keys(LANG_LABELS) as Lang[]).map(l => (
+              <button key={l} onClick={() => { setLang(l); setOpen(false) }} aria-label={`Select language: ${LANG_NAMES[l]}`} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${l === lang ? 'bg-lucy-sage text-white' : 'bg-lucy-cream text-lucy-charcoal'}`}>
+                <Languages size={13} /> {LANG_LABELS[l]}
               </button>
             ))}
           </div>
-          <a href="#contact" className="block mt-2 bg-lucy-charcoal text-white px-5 py-3 text-center font-extrabold tracking-wide" onClick={() => setOpen(false)}>{t('nav.contact')}</a>
+          <a href="#contact" className="block mt-2 bg-lucy-sage text-white px-5 py-3 text-center font-extrabold tracking-wide" onClick={() => setOpen(false)}>{t('nav.contact')}</a>
         </div>
       )}
     </nav>
@@ -282,9 +283,9 @@ export default function HomePage() {
           <div className="absolute inset-0">
             <Image src="/images/lucy-meet.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[58%_12%] md:hidden" priority />
             <Image src="/images/lucy-hero.jpg" alt="Lucy smiling on a bench in Madrid" fill className="hidden md:block object-cover object-[72%_34%]" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/5 sm:from-black/80 sm:via-black/35" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/10 to-white/95 md:bg-gradient-to-t md:from-white md:via-white/10 md:to-transparent md:opacity-95" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-black/25 to-transparent md:bg-gradient-to-b md:from-black/30 md:via-transparent md:to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent sm:from-black/60 sm:via-black/25" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90 md:bg-gradient-to-t md:from-white md:via-white/10 md:to-transparent md:opacity-95" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent md:bg-gradient-to-b md:from-black/20 md:via-transparent md:to-transparent" />
           </div>
           <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-28 pt-[47vh] sm:pb-36 sm:pt-32 w-full">
             <div className="max-w-xl md:-translate-y-8">
@@ -301,13 +302,13 @@ export default function HomePage() {
                 {t('hero.tagline')}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="w-full max-w-[18.75rem] overflow-visible rounded-3xl border border-white/15 bg-black/[0.18] p-3.5 text-[13px] leading-relaxed text-white/[0.84] shadow-xl shadow-black/10 backdrop-blur-[2px] sm:mb-8 sm:max-w-lg sm:bg-transparent sm:p-0 sm:text-lg sm:text-white/80 sm:shadow-none sm:backdrop-blur-0 mb-5">
+                className="w-full max-w-[18.75rem] overflow-visible rounded-3xl border border-white/60 bg-white/[0.72] p-3.5 text-[13px] leading-relaxed text-lucy-charcoal shadow-xl shadow-black/10 backdrop-blur-[2px] sm:mb-8 sm:max-w-lg sm:bg-transparent sm:p-0 sm:text-lg sm:text-white/80 sm:shadow-none sm:backdrop-blur-0 mb-5">
                 <span className="sm:hidden">{t('hero.mobileIntro')}</span>
                 <span className="hidden sm:inline">{t('hero.intro')}</span>
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 pb-2 sm:pb-0">
                 <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
-                <a href="#services" className="bg-lucy-charcoal/55 hover:bg-lucy-charcoal/70 sm:bg-white/10 sm:hover:bg-white/20 backdrop-blur-sm text-white border border-white/30 px-7 py-3 rounded-full font-bold transition-all text-sm shadow-lg shadow-black/10 sm:shadow-none">{t('hero.cta1')}</a>
+                <a href="#services" className="bg-white/85 hover:bg-white text-lucy-charcoal sm:bg-white/80 sm:hover:bg-white backdrop-blur-sm border border-white/70 px-7 py-3 rounded-full font-bold transition-all text-sm shadow-lg shadow-black/10 sm:shadow-none">{t('hero.cta1')}</a>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="hidden sm:flex flex-wrap gap-2.5 mt-8 max-w-lg">
                 {['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner'].map(tag => (
@@ -401,19 +402,19 @@ export default function HomePage() {
         </section>
 
         {/* ── WHO I HELP ───────────────────────────────────── */}
-        <section className="py-20 sm:py-24 px-6 sm:px-8 bg-lucy-charcoal text-white">
+        <section className="py-20 sm:py-24 px-6 sm:px-8 bg-gradient-to-br from-lucy-cream via-white to-lucy-blush/20 text-lucy-charcoal">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-start">
               <div>
-                <p className="text-lucy-gold font-bold text-sm tracking-[0.25em] uppercase mb-3">Who I help</p>
+                <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3">Who I help</p>
                 <h2 className="text-3xl sm:text-4xl font-semibold leading-tight mb-5" style={{ fontFamily: 'var(--font-heading)' }}>Calm support for busy people, growing confidence and memorable plans.</h2>
-                <p className="text-white/65 leading-relaxed">Left Hand Lucy brings together executive support, teaching and event experience, so the help feels practical, personal and easy to work with.</p>
+                <p className="text-lucy-grey leading-relaxed">Left Hand Lucy brings together executive support, teaching and event experience, so the help feels practical, personal and easy to work with.</p>
               </div>
               <div className="grid gap-4">
                 {WHO_I_HELP.map((item, index) => (
-                  <motion.div key={item} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="bg-white/8 border border-white/10 rounded-2xl p-5 flex gap-4">
-                    <CheckCircle size={20} className="text-lucy-gold flex-shrink-0 mt-0.5" />
-                    <p className="text-white/85 leading-relaxed">{item}</p>
+                  <motion.div key={item} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="bg-white/85 border border-black/5 rounded-2xl p-5 flex gap-4 shadow-lg shadow-black/[0.03]">
+                    <CheckCircle size={20} className="text-lucy-sage flex-shrink-0 mt-0.5" />
+                    <p className="text-lucy-charcoal/80 leading-relaxed">{item}</p>
                   </motion.div>
                 ))}
               </div>
@@ -527,9 +528,9 @@ export default function HomePage() {
             </div>
             <div className="grid sm:grid-cols-3 gap-6 mb-12">
               {[
-                { Icon: Mail, label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#7B9E87' },
-                { Icon: MapPin, label: 'Location', value: 'Madrid, Spain', href: '#', color: '#E8B4B8' },
-                { Icon: MessageSquare, label: 'Reply time', value: 'Usually 1-2 working days', href: '#contact', color: '#C8A96E' },
+                { Icon: Mail, label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#8B5CF6' },
+                { Icon: MapPin, label: 'Location', value: 'Madrid, Spain', href: '#', color: '#F4B8D8' },
+                { Icon: MessageSquare, label: 'Reply time', value: 'Usually 1-2 working days', href: '#contact', color: '#F4C95D' },
               ].map(c => {
                 const CIcon = c.Icon
                 return (
@@ -548,22 +549,22 @@ export default function HomePage() {
         </section>
 
         {/* ── FOOTER ───────────────────────────────────────── */}
-        <footer className="bg-lucy-charcoal py-12 px-6 sm:px-8">
+        <footer className="bg-lucy-cream py-12 px-6 sm:px-8 border-t border-black/5">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
-                <p className="text-white text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Left Hand Lucy</p>
-                <p className="text-white/40 text-sm">{t('footer.tagline')}</p>
+                <p className="text-lucy-charcoal text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Left Hand Lucy</p>
+                <p className="text-lucy-grey text-sm">{t('footer.tagline')}</p>
               </div>
               <div className="flex items-center gap-6">
-                <a href="#services" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.services')}</a>
-                <a href="#meet-lucy" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.meet')}</a>
-                <a href="#contact" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.contact')}</a>
+                <a href="#services" className="text-lucy-grey hover:text-lucy-sage text-sm transition-colors">{t('nav.services')}</a>
+                <a href="#meet-lucy" className="text-lucy-grey hover:text-lucy-sage text-sm transition-colors">{t('nav.meet')}</a>
+                <a href="#contact" className="text-lucy-grey hover:text-lucy-sage text-sm transition-colors">{t('nav.contact')}</a>
               </div>
             </div>
-            <div className="border-t border-white/10 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-2">
-              <p className="text-white/20 text-xs">{t('footer.rights')}</p>
-              <p className="text-white/20 text-xs">Lucy@lefthandlucy.com · Madrid, Spain</p>
+            <div className="border-t border-black/5 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-2">
+              <p className="text-lucy-grey text-xs">{t('footer.rights')}</p>
+              <p className="text-lucy-grey text-xs">Lucy@lefthandlucy.com · Madrid, Spain</p>
             </div>
           </div>
         </footer>
