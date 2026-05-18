@@ -302,7 +302,7 @@ export default function HomePage() {
                 {t('hero.tagline')}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="w-full max-w-[18.75rem] overflow-visible rounded-3xl border border-white/60 bg-white/[0.72] p-3.5 text-[13px] leading-relaxed text-lucy-charcoal shadow-xl shadow-black/10 backdrop-blur-[2px] sm:mb-8 sm:max-w-lg sm:bg-transparent sm:p-0 sm:text-lg sm:text-white/80 sm:shadow-none sm:backdrop-blur-0 mb-5">
+                className="relative mb-5 w-full max-w-[18.75rem] overflow-visible py-3 pl-4 pr-3 text-[13px] leading-relaxed text-white/90 drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] before:absolute before:inset-y-3 before:left-0 before:w-1 before:rounded-full before:bg-lucy-sage after:absolute after:-inset-x-4 after:-inset-y-2 after:-z-10 after:rounded-[2rem] after:bg-gradient-to-r after:from-black/55 after:via-black/32 after:to-black/5 after:backdrop-blur-[1px] sm:mb-8 sm:max-w-lg sm:py-4 sm:pl-5 sm:pr-8 sm:text-lg sm:text-white/88 sm:after:-inset-x-6 sm:after:-inset-y-3 sm:after:from-black/48 sm:after:via-black/24 sm:after:to-transparent">
                 <span className="sm:hidden">{t('hero.mobileIntro')}</span>
                 <span className="hidden sm:inline">{t('hero.intro')}</span>
               </motion.p>
