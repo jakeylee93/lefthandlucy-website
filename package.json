@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "test": "node scripts/test-left-hand-lucy-content.js",
+    "test": "node scripts/test-left-hand-lucy-content.js && node scripts/test-cms-v1.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

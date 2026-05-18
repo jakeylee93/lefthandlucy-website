@@ -4,6 +4,9 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Calendar, Sparkles, Languages } from 'lucide-react'
 import { translations, Lang } from './translations'
 import Image from 'next/image'
+import { CmsProvider, useCms } from '@/components/cms/CmsProvider'
+import { AdminBar } from '@/components/cms/AdminBar'
+import { EditableText } from '@/components/cms/EditableText'
 
 // ── Language Context ──────────────────────────────────────
 const LangContext = createContext<{ lang: Lang; t: (key: string) => string; setLang: (l: Lang) => void }>({
@@ -60,6 +63,12 @@ const SERVICES = [
   },
 ]
 
+const SERVICE_CMS_KEYS = [
+  { title: 'home.services.project.title', desc: 'home.services.project.desc' },
+  { title: 'home.services.english.title', desc: 'home.services.english.desc' },
+  { title: 'home.services.events.title', desc: 'home.services.events.desc' },
+]
+
 const SERVICE_SUMMARIES = [
   'Inboxes, diaries, research and calm organisation.',
   'Confidence-building English for real life.',
@@ -96,6 +105,7 @@ const TESTIMONIALS = [
 // ── Nav ───────────────────────────────────────────────────
 function Nav() {
   const { t, lang, setLang } = useLang()
+  const cms = useCms()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
@@ -107,10 +117,10 @@ function Nav() {
   }, [])
 
   const navLinks = [
-    { l: t('nav.home'), h: '#' },
-    { l: t('nav.services'), h: '#services' },
-    { l: t('nav.meet'), h: '#meet-lucy' },
-    { l: t('nav.contact'), h: '#contact' },
+    { key: 'home.nav.home', l: cms.text('home.nav.home', t('nav.home')), h: '#' },
+    { key: 'home.nav.services', l: cms.text('home.nav.services', t('nav.services')), h: '#services' },
+    { key: 'home.nav.meet', l: cms.text('home.nav.meet', t('nav.meet')), h: '#meet-lucy' },
+    { key: 'home.nav.contact', l: cms.text('home.nav.contact', t('nav.contact')), h: '#contact' },
   ]
 
   return (
@@ -122,7 +132,7 @@ function Nav() {
           </a>
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map(i => (
-              <a key={i.l} href={i.h} className={`text-sm font-extrabold tracking-[0.12em] uppercase transition-colors ${scrolled ? 'text-lucy-charcoal/75 hover:text-lucy-charcoal' : 'text-white/80 hover:text-white'}`}>{i.l}</a>
+              <a key={i.key} href={i.h} className={`text-sm font-extrabold tracking-[0.12em] uppercase transition-colors ${scrolled ? 'text-lucy-charcoal/75 hover:text-lucy-charcoal' : 'text-white/80 hover:text-white'}`}><EditableText cmsKey={i.key} fallback={i.l} /></a>
             ))}
             <div className="relative">
               <button onClick={() => setLangOpen(!langOpen)} aria-label={`Current language: ${LANG_NAMES[lang]}`} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-lucy-cream text-lucy-charcoal' : 'bg-white/10 text-white'}`}>
@@ -139,7 +149,7 @@ function Nav() {
                 </div>
               )}
             </div>
-            <a href="#contact" className="group relative overflow-hidden bg-lucy-sage text-white px-5 py-3 text-xs font-extrabold tracking-[0.14em] uppercase shadow-lg shadow-lucy-sage/20 transition-all hover:-translate-y-0.5" style={{ borderRadius: '18px 18px 18px 4px' }}><span className="relative z-10 flex items-center gap-2">{t('nav.contact')} <Sparkles size={13} /></span><span className="absolute inset-0 bg-lucy-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300" /></a>
+            <a href="#contact" className="group relative overflow-hidden bg-lucy-sage text-white px-5 py-3 text-xs font-extrabold tracking-[0.14em] uppercase shadow-lg shadow-lucy-sage/20 transition-all hover:-translate-y-0.5" style={{ borderRadius: '18px 18px 18px 4px' }}><span className="relative z-10 flex items-center gap-2"><EditableText cmsKey="home.nav.contact" fallback={t('nav.contact')} /> <Sparkles size={13} /></span><span className="absolute inset-0 bg-lucy-gold translate-y-full group-hover:translate-y-0 transition-transform duration-300" /></a>
           </div>
           <button className="md:hidden" onClick={() => setOpen(!open)}>
             {open ? <X size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} /> : <Menu size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} />}
@@ -149,7 +159,7 @@ function Nav() {
       {open && (
         <div className="md:hidden bg-white border-t border-black/5 px-6 py-4">
           {navLinks.map(i => (
-            <a key={i.l} href={i.h} className="block py-2 text-lucy-grey text-base font-medium" onClick={() => setOpen(false)}>{i.l}</a>
+            <a key={i.key} href={i.h} className="block py-2 text-lucy-grey text-base font-medium" onClick={() => setOpen(false)}><EditableText cmsKey={i.key} fallback={i.l} /></a>
           ))}
           <div className="flex gap-2 mt-3 mb-2">
             {(Object.keys(LANG_LABELS) as Lang[]).map(l => (
@@ -252,11 +262,23 @@ function ContactForm() {
 
 // ── Main Page ─────────────────────────────────────────────
 export default function HomePage() {
+  return (
+    <CmsProvider>
+      <HomePageInner />
+    </CmsProvider>
+  )
+}
+
+function HomePageInner() {
   const [lang, setLang] = useState<Lang>('en')
   const [activeService, setActiveService] = useState(0)
   const [pauseServiceSlider, setPauseServiceSlider] = useState(false)
   const [serviceProgressKey, setServiceProgressKey] = useState(0)
+  const cms = useCms()
   const t = (key: string) => translations[lang][key] || translations['en'][key] || key
+  const cmsText = (cmsKey: string, translationKey?: string, fallback?: string) => cms.text(cmsKey, translationKey ? t(translationKey) : fallback)
+  const serviceTitle = (index: number) => cmsText(SERVICE_CMS_KEYS[index].title, SERVICES[index].titleKey)
+  const serviceDesc = (index: number) => cmsText(SERVICE_CMS_KEYS[index].desc, SERVICES[index].descKey)
 
   useEffect(() => {
     if (pauseServiceSlider) return
@@ -277,6 +299,7 @@ export default function HomePage() {
     <LangContext.Provider value={{ lang, t, setLang }}>
       <div className="min-h-screen bg-white">
         <Nav />
+        <AdminBar />
 
         {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
         <section className="min-h-[112svh] md:min-h-[104svh] flex items-end md:items-center relative overflow-hidden">
@@ -291,28 +314,33 @@ export default function HomePage() {
             <div className="max-w-xl md:-translate-y-8">
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4">
-                {t('hero.tags')}
+                <EditableText cmsKey="home.hero.tags" fallback={t('hero.tags')} />
               </motion.p>
               <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                 className="text-[2.45rem] sm:text-5xl lg:text-6xl font-semibold leading-[1.05] mb-3 sm:mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
-                Left Hand Lucy
+                <EditableText cmsKey="home.hero.title" fallback={cmsText('home.hero.title', 'hero.title')} />
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
                 className="text-white/85 text-lg sm:text-2xl italic mb-4 sm:mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
-                {t('hero.tagline')}
+                <EditableText cmsKey="home.hero.tagline" fallback={t('hero.tagline')} />
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                 className="relative mb-5 w-full max-w-[18.75rem] overflow-visible py-3 pl-4 pr-3 text-[13px] leading-relaxed text-white/90 drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] before:absolute before:inset-y-3 before:left-0 before:w-1 before:rounded-full before:bg-lucy-sage after:absolute after:-inset-x-4 after:-inset-y-2 after:-z-10 after:rounded-[2rem] after:bg-gradient-to-r after:from-black/55 after:via-black/32 after:to-black/5 after:backdrop-blur-[1px] sm:mb-8 sm:max-w-lg sm:py-4 sm:pl-5 sm:pr-8 sm:text-lg sm:text-white/88 sm:after:-inset-x-6 sm:after:-inset-y-3 sm:after:from-black/48 sm:after:via-black/24 sm:after:to-transparent">
-                <span className="sm:hidden">{t('hero.mobileIntro')}</span>
-                <span className="hidden sm:inline">{t('hero.intro')}</span>
+                <span className="sm:hidden"><EditableText cmsKey="home.hero.mobileIntro" fallback={t('hero.mobileIntro')} /></span>
+                <span className="hidden sm:inline"><EditableText cmsKey="home.hero.intro" fallback={t('hero.intro')} /></span>
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3 pb-5 sm:pb-0">
-                <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta2')}</a>
-                <a href="#services" className="bg-white/85 hover:bg-white text-lucy-charcoal sm:bg-white/80 sm:hover:bg-white backdrop-blur-sm border border-white/70 px-7 py-3 rounded-full font-bold transition-all text-sm shadow-lg shadow-black/10 sm:shadow-none">{t('hero.cta1')}</a>
+                <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm"><EditableText cmsKey="home.hero.ctaPrimary" fallback={t('hero.cta2')} /></a>
+                <a href="#services" className="bg-white/85 hover:bg-white text-lucy-charcoal sm:bg-white/80 sm:hover:bg-white backdrop-blur-sm border border-white/70 px-7 py-3 rounded-full font-bold transition-all text-sm shadow-lg shadow-black/10 sm:shadow-none"><EditableText cmsKey="home.hero.ctaSecondary" fallback={t('hero.cta1')} /></a>
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="hidden sm:flex flex-wrap gap-2.5 mt-8 max-w-lg">
-                {['Executive Assistant', 'Multilingual', 'Qualified Teacher', 'Event Planner'].map(tag => (
-                  <span key={tag} className="bg-white/[0.14] border border-white/25 backdrop-blur-md text-white/90 px-3.5 py-2 rounded-full text-xs font-bold shadow-lg shadow-black/10">{tag}</span>
+                {[
+                  ['home.hero.tag.executive', 'Executive Assistant'],
+                  ['home.hero.tag.multilingual', 'Multilingual'],
+                  ['home.hero.tag.teacher', 'Qualified Teacher'],
+                  ['home.hero.tag.planner', 'Event Planner'],
+                ].map(([key, tag]) => (
+                  <span key={key} className="bg-white/[0.14] border border-white/25 backdrop-blur-md text-white/90 px-3.5 py-2 rounded-full text-xs font-bold shadow-lg shadow-black/10"><EditableText cmsKey={key} fallback={tag} /></span>
                 ))}
               </motion.div>
             </div>
@@ -335,9 +363,9 @@ export default function HomePage() {
             <div className="absolute -right-12 top-20 h-36 w-36 rounded-full bg-lucy-sage/18 blur-2xl" />
             <div className="relative px-4 py-7 sm:p-10">
               <div className="text-center mb-5 sm:mb-8">
-                <p className="text-lucy-sage font-bold text-[11px] sm:text-sm tracking-[0.22em] uppercase mb-3">{t('services.mode')}</p>
-                <h2 className="text-[2rem] leading-tight sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
-                <p className="mx-auto mt-3 max-w-md text-sm text-lucy-grey">Tap a tab to preview the service. The full detail appears below.</p>
+                <p className="text-lucy-sage font-bold text-[11px] sm:text-sm tracking-[0.22em] uppercase mb-3"><EditableText cmsKey="home.services.mode" fallback={t('services.mode')} /></p>
+                <h2 className="text-[2rem] leading-tight sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.services.title" fallback={t('services.title')} /></h2>
+                <p className="mx-auto mt-3 max-w-md text-sm text-lucy-grey">{cmsText('home.services.helper', undefined, 'Tap a tab to preview the service. The full detail appears below.')}</p>
               </div>
 
               <div className="mb-4 rounded-[1.7rem] bg-lucy-cream/95 p-1.5 shadow-inner" aria-label="Service tabs" role="tablist">
@@ -350,7 +378,7 @@ export default function HomePage() {
                         type="button"
                         role="tab"
                         aria-selected={active}
-                        aria-label={`${active ? 'Pause on selection. ' : ''}${t(service.titleKey)}`}
+                        aria-label={`${active ? 'Pause on selection. ' : ''}${serviceTitle(i)}`}
                         onClick={() => handleServiceTab(i)}
                         className={`relative overflow-hidden rounded-[1.35rem] px-2 py-3 text-center text-[10px] font-black leading-tight transition-all sm:text-sm ${active ? 'bg-white text-lucy-charcoal shadow-md shadow-black/10' : 'text-lucy-charcoal/70 hover:text-lucy-charcoal'}`}
                         style={active ? { boxShadow: `0 12px 28px ${service.color}22` } : undefined}
@@ -359,7 +387,7 @@ export default function HomePage() {
                           <span key={`${serviceProgressKey}-${i}`} className="lucy-service-progress absolute inset-x-0 bottom-0 h-1" style={{ backgroundColor: service.color, animationPlayState: pauseServiceSlider ? 'paused' : 'running' }} />
                         )}
                         <span className="block text-[9px] tracking-[0.18em] opacity-45">0{i + 1}</span>
-                        {t(service.titleKey)}
+                        <EditableText cmsKey={SERVICE_CMS_KEYS[i].title} fallback={t(service.titleKey)} />
                       </button>
                     )
                   })}
@@ -377,11 +405,11 @@ export default function HomePage() {
                   transition={{ duration: 0.45 }}
                   className="relative"
                 >
-                  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.28em] text-lucy-charcoal/45">Service spotlight</p>
-                  <h3 className="mb-3 text-3xl font-semibold leading-tight sm:text-4xl" style={{ fontFamily: 'var(--font-heading)' }}>{t(SERVICES[activeService].titleKey)}</h3>
-                  <p className="mb-5 text-sm leading-relaxed text-lucy-grey sm:text-base">{t(SERVICES[activeService].descKey)}</p>
+                  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.28em] text-lucy-charcoal/45"><EditableText cmsKey="home.services.spotlight.label" fallback="Service spotlight" /></p>
+                  <h3 className="mb-3 text-3xl font-semibold leading-tight sm:text-4xl" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey={SERVICE_CMS_KEYS[activeService].title} fallback={t(SERVICES[activeService].titleKey)} /></h3>
+                  <p className="mb-5 text-sm leading-relaxed text-lucy-grey sm:text-base"><EditableText cmsKey={SERVICE_CMS_KEYS[activeService].desc} fallback={t(SERVICES[activeService].descKey)} /></p>
                   <div className="rounded-[1.5rem] bg-white/80 p-4 shadow-inner ring-1 ring-black/5">
-                    <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-lucy-charcoal/45">What this can include</p>
+                    <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-lucy-charcoal/45"><EditableText cmsKey="home.services.includes.label" fallback="What this can include" /></p>
                     <div className="grid gap-2">
                       {SERVICES[activeService].includes.map((item) => (
                         <div key={item} className="flex items-start gap-2 rounded-2xl bg-lucy-cream/70 px-3 py-2 text-xs text-lucy-charcoal sm:text-sm">
@@ -392,7 +420,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <a href="#contact" className="mt-5 inline-flex w-full items-center justify-between rounded-full px-5 py-4 text-sm font-black text-white transition-transform active:scale-[0.98] sm:w-auto sm:min-w-48" style={{ backgroundColor: SERVICES[activeService].color }}>
-                    <span>Ask Lucy about this</span>
+                    <span><EditableText cmsKey="home.services.ask" fallback="Ask Lucy about this" /></span>
                     <ArrowRight size={16} />
                   </a>
                 </motion.div>
@@ -406,9 +434,9 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-start">
               <div>
-                <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3">Who I help</p>
-                <h2 className="text-3xl sm:text-4xl font-semibold leading-tight mb-5" style={{ fontFamily: 'var(--font-heading)' }}>Calm support for busy people, growing confidence and memorable plans.</h2>
-                <p className="text-lucy-grey leading-relaxed">Left Hand Lucy brings together executive support, teaching and event experience, so the help feels practical, personal and easy to work with.</p>
+                <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3"><EditableText cmsKey="home.who.label" fallback="Who I help" /></p>
+                <h2 className="text-3xl sm:text-4xl font-semibold leading-tight mb-5" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.who.title" fallback="Calm support for busy people, growing confidence and memorable plans." /></h2>
+                <p className="text-lucy-grey leading-relaxed"><EditableText cmsKey="home.who.desc" fallback="Left Hand Lucy brings together executive support, teaching and event experience, so the help feels practical, personal and easy to work with." /></p>
               </div>
               <div className="grid gap-4">
                 {WHO_I_HELP.map((item, index) => (
@@ -426,8 +454,8 @@ export default function HomePage() {
         <section className="py-20 sm:py-24 px-6 sm:px-8 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3">Ways we can work together</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>In person, virtual and flexible around real life.</h2>
+              <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3"><EditableText cmsKey="home.work.label" fallback="Ways we can work together" /></p>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.work.title" fallback="In person, virtual and flexible around real life." /></h2>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {WORKING_MODES.map((mode) => (
@@ -452,25 +480,25 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-lg">
-                    <p className="text-lucy-charcoal font-bold text-sm" style={{ fontFamily: 'var(--font-heading)' }}>{t('about.badge')}</p>
-                    <p className="text-lucy-grey text-xs">{t('about.badge.sub')}</p>
+                    <p className="text-lucy-charcoal font-bold text-sm" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.about.badge" fallback={t('about.badge')} /></p>
+                    <p className="text-lucy-grey text-xs"><EditableText cmsKey="home.about.badge.sub" fallback={t('about.badge.sub')} /></p>
                   </div>
                 </div>
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-                <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('about.label')}</p>
+                <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3"><EditableText cmsKey="home.about.label" fallback={t('about.label')} /></p>
                 <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-2 leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-                  {t('about.title1')}
+                  <EditableText cmsKey="home.about.title1" fallback={t('about.title1')} />
                 </h2>
-                <h3 className="text-xl italic text-lucy-sage mb-6" style={{ fontFamily: 'var(--font-heading)' }}>{t('about.title2')}</h3>
+                <h3 className="text-xl italic text-lucy-sage mb-6" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.about.title2" fallback={t('about.title2')} /></h3>
                 <div className="space-y-4 text-lucy-grey leading-relaxed text-sm">
-                  <p>{t('about.p1')}</p>
-                  <p>{t('about.p2')}</p>
-                  <p>{t('about.p3')}</p>
-                  <p>{t('about.p4')}</p>
+                  <p><EditableText cmsKey="home.about.p1" fallback={t('about.p1')} /></p>
+                  <p><EditableText cmsKey="home.about.p2" fallback={t('about.p2')} /></p>
+                  <p><EditableText cmsKey="home.about.p3" fallback={t('about.p3')} /></p>
+                  <p><EditableText cmsKey="home.about.p4" fallback={t('about.p4')} /></p>
                 </div>
                 <a href="#contact" className="inline-flex items-center gap-2 mt-8 bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">
-                  {t('about.cta')} <ArrowRight size={14} />
+                  <EditableText cmsKey="home.about.cta" fallback={t('about.cta')} /> <ArrowRight size={14} />
                 </a>
                 <div className="flex flex-wrap gap-3 mt-6">
                   <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Globe size={12} className="text-lucy-sage" /> {t('about.tag.english')}</span>
@@ -490,8 +518,8 @@ export default function HomePage() {
               <div className="flex justify-center mb-3">
                 <MessageSquare size={20} className="text-lucy-blush" />
               </div>
-              <p className="text-lucy-blush font-bold text-sm tracking-wide uppercase mb-3">{t('testimonials.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('testimonials.title')}</h2>
+              <p className="text-lucy-blush font-bold text-sm tracking-wide uppercase mb-3"><EditableText cmsKey="home.testimonials.label" fallback={t('testimonials.label')} /></p>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.testimonials.title" fallback={t('testimonials.title')} /></h2>
             </div>
             <TestimonialCarousel />
           </div>
@@ -501,8 +529,8 @@ export default function HomePage() {
         <section id="faqs" className="py-20 sm:py-24 px-6 sm:px-8 bg-white">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3">FAQs</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>A few useful things to know.</h2>
+              <p className="text-lucy-sage font-bold text-sm tracking-[0.25em] uppercase mb-3"><EditableText cmsKey="home.faq.label" fallback="FAQs" /></p>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.faq.title" fallback="A few useful things to know." /></h2>
             </div>
             <div className="space-y-4">
               {FAQS.map((item) => (
@@ -522,9 +550,9 @@ export default function HomePage() {
               <div className="flex justify-center mb-3">
                 <Send size={20} className="text-lucy-sage" />
               </div>
-              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('contact.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('contact.title')}</h2>
-              <p className="text-lucy-grey max-w-lg mx-auto">{t('contact.desc')}</p>
+              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3"><EditableText cmsKey="home.contact.label" fallback={t('contact.label')} /></p>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.contact.title" fallback={t('contact.title')} /></h2>
+              <p className="text-lucy-grey max-w-lg mx-auto"><EditableText cmsKey="home.contact.desc" fallback={t('contact.desc')} /></p>
             </div>
             <div className="grid sm:grid-cols-3 gap-6 mb-12">
               {[
@@ -553,8 +581,8 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
-                <p className="text-lucy-charcoal text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Left Hand Lucy</p>
-                <p className="text-lucy-grey text-sm">{t('footer.tagline')}</p>
+                <p className="text-lucy-charcoal text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }}><EditableText cmsKey="home.footer.brand" fallback="Left Hand Lucy" /></p>
+                <p className="text-lucy-grey text-sm"><EditableText cmsKey="home.footer.tagline" fallback={t('footer.tagline')} /></p>
               </div>
               <div className="flex items-center gap-6">
                 <a href="#services" className="text-lucy-grey hover:text-lucy-sage text-sm transition-colors">{t('nav.services')}</a>
@@ -563,8 +591,8 @@ export default function HomePage() {
               </div>
             </div>
             <div className="border-t border-black/5 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-2">
-              <p className="text-lucy-grey text-xs">{t('footer.rights')}</p>
-              <p className="text-lucy-grey text-xs">Lucy@lefthandlucy.com · Madrid, Spain</p>
+              <p className="text-lucy-grey text-xs"><EditableText cmsKey="home.footer.rights" fallback={t('footer.rights')} /></p>
+              <p className="text-lucy-grey text-xs"><EditableText cmsKey="home.footer.contact" fallback="Lucy@lefthandlucy.com · Madrid, Spain" /></p>
             </div>
           </div>
         </footer>
