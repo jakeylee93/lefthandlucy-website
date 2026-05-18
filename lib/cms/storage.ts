@@ -1,8 +1,11 @@
 import { promises as fs } from 'fs'
-import path from 'path'
+import * as path from 'path'
+import { get, put } from '@vercel/blob'
 import { CMS_DEFAULT_CONTENT, withCmsDefaults } from './content-defaults'
 import type { CmsContentItem, CmsRevision, CmsState } from './types'
 
+const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN
+const BLOB_PATH = process.env.CMS_BLOB_PATH || 'cms/left-hand-lucy-cms.json'
 const KV_URL = process.env.KV_REST_API_URL
 const KV_TOKEN = process.env.KV_REST_API_TOKEN
 const KV_KEY = process.env.CMS_KV_KEY || 'left-hand-lucy:cms:v1'
@@ -17,6 +20,7 @@ function isFileStorageAllowed() {
 }
 
 export function getStorageMode() {
+  if (BLOB_TOKEN) return { mode: 'vercel-blob', writable: true }
   if (KV_URL && KV_TOKEN) return { mode: 'vercel-kv', writable: true }
   if (isFileStorageAllowed()) return { mode: 'local-file-dev', writable: true }
   return { mode: 'unconfigured', writable: false }
@@ -24,6 +28,34 @@ export function getStorageMode() {
 
 function emptyState(): CmsState {
   return { content: {}, revisions: [] }
+}
+
+async function streamToString(stream: ReadableStream<Uint8Array>) {
+  const reader = stream.getReader()
+  const chunks: Uint8Array[] = []
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    if (value) chunks.push(value)
+  }
+  return Buffer.concat(chunks).toString('utf8')
+}
+
+async function readBlobState(): Promise<CmsState> {
+  if (!BLOB_TOKEN) throw new CmsStorageError('CMS Blob storage is not configured. Set BLOB_READ_WRITE_TOKEN for Vercel Blob storage.')
+  const result = await get(BLOB_PATH, { access: 'private', useCache: false, token: BLOB_TOKEN })
+  if (!result || result.statusCode === 304 || !result.stream) return emptyState()
+  return JSON.parse(await streamToString(result.stream)) as CmsState
+}
+
+async function writeBlobState(state: CmsState) {
+  if (!BLOB_TOKEN) throw new CmsStorageError('CMS Blob storage is not configured. Set BLOB_READ_WRITE_TOKEN for Vercel Blob storage.')
+  await put(BLOB_PATH, JSON.stringify(state, null, 2), {
+    access: 'private',
+    allowOverwrite: true,
+    contentType: 'application/json',
+    token: BLOB_TOKEN,
+  })
 }
 
 async function kvRequest(command: unknown[]) {
@@ -39,6 +71,10 @@ async function kvRequest(command: unknown[]) {
 }
 
 async function readRawState(): Promise<CmsState> {
+  if (BLOB_TOKEN) {
+    return readBlobState()
+  }
+
   if (KV_URL && KV_TOKEN) {
     const data = await kvRequest(['GET', KV_KEY])
     if (!data.result) return emptyState()
@@ -57,6 +93,11 @@ async function readRawState(): Promise<CmsState> {
 }
 
 async function writeRawState(state: CmsState) {
+  if (BLOB_TOKEN) {
+    await writeBlobState(state)
+    return
+  }
+
   if (KV_URL && KV_TOKEN) {
     await kvRequest(['SET', KV_KEY, JSON.stringify(state)])
     return
@@ -68,7 +109,7 @@ async function writeRawState(state: CmsState) {
     return
   }
 
-  throw new CmsStorageError('CMS storage is not configured. Set KV_REST_API_URL and KV_REST_API_TOKEN for Vercel KV/Upstash storage.')
+  throw new CmsStorageError('CMS storage is not configured. Set BLOB_READ_WRITE_TOKEN for Vercel Blob storage, or KV_REST_API_URL and KV_REST_API_TOKEN for Vercel KV/Upstash storage.')
 }
 
 export async function getContent() {

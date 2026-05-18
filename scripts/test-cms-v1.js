@@ -37,8 +37,9 @@ assert(auth.includes('sameSite'), 'session cookie must set sameSite');
 assert(!auth.includes('password === "'), 'must not hardcode admin password');
 
 const storage = read('lib/cms/storage.ts');
-assert(storage.includes('KV_REST_API_URL'), 'storage must support Vercel KV/Upstash env');
-assert(storage.includes('KV_REST_API_TOKEN'), 'storage must support Vercel KV token');
+assert(storage.includes('BLOB_READ_WRITE_TOKEN'), 'storage must support Vercel Blob env');
+assert(storage.includes('KV_REST_API_URL'), 'storage must keep Vercel KV/Upstash fallback support');
+assert(storage.includes('KV_REST_API_TOKEN'), 'storage must keep Vercel KV token fallback support');
 assert(storage.includes('createRevision'), 'storage must create revisions');
 assert(storage.includes('restoreContentRevision'), 'storage must restore revisions');
 assert(storage.includes('CMS storage is not configured'), 'storage must clearly block writes without durable storage');
