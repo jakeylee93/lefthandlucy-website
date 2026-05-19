@@ -1,6 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Check, Eye, Italic, RotateCcw, Sparkles, X } from 'lucide-react'
 import { useCms } from './CmsProvider'
 import { richTextToPlainText, sanitizeRichText } from '@/lib/cms/rich-text'
@@ -31,6 +32,14 @@ function RichTextEditorModal({ label, initialValue, saving, onClose, onOpenRevis
   const safeInitialValue = useMemo(() => sanitizeRichText(initialValue), [initialValue])
 
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [])
+
+  useEffect(() => {
     setDraftHtml(safeInitialValue)
     if (editorRef.current) editorRef.current.innerHTML = safeInitialValue
   }, [safeInitialValue])
@@ -57,56 +66,63 @@ function RichTextEditorModal({ label, initialValue, saving, onClose, onOpenRevis
 
   const plainPreview = richTextToPlainText(draftHtml || safeInitialValue)
 
-  return (
-    <div className="fixed inset-0 z-[10000] flex items-end justify-center bg-lucy-charcoal/65 px-3 pb-0 pt-8 backdrop-blur-sm sm:items-center sm:px-6 sm:py-6" role="dialog" aria-modal="true" aria-label={`Edit ${label}`}>
-      <div className="flex max-h-[calc(100svh-1.25rem)] w-full max-w-2xl flex-col overflow-hidden rounded-t-[1.75rem] border border-white/15 bg-white text-lucy-charcoal shadow-2xl shadow-black/35 sm:max-h-[88svh] sm:rounded-[1.75rem]">
-        <div className="flex items-start justify-between gap-4 border-b border-black/5 bg-lucy-cream px-5 py-4 sm:px-6">
-          <div>
-            <p className="text-[0.68rem] font-black uppercase tracking-[0.22em] text-lucy-sage">Editing Lucy’s website</p>
-            <h2 className="mt-1 text-xl font-semibold sm:text-2xl" style={{ fontFamily: 'var(--font-heading)' }}>{label}</h2>
-            <p className="mt-1 text-xs text-lucy-grey">Make a small copy edit, then tap Save changes.</p>
+  return createPortal(
+    <div className="fixed inset-0 z-[10000] flex bg-lucy-charcoal/70 backdrop-blur-sm sm:items-center sm:justify-center sm:p-6" role="dialog" aria-modal="true" aria-label={`Edit ${label}`}>
+      <div className="flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-white text-lucy-charcoal shadow-2xl shadow-black/35 sm:h-auto sm:max-h-[min(46rem,92dvh)] sm:max-w-3xl sm:rounded-[2rem] sm:border sm:border-white/15" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+        <div className="shrink-0 border-b border-black/5 bg-lucy-cream px-4 py-3 sm:px-6 sm:py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[0.62rem] font-black uppercase tracking-[0.2em] text-lucy-sage">Editing Lucy’s website</p>
+              <h2 className="mt-1 truncate text-lg font-semibold sm:text-2xl" style={{ fontFamily: 'var(--font-heading)' }}>{label}</h2>
+              <p className="mt-1 text-xs text-lucy-grey">Edit the text below. Save and Cancel stay fixed at the bottom.</p>
+            </div>
+            <button onClick={onClose} className="grid min-h-[44px] min-w-[44px] place-items-center rounded-full bg-white text-lucy-charcoal shadow-sm transition hover:bg-lucy-charcoal hover:text-white" aria-label="Close editor">
+              <X size={18} />
+            </button>
           </div>
-          <button onClick={onClose} className="grid min-h-[44px] min-w-[44px] place-items-center rounded-full bg-white text-lucy-charcoal shadow-sm transition hover:bg-lucy-charcoal hover:text-white" aria-label="Close editor">
-            <X size={18} />
-          </button>
         </div>
 
-        <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="rounded-2xl border border-black/5 bg-lucy-cream p-2">
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={() => command('bold')} className="min-h-[44px] rounded-xl bg-white px-4 py-2 text-sm font-black shadow-sm hover:bg-lucy-sage hover:text-white" aria-label="Bold selected text">Bold</button>
-              <button type="button" onClick={() => command('italic')} className="inline-flex min-h-[44px] items-center gap-1 rounded-xl bg-white px-4 py-2 text-sm italic shadow-sm hover:bg-lucy-sage hover:text-white" aria-label="Italic selected text"><Italic size={16} /> Italic</button>
-              <button type="button" aria-label="Preview changes" onClick={() => { syncDraft(); setPreview(!preview) }} className={`ml-auto inline-flex min-h-[44px] items-center gap-1 rounded-xl px-4 py-2 text-sm font-bold shadow-sm transition ${preview ? 'bg-lucy-sage text-white' : 'bg-white hover:bg-lucy-sage hover:text-white'}`}><Eye size={16} /> Preview</button>
+        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
+          <div className="shrink-0 rounded-2xl border border-black/5 bg-lucy-cream p-2">
+            <div className="grid grid-cols-3 gap-2">
+              <button type="button" onClick={() => command('bold')} className="min-h-[44px] rounded-xl bg-white px-3 py-2 text-sm font-black shadow-sm hover:bg-lucy-sage hover:text-white" aria-label="Bold selected text">Bold</button>
+              <button type="button" onClick={() => command('italic')} className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-xl bg-white px-3 py-2 text-sm italic shadow-sm hover:bg-lucy-sage hover:text-white" aria-label="Italic selected text"><Italic size={16} /> Italic</button>
+              <button type="button" aria-label="Preview changes" onClick={() => { syncDraft(); setPreview(!preview) }} className={`inline-flex min-h-[44px] items-center justify-center gap-1 rounded-xl px-3 py-2 text-sm font-bold shadow-sm transition ${preview ? 'bg-lucy-sage text-white' : 'bg-white hover:bg-lucy-sage hover:text-white'}`}><Eye size={16} /> Preview</button>
             </div>
           </div>
 
-          {preview ? (
-            <div className="min-h-[12rem] rounded-2xl border border-black/10 bg-white p-4 text-base leading-relaxed shadow-inner" dangerouslySetInnerHTML={{ __html: sanitizeRichText(draftHtml || safeInitialValue) }} />
-          ) : (
-            <div
-              ref={editorRef}
-              contentEditable
-              suppressContentEditableWarning
-              onInput={syncDraft}
-              className="min-h-[15rem] rounded-2xl border-2 border-lucy-sage/25 bg-white p-4 text-base leading-relaxed text-lucy-charcoal outline-none shadow-inner focus:border-lucy-sage sm:min-h-[16rem] sm:text-lg"
-              aria-label="Website text editor"
-            />
-          )}
+          <div className="min-h-0 flex-1">
+            {preview ? (
+              <div className="h-full min-h-[13rem] overflow-auto rounded-2xl border border-black/10 bg-white p-4 text-base leading-relaxed shadow-inner" dangerouslySetInnerHTML={{ __html: sanitizeRichText(draftHtml || safeInitialValue) }} />
+            ) : (
+              <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={syncDraft}
+                className="h-full min-h-[13rem] overflow-auto rounded-2xl border-2 border-lucy-sage/25 bg-white p-4 text-base leading-relaxed text-lucy-charcoal outline-none shadow-inner focus:border-lucy-sage sm:min-h-[20rem] sm:text-lg"
+                aria-label="Website text editor"
+              />
+            )}
+          </div>
 
-          {error && <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
-          <p className="rounded-2xl bg-lucy-cream px-4 py-3 text-xs text-lucy-grey"><Sparkles className="mr-1 inline" size={13} />Tip: V1 is copy-first. Bold or italic are there if needed, but the site keeps its own fonts and design.</p>
+          {error && <p className="shrink-0 rounded-2xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{error}</p>}
+          <p className="shrink-0 rounded-2xl bg-lucy-cream px-4 py-3 text-xs text-lucy-grey"><Sparkles className="mr-1 inline" size={13} />Tip: V1 is copy-first. Bold or italic are there if needed, but the site keeps its own fonts and design.</p>
           <p className="sr-only">Current plain text preview: {plainPreview}</p>
         </div>
 
-        <div className="flex flex-col-reverse gap-2 border-t border-black/5 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-          <button onClick={onOpenRevisions} className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-lucy-cream px-5 py-3 text-sm font-bold text-lucy-charcoal hover:bg-lucy-charcoal hover:text-white"><RotateCcw size={16} /> Revisions</button>
-          <div className="flex gap-2">
-            <button onClick={onClose} className="min-h-[44px] flex-1 rounded-full border border-black/10 px-5 py-3 text-sm font-bold text-lucy-grey hover:bg-lucy-cream sm:flex-none">Cancel</button>
-            <button disabled={saving} onClick={save} className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-full bg-lucy-sage px-6 py-3 text-sm font-black text-white shadow-lg shadow-lucy-sage/25 transition hover:bg-lucy-sage/90 disabled:opacity-60 sm:flex-none"><Check size={16} /> {saving ? 'Saving…' : 'Save changes'}</button>
+        <div className="shrink-0 border-t border-black/5 bg-white px-4 py-3 sm:px-6 sm:py-4" style={{ paddingBottom: 'max(0.85rem, env(safe-area-inset-bottom))' }}>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:justify-between">
+            <button onClick={onOpenRevisions} className="col-span-2 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-lucy-cream px-5 py-3 text-sm font-bold text-lucy-charcoal hover:bg-lucy-charcoal hover:text-white sm:col-span-1"><RotateCcw size={16} /> Revisions</button>
+            <div className="col-span-2 grid grid-cols-2 gap-2 sm:flex sm:gap-2">
+              <button onClick={onClose} className="min-h-[44px] rounded-full border border-black/10 px-5 py-3 text-sm font-bold text-lucy-grey hover:bg-lucy-cream">Cancel</button>
+              <button disabled={saving} onClick={save} className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-lucy-sage px-5 py-3 text-sm font-black text-white shadow-lg shadow-lucy-sage/25 transition hover:bg-lucy-sage/90 disabled:opacity-60"><Check size={16} /> {saving ? 'Saving…' : 'Save changes'}</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
