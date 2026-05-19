@@ -25,6 +25,16 @@ function cleanAttributes(tagName: string, attributes = '') {
   return ` style="font-family: ${family}"`
 }
 
+function decodeHtmlEntities(value: string) {
+  return value
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_match, code) => String.fromCharCode(Number(code)))
+}
+
 export function sanitizeRichText(input = '') {
   if (!input) return ''
 
@@ -34,7 +44,7 @@ export function sanitizeRichText(input = '') {
     return `__CMS_HTML_${placeholders.length - 1}__`
   }
 
-  let html = input
+  let html = decodeHtmlEntities(input)
     .replace(/<\s*(script|style|iframe|object|embed|link|meta)[\s\S]*?<\s*\/\s*\1\s*>/gi, '')
     .replace(/<\s*(br)\s*\/?>/gi, () => token('<br>'))
     .replace(/<\s*\/?\s*(div|p)\b[^>]*>/gi, () => token('<br>'))
