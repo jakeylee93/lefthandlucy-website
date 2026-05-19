@@ -65,8 +65,9 @@ assert(contentRoute.includes('upsertContent'), 'content write API must persist c
 const editableText = read('components/cms/EditableText.tsx');
 assert(editableText.includes('contentEditable'), 'editor must use a proper editable text box instead of browser prompt');
 assert(editableText.includes('Save changes'), 'editor modal must have an explicit save action');
-assert(editableText.includes('FONT_OPTIONS'), 'editor must offer font controls');
+assert(!editableText.includes('FONT_OPTIONS'), 'mobile V1 editor should not offer risky font controls');
 assert(editableText.includes("command('bold')"), 'editor must offer bold formatting');
+assert(editableText.includes('env(safe-area-inset-bottom)'), 'editor actions must respect mobile safe-area spacing');
 assert(editableText.includes('onOpenRevisions'), 'editor modal must keep revision access');
 
 const adminBar = read('components/cms/AdminBar.tsx');

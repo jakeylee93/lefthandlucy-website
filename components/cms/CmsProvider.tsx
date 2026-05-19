@@ -10,6 +10,8 @@ type CmsContextValue = {
   editMode: boolean
   storageWritable: boolean
   storageMode: string
+  toast: string
+  clearToast: () => void
   setEditMode: (value: boolean) => void
   text: (key: string, fallback?: string) => string
   updateText: (key: string, value: string) => Promise<void>
@@ -29,6 +31,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
   const [storageWritable, setStorageWritable] = useState(false)
   const [storageMode, setStorageMode] = useState('loading')
   const [revisionKey, setRevisionKey] = useState<string | null>(null)
+  const [toast, setToast] = useState('')
 
   const refreshContent = useCallback(async () => {
     const response = await fetch('/api/cms/content', { cache: 'no-store' })
@@ -54,6 +57,8 @@ export function CmsProvider({ children }: { children: ReactNode }) {
     editMode,
     storageWritable,
     storageMode,
+    toast,
+    clearToast: () => setToast(''),
     setEditMode,
     text: (key, fallback = '') => content[key]?.value || fallback || CMS_DEFAULT_CONTENT[key]?.value || '',
     updateText: async (key, nextValue) => {
@@ -65,6 +70,16 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       const payload = await response.json().catch(() => ({}))
       if (!response.ok) throw new Error(payload.error || 'Could not save content')
       if (payload.item) setContent((current) => ({ ...current, [key]: payload.item }))
+
+      const readbackResponse = await fetch('/api/cms/content', { cache: 'no-store' })
+      const readbackPayload = await readbackResponse.json().catch(() => ({}))
+      if (readbackPayload.content) {
+        setContent(readbackPayload.content)
+        if (readbackPayload.content[key]?.value === nextValue) setToast('Saved. Refresh checked.')
+        else setToast('Saved. Refresh checked, but the latest content could not be confirmed.')
+      } else {
+        setToast('Saved.')
+      }
     },
     logout: async () => {
       await fetch('/api/cms/logout', { method: 'POST' })
@@ -76,9 +91,24 @@ export function CmsProvider({ children }: { children: ReactNode }) {
     openRevisions: setRevisionKey,
     closeRevisions: () => setRevisionKey(null),
     refreshContent,
-  }), [content, editMode, isAdmin, refreshContent, revisionKey, storageMode, storageWritable])
+  }), [content, editMode, isAdmin, refreshContent, revisionKey, storageMode, storageWritable, toast])
 
-  return <CmsContext.Provider value={value}>{children}</CmsContext.Provider>
+  return (
+    <CmsContext.Provider value={value}>
+      {children}
+      {isAdmin && toast && (
+        <button
+          type="button"
+          onClick={() => setToast('')}
+          className="fixed left-1/2 z-[10001] -translate-x-1/2 rounded-full bg-lucy-charcoal px-5 py-3 text-sm font-black text-white shadow-2xl shadow-black/30 ring-1 ring-lucy-sage/25"
+          style={{ bottom: 'max(1rem, env(safe-area-inset-bottom))' }}
+          aria-label="Dismiss CMS message"
+        >
+          {toast}
+        </button>
+      )}
+    </CmsContext.Provider>
+  )
 }
 
 export function useCms() {
