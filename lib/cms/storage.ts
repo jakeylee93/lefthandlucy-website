@@ -2,6 +2,7 @@ import { promises as fs } from 'fs'
 import * as path from 'path'
 import { get, put } from '@vercel/blob'
 import { CMS_DEFAULT_CONTENT, withCmsDefaults } from './content-defaults'
+import { sanitizeRichText } from './rich-text'
 import type { CmsContentItem, CmsRevision, CmsState } from './types'
 
 const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN
@@ -167,7 +168,7 @@ export async function restoreContentRevision(contentKey: string, revisionId: str
   const fallback = CMS_DEFAULT_CONTENT[contentKey]
   const current = state.content[contentKey] || fallback
   const oldValue = current.value || fallback.value
-  const restoredValue = revisionToRestore.oldValue || fallback.value
+  const restoredValue = sanitizeRichText(revisionToRestore.oldValue || fallback.value)
   const restoreRevision = createRevision(contentKey, oldValue, restoredValue, updatedBy, 'restore')
   state.content[contentKey] = {
     ...fallback,

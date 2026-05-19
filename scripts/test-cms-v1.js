@@ -22,6 +22,7 @@ const requiredFiles = [
   'lib/cms/auth.ts',
   'lib/cms/content-defaults.ts',
   'lib/cms/storage.ts',
+  'lib/cms/rich-text.ts',
   'lib/cms/types.ts',
 ];
 
@@ -58,7 +59,19 @@ for (const key of [
 
 const contentRoute = read('app/api/cms/content/route.ts');
 assert(contentRoute.includes('requireAdmin'), 'content write API must require admin');
+assert(contentRoute.includes('sanitizeRichText'), 'content write API must sanitize rich text before persisting');
 assert(contentRoute.includes('upsertContent'), 'content write API must persist content');
+
+const editableText = read('components/cms/EditableText.tsx');
+assert(editableText.includes('contentEditable'), 'editor must use a proper editable text box instead of browser prompt');
+assert(editableText.includes('Save changes'), 'editor modal must have an explicit save action');
+assert(editableText.includes('FONT_OPTIONS'), 'editor must offer font controls');
+assert(editableText.includes("command('bold')"), 'editor must offer bold formatting');
+assert(editableText.includes('onOpenRevisions'), 'editor modal must keep revision access');
+
+const adminBar = read('components/cms/AdminBar.tsx');
+assert(!adminBar.includes('Storage: {cms.storageMode}'), 'admin bar should not expose storage implementation detail');
+assert(adminBar.includes('Ready to edit'), 'admin bar should show clean editing status');
 
 const restoreRoute = read('app/api/cms/restore/route.ts');
 assert(restoreRoute.includes('requireAdmin'), 'restore API must require admin');

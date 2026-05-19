@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/cms/auth'
 import { getContent, getStorageMode, upsertContent } from '@/lib/cms/storage'
+import { sanitizeRichText } from '@/lib/cms/rich-text'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -20,7 +21,7 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const result = await upsertContent(String(body.key), body.value, admin.user)
+    const result = await upsertContent(String(body.key), sanitizeRichText(body.value), admin.user)
     return NextResponse.json({ ok: true, ...result })
   } catch (error) {
     const status = typeof (error as { status?: number }).status === 'number' ? (error as { status: number }).status : 400
