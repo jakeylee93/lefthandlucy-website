@@ -41,8 +41,8 @@ const storage = read('lib/cms/storage.ts');
 assert(storage.includes('BLOB_READ_WRITE_TOKEN'), 'storage must support Vercel Blob env');
 assert(storage.includes('KV_REST_API_URL'), 'storage must keep Vercel KV/Upstash fallback support');
 assert(storage.includes('KV_REST_API_TOKEN'), 'storage must keep Vercel KV token fallback support');
-assert(storage.includes('createRevision'), 'storage must create revisions');
-assert(storage.includes('restoreContentRevision'), 'storage must restore revisions');
+assert(storage.includes('createRevision'), 'storage must create versions/revisions');
+assert(storage.includes('restoreContentRevision'), 'storage must restore versions/revisions');
 assert(storage.includes('CMS storage is not configured'), 'storage must clearly block writes without durable storage');
 
 const defaults = read('lib/cms/content-defaults.ts');
@@ -65,10 +65,13 @@ assert(contentRoute.includes('upsertContent'), 'content write API must persist c
 const editableText = read('components/cms/EditableText.tsx');
 assert(editableText.includes('contentEditable'), 'editor must use a proper editable text box instead of browser prompt');
 assert(editableText.includes('Save changes'), 'editor modal must have an explicit save action');
-assert(!editableText.includes('FONT_OPTIONS'), 'mobile V1 editor should not offer risky font controls');
+assert(editableText.includes('FONT_OPTIONS'), 'editor should offer a narrow safe font picker');
+assert(editableText.includes('COLOUR_OPTIONS'), 'editor should offer a narrow safe colour picker');
 assert(editableText.includes("command('bold')"), 'editor must offer bold formatting');
+assert(editableText.includes("command('underline')"), 'editor must offer underline formatting');
 assert(editableText.includes('env(safe-area-inset-bottom)'), 'editor actions must respect mobile safe-area spacing');
-assert(editableText.includes('onOpenRevisions'), 'editor modal must keep revision access');
+assert(editableText.includes('onOpenRevisions'), 'editor modal must keep version access');
+assert(editableText.includes('Versions'), 'editor should label revision history as Versions');
 
 const adminBar = read('components/cms/AdminBar.tsx');
 assert(!adminBar.includes('Storage: {cms.storageMode}'), 'admin bar should not expose storage implementation detail');

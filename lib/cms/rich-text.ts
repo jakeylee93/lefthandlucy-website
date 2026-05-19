@@ -5,6 +5,13 @@ const ALLOWED_FONT_FAMILIES = new Set([
   'Arial, sans-serif',
 ])
 
+const ALLOWED_TEXT_COLOURS = new Set([
+  '#2f2b26',
+  '#75856b',
+  '#b58b4a',
+  '#7c6aa6',
+])
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, '&amp;')
@@ -14,15 +21,30 @@ function escapeHtml(value: string) {
     .replace(/'/g, '&#39;')
 }
 
+function normalizeColour(value = '') {
+  const normalized = value.trim().toLowerCase()
+  return ALLOWED_TEXT_COLOURS.has(normalized) ? normalized : ''
+}
+
 function cleanAttributes(tagName: string, attributes = '') {
   if (tagName !== 'span') return ''
   const styleMatch = attributes.match(/style\s*=\s*(['"])(.*?)\1/i)
   if (!styleMatch) return ''
+
+  const safeStyles: string[] = []
   const fontMatch = styleMatch[2].match(/font-family\s*:\s*([^;]+)/i)
-  if (!fontMatch) return ''
-  const family = fontMatch[1].trim().replace(/^['"]|['"]$/g, '')
-  if (!ALLOWED_FONT_FAMILIES.has(family)) return ''
-  return ` style="font-family: ${family}"`
+  if (fontMatch) {
+    const family = fontMatch[1].trim().replace(/^['"]|['"]$/g, '')
+    if (ALLOWED_FONT_FAMILIES.has(family)) safeStyles.push(`font-family: ${family}`)
+  }
+
+  const colourMatch = styleMatch[2].match(/(?:^|;)\s*color\s*:\s*([^;]+)/i)
+  if (colourMatch) {
+    const colour = normalizeColour(colourMatch[1])
+    if (colour) safeStyles.push(`color: ${colour}`)
+  }
+
+  return safeStyles.length ? ` style="${safeStyles.join('; ')}"` : ''
 }
 
 function decodeHtmlEntities(value: string) {
