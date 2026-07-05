@@ -244,19 +244,19 @@ export default function HomePage() {
           <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 pt-24 w-full">
             <div className="max-w-xl">
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4">
+                className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4" data-anyos="hero.tags">
                 {t('hero.tags')}
               </motion.p>
               <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1] mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1] mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="hero.title">
                 Left Hand Lucy
               </motion.h1>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-                className="text-white/50 text-sm italic mb-5" style={{ fontFamily: 'var(--font-heading)' }}>
+                className="text-white/50 text-sm italic mb-5" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="hero.tagline">
                 {t('hero.tagline')}
               </motion.p>
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="text-white/65 text-sm sm:text-base leading-relaxed mb-8 max-w-md">
+                className="text-white/65 text-sm sm:text-base leading-relaxed mb-8 max-w-md" data-anyos="hero.intro">
                 {t('hero.intro')}
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
@@ -272,7 +272,7 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('services.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('services.title')}</h2>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="services.title">{t('services.title')}</h2>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -327,7 +327,7 @@ export default function HomePage() {
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
                 <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('about.label')}</p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-2 leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+                <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-2 leading-tight" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="about.title">
                   {t('about.title1')}
                 </h2>
                 <h3 className="text-xl italic text-lucy-sage mb-6" style={{ fontFamily: 'var(--font-heading)' }}>{t('about.title2')}</h3>
@@ -364,7 +364,7 @@ export default function HomePage() {
               <Users size={28} className="text-lucy-gold" />
             </div>
             <p className="text-lucy-gold font-bold text-sm tracking-wide uppercase mb-3">{t('conectados.label')}</p>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('conectados.title')}</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="conectados.title">{t('conectados.title')}</h2>
             <p className="text-white/60 text-base mb-8 max-w-lg mx-auto">{t('conectados.desc')}</p>
             <a href="https://connect-cardos.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-lucy-gold hover:bg-lucy-gold/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 text-sm">
               {t('conectados.cta')} <ExternalLink size={14} />
@@ -380,7 +380,7 @@ export default function HomePage() {
                 <MessageSquare size={20} className="text-lucy-blush" />
               </div>
               <p className="text-lucy-blush font-bold text-sm tracking-wide uppercase mb-3">{t('testimonials.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }}>{t('testimonials.title')}</h2>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="testimonials.title">{t('testimonials.title')}</h2>
             </div>
             <TestimonialCarousel />
           </div>
@@ -394,7 +394,7 @@ export default function HomePage() {
                 <Send size={20} className="text-lucy-sage" />
               </div>
               <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('contact.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{t('contact.title')}</h2>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="contact.title">{t('contact.title')}</h2>
               <p className="text-lucy-grey max-w-lg mx-auto">{t('contact.desc')}</p>
             </div>
             <div className="grid sm:grid-cols-3 gap-6 mb-12">
@@ -425,7 +425,7 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
                 <p className="text-white text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Left Hand Lucy</p>
-                <p className="text-white/40 text-sm">{t('footer.tagline')}</p>
+                <p className="text-white/40 text-sm" data-anyos="footer.tagline">{t('footer.tagline')}</p>
               </div>
               <div className="flex items-center gap-6">
                 <a href="#services" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.services')}</a>
