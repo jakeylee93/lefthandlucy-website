@@ -16,6 +16,7 @@ const LANG_FLAGS: Record<Lang, string> = { en: '🇬🇧', es: '🇪🇸', fr: '
 // ── Services data ─────────────────────────────────────────
 const SERVICES = [
   {
+    id: 'ps',
     Icon: Briefcase,
     titleKey: 'services.ps.title',
     descKey: 'services.ps.desc',
@@ -30,6 +31,7 @@ const SERVICES = [
     ],
   },
   {
+    id: 'el',
     Icon: BookOpen,
     titleKey: 'services.el.title',
     descKey: 'services.el.desc',
@@ -44,6 +46,7 @@ const SERVICES = [
     ],
   },
   {
+    id: 'ee',
     Icon: Compass,
     titleKey: 'services.ee.title',
     descKey: 'services.ee.desc',
@@ -60,11 +63,11 @@ const SERVICES = [
 ]
 
 const TESTIMONIALS = [
-  { text: "I moved to Madrid recently, and Lucy's lessons helped me feel at home so quickly. Her explanations are simple, her examples practical, and she makes learning fun. I feel far more confident speaking now.", name: 'Amelia Grant', role: 'English student', service: 'English Lessons' },
-  { text: "I've tried a few English tutors over the years, but Lucy stands out immediately. Her teaching style is clear, patient, and completely tailored to what I need. I genuinely look forward to our sessions each week.", name: 'Marco Hernández', role: 'Professional in Madrid', service: 'English Lessons' },
-  { text: "Lucy is an absolute gem. She took my scattered ideas and turned them into a beautifully organised event that felt effortless from start to finish. Her calm approach and attention to detail made the whole experience stress-free.", name: 'Sophie Aldridge', role: 'Private event client', service: 'Events & Experiences' },
-  { text: "I was drowning in admin and deadlines. Lucy stepped in and within a week everything was organised and running smoothly. She's incredibly reliable and nothing is too much trouble.", name: 'David Chen', role: 'Small business owner', service: 'Project Support' },
-  { text: "My daughter's confidence in English has absolutely soared since starting lessons with Lucy. She makes it feel like fun, not work. We couldn't be happier.", name: 'Isabel Moreno', role: 'Parent', service: 'English Lessons' },
+  { id: 't1', text: "I moved to Madrid recently, and Lucy's lessons helped me feel at home so quickly. Her explanations are simple, her examples practical, and she makes learning fun. I feel far more confident speaking now.", name: 'Amelia Grant', role: 'English student', service: 'English Lessons' },
+  { id: 't2', text: "I've tried a few English tutors over the years, but Lucy stands out immediately. Her teaching style is clear, patient, and completely tailored to what I need. I genuinely look forward to our sessions each week.", name: 'Marco Hernández', role: 'Professional in Madrid', service: 'English Lessons' },
+  { id: 't3', text: "Lucy is an absolute gem. She took my scattered ideas and turned them into a beautifully organised event that felt effortless from start to finish. Her calm approach and attention to detail made the whole experience stress-free.", name: 'Sophie Aldridge', role: 'Private event client', service: 'Events & Experiences' },
+  { id: 't4', text: "I was drowning in admin and deadlines. Lucy stepped in and within a week everything was organised and running smoothly. She's incredibly reliable and nothing is too much trouble.", name: 'David Chen', role: 'Small business owner', service: 'Project Support' },
+  { id: 't5', text: "My daughter's confidence in English has absolutely soared since starting lessons with Lucy. She makes it feel like fun, not work. We couldn't be happier.", name: 'Isabel Moreno', role: 'Parent', service: 'English Lessons' },
 ]
 
 // ── Nav ───────────────────────────────────────────────────
@@ -81,10 +84,10 @@ function Nav() {
   }, [])
 
   const navLinks = [
-    { l: t('nav.home'), h: '#' },
-    { l: t('nav.services'), h: '#services' },
-    { l: t('nav.faq'), h: '#about' },
-    { l: t('nav.contact'), h: '#contact' },
+    { l: t('nav.home'), h: '#', k: 'nav.home' },
+    { l: t('nav.services'), h: '#services', k: 'nav.services' },
+    { l: t('nav.faq'), h: '#about', k: 'nav.faq' },
+    { l: t('nav.contact'), h: '#contact', k: 'nav.contact' },
   ]
 
   return (
@@ -92,11 +95,11 @@ function Nav() {
       <div className="max-w-6xl mx-auto px-6 sm:px-8">
         <div className="flex items-center justify-between h-20">
           <a href="/" className="flex items-center gap-2">
-            <span className={`text-xl font-semibold italic transition-colors ${scrolled ? 'text-lucy-charcoal' : 'text-white'}`} style={{ fontFamily: 'var(--font-heading)' }}>Left Hand Lucy</span>
+            <span className={`text-xl font-semibold italic transition-colors ${scrolled ? 'text-lucy-charcoal' : 'text-white'}`} style={{ fontFamily: 'var(--font-heading)' }} data-anyos="nav.brand">Left Hand Lucy</span>
           </a>
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map(i => (
-              <a key={i.l} href={i.h} className={`text-sm font-medium transition-colors ${scrolled ? 'text-lucy-grey hover:text-lucy-charcoal' : 'text-white/70 hover:text-white'}`}>{i.l}</a>
+              <a key={i.l} href={i.h} className={`text-sm font-medium transition-colors ${scrolled ? 'text-lucy-grey hover:text-lucy-charcoal' : 'text-white/70 hover:text-white'}`} data-anyos={i.k}>{i.l}</a>
             ))}
             <div className="relative">
               <button onClick={() => setLangOpen(!langOpen)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-lucy-cream text-lucy-charcoal' : 'bg-white/10 text-white'}`}>
@@ -113,7 +116,7 @@ function Nav() {
                 </div>
               )}
             </div>
-            <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all hover:scale-105">{t('nav.contact')}</a>
+            <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all hover:scale-105" data-anyos="nav.cta">{t('nav.contact')}</a>
           </div>
           <button className="md:hidden" onClick={() => setOpen(!open)}>
             {open ? <X size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} /> : <Menu size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} />}
@@ -123,7 +126,7 @@ function Nav() {
       {open && (
         <div className="md:hidden bg-white border-t border-black/5 px-6 py-4">
           {navLinks.map(i => (
-            <a key={i.l} href={i.h} className="block py-2 text-lucy-grey text-base font-medium" onClick={() => setOpen(false)}>{i.l}</a>
+            <a key={i.l} href={i.h} className="block py-2 text-lucy-grey text-base font-medium" onClick={() => setOpen(false)} data-anyos={i.k}>{i.l}</a>
           ))}
           <div className="flex gap-2 mt-3 mb-2">
             {(Object.keys(LANG_FLAGS) as Lang[]).map(l => (
@@ -132,7 +135,7 @@ function Nav() {
               </button>
             ))}
           </div>
-          <a href="#contact" className="block mt-2 bg-lucy-sage text-white px-5 py-3 rounded-full text-center font-bold" onClick={() => setOpen(false)}>{t('nav.contact')}</a>
+          <a href="#contact" className="block mt-2 bg-lucy-sage text-white px-5 py-3 rounded-full text-center font-bold" onClick={() => setOpen(false)} data-anyos="nav.cta">{t('nav.contact')}</a>
         </div>
       )}
     </nav>
@@ -151,9 +154,9 @@ function TestimonialCarousel() {
       <div className="relative">
         <motion.div key={active} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center px-8">
           <div className="flex justify-center gap-1 mb-6">{[...Array(5)].map((_, i) => <Star key={i} size={16} className="fill-lucy-gold text-lucy-gold" />)}</div>
-          <p className="text-lucy-charcoal text-lg sm:text-xl leading-relaxed mb-6 italic" style={{ fontFamily: 'var(--font-heading)' }}>&ldquo;{tm.text}&rdquo;</p>
-          <p className="text-lucy-charcoal font-bold text-sm">{tm.name}</p>
-          <p className="text-lucy-grey text-xs mt-1">{tm.role} · {tm.service}</p>
+          <p className="text-lucy-charcoal text-lg sm:text-xl leading-relaxed mb-6 italic" style={{ fontFamily: 'var(--font-heading)' }}>&ldquo;<span data-anyos={`testimonials.${tm.id}.text`}>{tm.text}</span>&rdquo;</p>
+          <p className="text-lucy-charcoal font-bold text-sm" data-anyos={`testimonials.${tm.id}.name`}>{tm.name}</p>
+          <p className="text-lucy-grey text-xs mt-1"><span data-anyos={`testimonials.${tm.id}.role`}>{tm.role}</span> · <span data-anyos={`testimonials.${tm.id}.service`}>{tm.service}</span></p>
         </motion.div>
         <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronLeft size={18} className="text-lucy-charcoal" /></button>
         <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronRight size={18} className="text-lucy-charcoal" /></button>
@@ -190,7 +193,7 @@ function ContactForm() {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-lucy-cream rounded-2xl p-10 text-center">
         <CheckCircle size={48} className="text-lucy-sage mx-auto mb-4" />
-        <p className="text-lucy-charcoal font-bold text-lg" style={{ fontFamily: 'var(--font-heading)' }}>{t('contact.sent')}</p>
+        <p className="text-lucy-charcoal font-bold text-lg" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="contact.sent">{t('contact.sent')}</p>
       </motion.div>
     )
   }
@@ -204,11 +207,11 @@ function ContactForm() {
           className="w-full bg-lucy-cream border-2 border-transparent focus:border-lucy-sage rounded-xl px-5 py-3.5 text-sm text-lucy-charcoal placeholder:text-lucy-grey/60 outline-none transition-all" />
       </div>
       <div>
-        <p className="text-lucy-grey text-xs font-bold uppercase tracking-wide mb-2">{t('contact.service')}</p>
+        <p className="text-lucy-grey text-xs font-bold uppercase tracking-wide mb-2" data-anyos="contact.service">{t('contact.service')}</p>
         <div className="flex flex-wrap gap-2">
           {serviceOptions.map(s => (
             <button key={s.value} type="button" onClick={() => setForm({ ...form, service: s.value })}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${form.service === s.value ? 'bg-lucy-sage text-white scale-105' : 'bg-lucy-cream text-lucy-charcoal hover:bg-lucy-sage/10'}`}>
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${form.service === s.value ? 'bg-lucy-sage text-white scale-105' : 'bg-lucy-cream text-lucy-charcoal hover:bg-lucy-sage/10'}`} data-anyos={s.key}>
               {t(s.key)}
             </button>
           ))}
@@ -218,7 +221,7 @@ function ContactForm() {
         className="w-full bg-lucy-cream border-2 border-transparent focus:border-lucy-sage rounded-xl px-5 py-3.5 text-sm text-lucy-charcoal placeholder:text-lucy-grey/60 outline-none transition-all resize-none" />
       <button type="submit" disabled={sending}
         className="w-full sm:w-auto bg-lucy-sage hover:bg-lucy-sage/90 text-white px-8 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm flex items-center gap-2 justify-center disabled:opacity-50">
-        <Send size={16} /> {sending ? '...' : t('contact.send')}
+        <Send size={16} /> <span data-anyos="contact.send">{sending ? '...' : t('contact.send')}</span>
       </button>
     </form>
   )
@@ -237,7 +240,7 @@ export default function HomePage() {
         {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
         <section className="min-h-screen flex items-end relative overflow-hidden">
           <div className="absolute inset-0">
-            <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[70%_20%]" priority />
+            <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[70%_20%]" priority data-anyos-img="hero.image" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent sm:from-black/75 sm:via-black/30" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
@@ -260,8 +263,8 @@ export default function HomePage() {
                 {t('hero.intro')}
               </motion.p>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
-                <a href="#services" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">{t('hero.cta1')}</a>
-                <a href="#contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm">{t('hero.cta2')}</a>
+                <a href="#services" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm" data-anyos="hero.cta1">{t('hero.cta1')}</a>
+                <a href="#contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm" data-anyos="hero.cta2">{t('hero.cta2')}</a>
               </motion.div>
             </div>
           </div>
@@ -271,7 +274,7 @@ export default function HomePage() {
         <section id="services" className="py-20 sm:py-28 px-6 sm:px-8 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('services.label')}</p>
+              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3" data-anyos="services.label">{t('services.label')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="services.title">{t('services.title')}</h2>
             </div>
 
@@ -290,18 +293,18 @@ export default function HomePage() {
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: s.color + '15' }}>
                       <SIcon size={22} style={{ color: s.color }} strokeWidth={1.5} />
                     </div>
-                    <h3 className="text-xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }}>{t(s.titleKey)}</h3>
-                    <p className="text-lucy-grey text-sm leading-relaxed mb-5">{t(s.descKey)}</p>
+                    <h3 className="text-xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }} data-anyos={`services.${s.id}.title`}>{t(s.titleKey)}</h3>
+                    <p className="text-lucy-grey text-sm leading-relaxed mb-5" data-anyos={`services.${s.id}.desc`}>{t(s.descKey)}</p>
                     <ul className="space-y-2 mb-6">
-                      {s.includes.map(item => (
+                      {s.includes.map((item, j) => (
                         <li key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
                           <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: s.color }} />
-                          {item}
+                          <span data-anyos={`services.${s.id}.item${j + 1}`}>{item}</span>
                         </li>
                       ))}
                     </ul>
                     <a href="#contact" className="inline-flex items-center gap-1.5 text-sm font-bold transition-all hover:gap-2.5" style={{ color: s.color }}>
-                      Get in touch <ArrowRight size={14} />
+                      <span data-anyos={`services.${s.id}.cta`}>Get in touch</span> <ArrowRight size={14} />
                     </a>
                   </motion.div>
                 )
@@ -317,34 +320,34 @@ export default function HomePage() {
               <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
                 <div className="relative">
                   <div className="rounded-3xl overflow-hidden aspect-[4/5]">
-                    <Image src="/images/lucy.jpg" alt="Lucy" width={600} height={750} className="w-full h-full object-cover object-top" />
+                    <Image src="/images/lucy.jpg" alt="Lucy" width={600} height={750} className="w-full h-full object-cover object-top" data-anyos-img="about.image" />
                   </div>
                   <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-lg">
-                    <p className="text-lucy-charcoal font-bold text-sm" style={{ fontFamily: 'var(--font-heading)' }}>{t('about.badge')}</p>
-                    <p className="text-lucy-grey text-xs">{t('about.badge.sub')}</p>
+                    <p className="text-lucy-charcoal font-bold text-sm" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="about.badge">{t('about.badge')}</p>
+                    <p className="text-lucy-grey text-xs" data-anyos="about.badge.sub">{t('about.badge.sub')}</p>
                   </div>
                 </div>
               </motion.div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-                <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('about.label')}</p>
+                <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3" data-anyos="about.label">{t('about.label')}</p>
                 <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-2 leading-tight" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="about.title">
                   {t('about.title1')}
                 </h2>
-                <h3 className="text-xl italic text-lucy-sage mb-6" style={{ fontFamily: 'var(--font-heading)' }}>{t('about.title2')}</h3>
+                <h3 className="text-xl italic text-lucy-sage mb-6" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="about.title2">{t('about.title2')}</h3>
                 <div className="space-y-4 text-lucy-grey leading-relaxed text-sm">
-                  <p>{t('about.p1')}</p>
-                  <p>{t('about.p2')}</p>
-                  <p>{t('about.p3')}</p>
-                  <p>{t('about.p4')}</p>
+                  <p data-anyos="about.p1">{t('about.p1')}</p>
+                  <p data-anyos="about.p2">{t('about.p2')}</p>
+                  <p data-anyos="about.p3">{t('about.p3')}</p>
+                  <p data-anyos="about.p4">{t('about.p4')}</p>
                 </div>
                 <a href="#contact" className="inline-flex items-center gap-2 mt-8 bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">
-                  {t('about.cta')} <ArrowRight size={14} />
+                  <span data-anyos="about.cta">{t('about.cta')}</span> <ArrowRight size={14} />
                 </a>
                 <div className="flex flex-wrap gap-3 mt-6">
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Globe size={12} className="text-lucy-sage" /> {t('about.tag.english')}</span>
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><MapPin size={12} className="text-lucy-blush" /> {t('about.tag.madrid')}</span>
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><BookOpen size={12} className="text-lucy-gold" /> {t('about.tag.teacher')}</span>
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Calendar size={12} className="text-lucy-sage" /> {t('about.tag.planner')}</span>
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Globe size={12} className="text-lucy-sage" /> <span data-anyos="about.tag.english">{t('about.tag.english')}</span></span>
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><MapPin size={12} className="text-lucy-blush" /> <span data-anyos="about.tag.madrid">{t('about.tag.madrid')}</span></span>
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><BookOpen size={12} className="text-lucy-gold" /> <span data-anyos="about.tag.teacher">{t('about.tag.teacher')}</span></span>
+                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Calendar size={12} className="text-lucy-sage" /> <span data-anyos="about.tag.planner">{t('about.tag.planner')}</span></span>
                 </div>
               </motion.div>
             </div>
@@ -363,11 +366,11 @@ export default function HomePage() {
             <div className="flex justify-center mb-4">
               <Users size={28} className="text-lucy-gold" />
             </div>
-            <p className="text-lucy-gold font-bold text-sm tracking-wide uppercase mb-3">{t('conectados.label')}</p>
+            <p className="text-lucy-gold font-bold text-sm tracking-wide uppercase mb-3" data-anyos="conectados.label">{t('conectados.label')}</p>
             <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="conectados.title">{t('conectados.title')}</h2>
-            <p className="text-white/60 text-base mb-8 max-w-lg mx-auto">{t('conectados.desc')}</p>
+            <p className="text-white/60 text-base mb-8 max-w-lg mx-auto" data-anyos="conectados.desc">{t('conectados.desc')}</p>
             <a href="https://connect-cardos.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-lucy-gold hover:bg-lucy-gold/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 text-sm">
-              {t('conectados.cta')} <ExternalLink size={14} />
+              <span data-anyos="conectados.cta">{t('conectados.cta')}</span> <ExternalLink size={14} />
             </a>
           </div>
         </section>
@@ -379,7 +382,7 @@ export default function HomePage() {
               <div className="flex justify-center mb-3">
                 <MessageSquare size={20} className="text-lucy-blush" />
               </div>
-              <p className="text-lucy-blush font-bold text-sm tracking-wide uppercase mb-3">{t('testimonials.label')}</p>
+              <p className="text-lucy-blush font-bold text-sm tracking-wide uppercase mb-3" data-anyos="testimonials.label">{t('testimonials.label')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="testimonials.title">{t('testimonials.title')}</h2>
             </div>
             <TestimonialCarousel />
@@ -393,15 +396,15 @@ export default function HomePage() {
               <div className="flex justify-center mb-3">
                 <Send size={20} className="text-lucy-sage" />
               </div>
-              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3">{t('contact.label')}</p>
+              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3" data-anyos="contact.label">{t('contact.label')}</p>
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="contact.title">{t('contact.title')}</h2>
-              <p className="text-lucy-grey max-w-lg mx-auto">{t('contact.desc')}</p>
+              <p className="text-lucy-grey max-w-lg mx-auto" data-anyos="contact.desc">{t('contact.desc')}</p>
             </div>
             <div className="grid sm:grid-cols-3 gap-6 mb-12">
               {[
-                { Icon: Mail, label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#7B9E87' },
-                { Icon: MapPin, label: 'Location', value: 'Madrid, Spain', href: '#', color: '#E8B4B8' },
-                { Icon: MessageSquare, label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/message', color: '#C8A96E' },
+                { Icon: Mail, k: 'email', label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#7B9E87' },
+                { Icon: MapPin, k: 'location', label: 'Location', value: 'Madrid, Spain', href: '#', color: '#E8B4B8' },
+                { Icon: MessageSquare, k: 'whatsapp', label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/message', color: '#C8A96E' },
               ].map(c => {
                 const CIcon = c.Icon
                 return (
@@ -409,8 +412,8 @@ export default function HomePage() {
                     <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: c.color + '15' }}>
                       <CIcon size={20} style={{ color: c.color }} />
                     </div>
-                    <p className="text-lucy-grey text-xs font-bold uppercase tracking-wide mb-1">{c.label}</p>
-                    <p className="text-lucy-charcoal font-medium text-sm group-hover:text-lucy-sage transition-colors">{c.value}</p>
+                    <p className="text-lucy-grey text-xs font-bold uppercase tracking-wide mb-1" data-anyos={`contact.card.${c.k}.label`}>{c.label}</p>
+                    <p className="text-lucy-charcoal font-medium text-sm group-hover:text-lucy-sage transition-colors" data-anyos={`contact.card.${c.k}.value`}>{c.value}</p>
                   </a>
                 )
               })}
@@ -424,19 +427,19 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
-                <p className="text-white text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }}>Left Hand Lucy</p>
+                <p className="text-white text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="footer.brand">Left Hand Lucy</p>
                 <p className="text-white/40 text-sm" data-anyos="footer.tagline">{t('footer.tagline')}</p>
               </div>
               <div className="flex items-center gap-6">
-                <a href="#services" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.services')}</a>
-                <a href="#about" className="text-white/40 hover:text-white text-sm transition-colors">{t('about.label')}</a>
-                <a href="https://connect-cardos.vercel.app" className="text-white/40 hover:text-white text-sm transition-colors">Conectados</a>
-                <a href="#contact" className="text-white/40 hover:text-white text-sm transition-colors">{t('nav.contact')}</a>
+                <a href="#services" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.services">{t('nav.services')}</a>
+                <a href="#about" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.about">{t('about.label')}</a>
+                <a href="https://connect-cardos.vercel.app" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.conectados">Conectados</a>
+                <a href="#contact" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.contact">{t('nav.contact')}</a>
               </div>
             </div>
             <div className="border-t border-white/10 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-2">
-              <p className="text-white/20 text-xs">{t('footer.rights')}</p>
-              <p className="text-white/20 text-xs">Lucy@lefthandlucy.com · Madrid, Spain</p>
+              <p className="text-white/20 text-xs" data-anyos="footer.rights">{t('footer.rights')}</p>
+              <p className="text-white/20 text-xs" data-anyos="footer.contactline">Lucy@lefthandlucy.com · Madrid, Spain</p>
             </div>
           </div>
         </footer>
