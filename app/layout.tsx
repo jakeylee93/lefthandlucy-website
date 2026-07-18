@@ -17,8 +17,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
-        {/* anyOS live-edit: hydrates data-anyos text + click-to-edit from the anyOS Website module. */}
-        <Script src="https://platform.anyos.co.uk/edit.js" data-site="left-hand-lucy" strategy="afterInteractive" />
+        {/* anyOS live-edit: hydrates data-anyos text / data-anyos-img images + click-to-edit from the anyOS Website module. */}
+        <Script src="https://platform.anyos.co.uk/edit.js?v=5" data-site="left-hand-lucy" strategy="afterInteractive" />
       </body>
     </html>
   );
