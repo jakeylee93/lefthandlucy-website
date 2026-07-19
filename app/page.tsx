@@ -166,6 +166,69 @@ function TestimonialCarousel() {
   )
 }
 
+// ── Services Carousel ─────────────────────────────────────
+// One service card at a time, auto-advancing with a filling progress bar
+// (Lucy's site used to present services this way — restored). Same aesthetic
+// as the testimonials carousel. Every data-anyos key is preserved so the
+// cards stay editable from anyOS.
+function ServicesCarousel() {
+  const { t } = useLang()
+  const [active, setActive] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const DURATION = 6000
+  useEffect(() => {
+    setProgress(0)
+    const start = performance.now()
+    let raf = 0
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / DURATION)
+      setProgress(p)
+      if (p < 1) raf = requestAnimationFrame(tick)
+      else setActive(a => (a + 1) % SERVICES.length)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [active])
+  const go = (i: number) => setActive((i + SERVICES.length) % SERVICES.length)
+  const s = SERVICES[active]
+  const SIcon = s.Icon
+  return (
+    <div className="max-w-2xl mx-auto">
+      <div className="relative">
+        <motion.div key={active} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
+          className="bg-lucy-cream rounded-2xl p-7 sm:p-10 min-h-[380px]">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: s.color + '15' }}>
+            <SIcon size={22} style={{ color: s.color }} strokeWidth={1.5} />
+          </div>
+          <h3 className="text-2xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }} data-anyos={`services.${s.id}.title`}>{t(s.titleKey)}</h3>
+          <p className="text-lucy-grey text-sm leading-relaxed mb-5" data-anyos={`services.${s.id}.desc`}>{t(s.descKey)}</p>
+          <ul className="space-y-2 mb-6">
+            {s.includes.map((item, j) => (
+              <li key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
+                <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: s.color }} />
+                <span data-anyos={`services.${s.id}.item${j + 1}`}>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="#contact" className="inline-flex items-center gap-1.5 text-sm font-bold transition-all hover:gap-2.5" style={{ color: s.color }}>
+            <span data-anyos={`services.${s.id}.cta`}>Get in touch</span> <ArrowRight size={14} />
+          </a>
+        </motion.div>
+        <button onClick={() => go(active - 1)} aria-label="Previous service" className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronLeft size={18} className="text-lucy-charcoal" /></button>
+        <button onClick={() => go(active + 1)} aria-label="Next service" className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronRight size={18} className="text-lucy-charcoal" /></button>
+      </div>
+      {/* Scrolling progress bars — the active one fills, then advances. */}
+      <div className="max-w-sm mx-auto mt-8 flex items-center gap-3">
+        {SERVICES.map((sv, i) => (
+          <button key={sv.id} onClick={() => go(i)} className="relative h-1.5 flex-1 rounded-full bg-black/10 overflow-hidden" aria-label={`Go to service ${i + 1}`}>
+            <span className="absolute inset-y-0 left-0 rounded-full bg-lucy-sage" style={{ width: i < active ? '100%' : i === active ? `${progress * 100}%` : '0%' }} />
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ── Contact Form ──────────────────────────────────────────
 function ContactForm() {
   const { t } = useLang()
@@ -278,38 +341,7 @@ export default function HomePage() {
               <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="services.title">{t('services.title')}</h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {SERVICES.map((s, i) => {
-                const SIcon = s.Icon
-                return (
-                  <motion.div
-                    key={s.titleKey}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="bg-lucy-cream rounded-2xl p-7 sm:p-8 hover:shadow-xl transition-all hover:-translate-y-1"
-                  >
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: s.color + '15' }}>
-                      <SIcon size={22} style={{ color: s.color }} strokeWidth={1.5} />
-                    </div>
-                    <h3 className="text-xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }} data-anyos={`services.${s.id}.title`}>{t(s.titleKey)}</h3>
-                    <p className="text-lucy-grey text-sm leading-relaxed mb-5" data-anyos={`services.${s.id}.desc`}>{t(s.descKey)}</p>
-                    <ul className="space-y-2 mb-6">
-                      {s.includes.map((item, j) => (
-                        <li key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
-                          <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: s.color }} />
-                          <span data-anyos={`services.${s.id}.item${j + 1}`}>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <a href="#contact" className="inline-flex items-center gap-1.5 text-sm font-bold transition-all hover:gap-2.5" style={{ color: s.color }}>
-                      <span data-anyos={`services.${s.id}.cta`}>Get in touch</span> <ArrowRight size={14} />
-                    </a>
-                  </motion.div>
-                )
-              })}
-            </div>
+            <ServicesCarousel />
           </div>
         </section>
 
