@@ -5,12 +5,29 @@
 :root {
   --font-heading: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
+  /* anyOS-editable theme — edit.js overrides these via setProperty on :root.
+     Defaults must match the shipped design exactly. */
   --lucy-charcoal: #2D3436;
   --lucy-sage: #7B9E87;
   --lucy-blush: #E8B4B8;
   --lucy-cream: #FAF8F5;
   --lucy-gold: #C8A96E;
   --lucy-grey: #8B8B8B;
+  --section-space: 80px; /* vertical padding of main sections (was py-20 / sm:py-28) */
+  --carousel-ms: 6000;   /* auto-advance duration for the carousels, in ms */
+}
+
+/* Adjustable section rhythm: 80px default matches the old py-20, and the
+   sm breakpoint scales it 1.4x to match the old sm:py-28 (112px). */
+.section-space {
+  padding-top: var(--section-space);
+  padding-bottom: var(--section-space);
+}
+@media (min-width: 640px) {
+  .section-space {
+    padding-top: calc(var(--section-space) * 1.4);
+    padding-bottom: calc(var(--section-space) * 1.4);
+  }
 }
 
 * { box-sizing: border-box; }

@@ -142,12 +142,33 @@ function Nav() {
   )
 }
 
+// ── Carousel speed from theme ─────────────────────────────
+// Auto-advance duration lives in the --carousel-ms CSS variable (globals.css)
+// so the anyOS Site Settings panel can change it. Re-read whenever edit.js
+// fires anyos:settings-changed so the new speed applies live.
+function readCarouselMs() {
+  if (typeof window === 'undefined') return 6000
+  const ms = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--carousel-ms'))
+  return Number.isFinite(ms) && ms > 0 ? ms : 6000
+}
+function useCarouselMs() {
+  const [ms, setMs] = useState(6000)
+  useEffect(() => {
+    const update = () => setMs(readCarouselMs())
+    update()
+    window.addEventListener('anyos:settings-changed', update)
+    return () => window.removeEventListener('anyos:settings-changed', update)
+  }, [])
+  return ms
+}
+
 // ── Testimonial Carousel ──────────────────────────────────
 function TestimonialCarousel() {
   const [active, setActive] = useState(0)
+  const duration = useCarouselMs()
   const next = () => setActive(a => (a + 1) % TESTIMONIALS.length)
   const prev = () => setActive(a => (a - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
-  useEffect(() => { const interval = setInterval(next, 6000); return () => clearInterval(interval) }, [])
+  useEffect(() => { const interval = setInterval(next, duration); return () => clearInterval(interval) }, [duration])
   const tm = TESTIMONIALS[active]
   return (
     <div className="max-w-2xl mx-auto">
@@ -175,20 +196,20 @@ function ServicesCarousel() {
   const { t } = useLang()
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
-  const DURATION = 6000
+  const duration = useCarouselMs()
   useEffect(() => {
     setProgress(0)
     const start = performance.now()
     let raf = 0
     const tick = (now: number) => {
-      const p = Math.min(1, (now - start) / DURATION)
+      const p = Math.min(1, (now - start) / duration)
       setProgress(p)
       if (p < 1) raf = requestAnimationFrame(tick)
       else setActive(a => (a + 1) % SERVICES.length)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [active])
+  }, [active, duration])
   const go = (i: number) => setActive((i + SERVICES.length) % SERVICES.length)
   const s = SERVICES[active]
   const SIcon = s.Icon
@@ -334,7 +355,7 @@ export default function HomePage() {
         </section>
 
         {/* ── SERVICES — 3 full sections, no modals ────────── */}
-        <section id="services" className="py-20 sm:py-28 px-6 sm:px-8 bg-white">
+        <section id="services" className="section-space px-6 sm:px-8 bg-white">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3" data-anyos="services.label">{t('services.label')}</p>
@@ -346,7 +367,7 @@ export default function HomePage() {
         </section>
 
         {/* ── ABOUT ────────────────────────────────────────── */}
-        <section id="about" className="py-20 sm:py-28 px-6 sm:px-8 bg-lucy-cream">
+        <section id="about" className="section-space px-6 sm:px-8 bg-lucy-cream">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
               <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
@@ -387,7 +408,7 @@ export default function HomePage() {
         </section>
 
         {/* ── TESTIMONIALS ─────────────────────────────────── */}
-        <section id="testimonials" className="py-20 sm:py-28 px-6 sm:px-8 bg-lucy-cream">
+        <section id="testimonials" className="section-space px-6 sm:px-8 bg-lucy-cream">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <div className="flex justify-center mb-3">
@@ -401,7 +422,7 @@ export default function HomePage() {
         </section>
 
         {/* ── CONTACT ──────────────────────────────────────── */}
-        <section id="contact" className="py-20 sm:py-28 px-6 sm:px-8 bg-white">
+        <section id="contact" className="section-space px-6 sm:px-8 bg-white">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <div className="flex justify-center mb-3">
