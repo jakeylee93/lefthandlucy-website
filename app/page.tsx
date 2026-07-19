@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, createContext, useContext } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Users, Calendar } from 'lucide-react'
+import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Calendar } from 'lucide-react'
 import { translations, Lang } from './translations'
 import Image from 'next/image'
 
@@ -383,27 +383,6 @@ export default function HomePage() {
                 </div>
               </motion.div>
             </div>
-          </div>
-        </section>
-
-        {/* ── CONECTADOS — Video background ────────────────── */}
-        <section className="py-20 sm:py-24 px-6 sm:px-8 relative overflow-hidden">
-          <div className="absolute inset-0">
-            <video autoPlay muted loop playsInline className="w-full h-full object-cover">
-              <source src="https://videos.pexels.com/video-files/3209828/3209828-uhd_2560_1440_25fps.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-black/65" />
-          </div>
-          <div className="max-w-4xl mx-auto text-center relative z-10">
-            <div className="flex justify-center mb-4">
-              <Users size={28} className="text-lucy-gold" />
-            </div>
-            <p className="text-lucy-gold font-bold text-sm tracking-wide uppercase mb-3" data-anyos="conectados.label">{t('conectados.label')}</p>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="conectados.title">{t('conectados.title')}</h2>
-            <p className="text-white/60 text-base mb-8 max-w-lg mx-auto" data-anyos="conectados.desc">{t('conectados.desc')}</p>
-            <a href="https://connect-cardos.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-lucy-gold hover:bg-lucy-gold/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 text-sm">
-              <span data-anyos="conectados.cta">{t('conectados.cta')}</span> <ExternalLink size={14} />
-            </a>
           </div>
         </section>
 
