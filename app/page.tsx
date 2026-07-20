@@ -324,8 +324,16 @@ export default function HomePage() {
         {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
         <section className="min-h-screen flex items-end relative overflow-hidden">
           <div className="absolute inset-0">
-            <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[70%_20%]" priority data-anyos-img="hero.image" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent sm:from-black/75 sm:via-black/30" />
+            {/* Dark brand backdrop — fills the left where the photo is pulled to the right on desktop. */}
+            <div className="absolute inset-0 bg-lucy-charcoal" />
+            {/* The photo is a 600×900 PORTRAIT. Full-bleed on mobile (portrait viewport, barely cropped);
+                on desktop it's contained to the right ~55% so it isn't upscaled ~3.3× to fill the whole
+                width — that was zooming Lucy's head. In the narrower right column it scales ~1.8× and
+                shows head-to-torso instead of a face close-up. */}
+            <div className="absolute inset-0 lg:left-[45%]">
+              <Image src="/images/lucy.jpg" alt="Lucy" fill className="object-cover object-[70%_18%] lg:object-[center_15%]" priority data-anyos-img="hero.image" />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent sm:from-black/75 sm:via-black/30 lg:from-lucy-charcoal lg:via-lucy-charcoal/70 lg:to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
           <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 pt-24 w-full">
