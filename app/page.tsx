@@ -327,7 +327,10 @@ export default function HomePage() {
             {/* Full-bleed hero — the original high-res 5504×3072 LANDSCAPE photo, which
                 fills a wide screen with no zoom (the site had been switched to a cropped
                 600×900 portrait, which is what was zooming into Lucy's head). */}
-            <Image src="/images/lucy-hero.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[72%_34%]" priority data-anyos-img="hero.image" />
+            {/* Mobile: crop aimed AT Lucy (she's at ~50% of the frame; 55% sits
+                her centre-to-slightly-left on screen — Jake's spec). Desktop
+                keeps the 72% framing from #5/#6. */}
+            <Image src="/images/lucy-hero.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[55%_34%] md:object-[72%_34%]" priority data-anyos-img="hero.image" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent sm:from-black/75 sm:via-black/30" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
