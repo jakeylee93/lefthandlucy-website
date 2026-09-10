@@ -13,13 +13,15 @@ function ContactForm({ t, lang }: { t: Translate; lang: Lang }) {
   const [sending, setSending] = useState(false)
   const [reference, setReference] = useState('')
   const [error, setError] = useState('')
-  const requestId = useRef('')
+  const request = useRef({ fingerprint: '', id: '' })
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
     if (sending) return
-    setSending(true); setError(''); requestId.current ||= crypto.randomUUID()
+    setSending(true); setError('')
+    const fingerprint = JSON.stringify({ ...form, language: lang })
+    if (request.current.fingerprint !== fingerprint) request.current = { fingerprint, id: crypto.randomUUID() }
     try {
-      const response = await fetch('https://platform.anyos.co.uk/api/public/website-enquiry?site=left-hand-lucy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, language: lang, requestId: requestId.current }), signal: AbortSignal.timeout(20000) })
+      const response = await fetch('https://platform.anyos.co.uk/api/public/website-enquiry?site=left-hand-lucy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, language: lang, requestId: request.current.id }), signal: AbortSignal.timeout(20000) })
       const body = await response.json()
       if (!response.ok || !body.ok || !body.reference) throw new Error('save_failed')
       setReference(body.reference)
