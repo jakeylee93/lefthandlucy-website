@@ -11,44 +11,29 @@ export const metadata: Metadata = {
 // Each setting maps to a CSS custom property on :root (globals.css); edit.js
 // hydrates saved overrides via document.documentElement.style.setProperty(cssVar, value)
 // and fires "anyos:settings-changed" so JS consumers (the carousels) re-read live.
-const ANYOS_SETTINGS = {
-  groups: [
+const ANYOS_SETTINGS = [
     {
       id: "colours",
       label: "Colours",
       settings: [
-        { cssVar: "--lucy-sage", label: "Primary", type: "color", default: "#7B9E87" },
-        { cssVar: "--lucy-gold", label: "Accent", type: "color", default: "#C8A96E" },
-        { cssVar: "--lucy-charcoal", label: "Text", type: "color", default: "#2D3436" },
-        { cssVar: "--lucy-cream", label: "Background", type: "color", default: "#FAF8F5" },
+        { cssVar: "--lucy-sage", label: "Primary", type: "color", default: "#436c57" },
+        { cssVar: "--lucy-gold", label: "Accent", type: "color", default: "#94713b" },
+        { cssVar: "--lucy-charcoal", label: "Text", type: "color", default: "#273d35" },
+        { cssVar: "--lucy-cream", label: "Background", type: "color", default: "#faf8f3" },
       ],
     },
     {
       id: "layout",
       label: "Layout",
       settings: [
-        { cssVar: "--section-space", label: "Section spacing", type: "range", min: 40, max: 160, step: 4, unit: "px", default: 80 },
+        { cssVar: "--section-space", label: "Section spacing", type: "range", min: 24, max: 120, step: 4, unit: "px", default: 72 },
+        { cssVar: "--heading-size", label: "Hero title", type: "range", min: 36, max: 100, step: 2, unit: "px", default: 68 },
+        { cssVar: "--hero-image-height", label: "Hero height", type: "range", min: 400, max: 900, step: 20, unit: "px", default: 620 },
+        { cssVar: "--button-radius", label: "Button corners", type: "range", min: 0, max: 30, step: 2, unit: "px", default: 8 },
+        { cssVar: "--card-radius", label: "Card corners", type: "range", min: 0, max: 40, step: 2, unit: "px", default: 16 },
       ],
     },
-    {
-      id: "slider",
-      label: "Slider",
-      settings: [
-        {
-          cssVar: "--carousel-ms",
-          label: "Slider speed",
-          type: "select",
-          default: "6000",
-          options: [
-            { label: "Slow", value: "9000" },
-            { label: "Normal", value: "6000" },
-            { label: "Fast", value: "3500" },
-          ],
-        },
-      ],
-    },
-  ],
-};
+];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

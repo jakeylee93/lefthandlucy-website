@@ -2,6 +2,9 @@ export type Lang = 'en' | 'es' | 'fr' | 'de'
 
 export const translations: Record<Lang, Record<string, string>> = {
   en: {
+    'nav.skip': 'Skip to content', 'nav.open': 'Open menu', 'nav.close': 'Close menu',
+    'contact.sending': 'Sending…', 'contact.reference': 'Reference', 'contact.error': 'Your message could not be saved. Please try again, or use the email or WhatsApp link.',
+    'reviews.previous': 'Previous testimonial', 'reviews.next': 'Next testimonial',
     // Nav
     'nav.home': 'Home',
     'nav.services': 'Services',
@@ -80,6 +83,9 @@ export const translations: Record<Lang, Record<string, string>> = {
     'footer.rights': '© 2026 Left Hand Lucy. All rights reserved.',
   },
   es: {
+    'nav.skip': 'Ir al contenido', 'nav.open': 'Abrir menú', 'nav.close': 'Cerrar menú',
+    'contact.sending': 'Enviando…', 'contact.reference': 'Referencia', 'contact.error': 'No se ha podido guardar tu mensaje. Inténtalo de nuevo o usa el enlace de email o WhatsApp.',
+    'reviews.previous': 'Testimonio anterior', 'reviews.next': 'Siguiente testimonio',
     'nav.home': 'Inicio',
     'nav.services': 'Servicios',
     'nav.faq': 'FAQ',
@@ -143,6 +149,9 @@ export const translations: Record<Lang, Record<string, string>> = {
     'footer.rights': '© 2026 Left Hand Lucy. Todos los derechos reservados.',
   },
   fr: {
+    'nav.skip': 'Aller au contenu', 'nav.open': 'Ouvrir le menu', 'nav.close': 'Fermer le menu',
+    'contact.sending': 'Envoi…', 'contact.reference': 'Référence', 'contact.error': 'Votre message n’a pas pu être enregistré. Réessayez ou utilisez le lien email ou WhatsApp.',
+    'reviews.previous': 'Témoignage précédent', 'reviews.next': 'Témoignage suivant',
     'nav.home': 'Accueil',
     'nav.services': 'Services',
     'nav.faq': 'FAQ',
@@ -206,6 +215,9 @@ export const translations: Record<Lang, Record<string, string>> = {
     'footer.rights': '© 2026 Left Hand Lucy. Tous droits réservés.',
   },
   de: {
+    'nav.skip': 'Zum Inhalt', 'nav.open': 'Menü öffnen', 'nav.close': 'Menü schließen',
+    'contact.sending': 'Wird gesendet…', 'contact.reference': 'Referenz', 'contact.error': 'Deine Nachricht konnte nicht gespeichert werden. Bitte versuche es erneut oder nutze den E-Mail- oder WhatsApp-Link.',
+    'reviews.previous': 'Vorherige Bewertung', 'reviews.next': 'Nächste Bewertung',
     'nav.home': 'Start',
     'nav.services': 'Leistungen',
     'nav.faq': 'FAQ',

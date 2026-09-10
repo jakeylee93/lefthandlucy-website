@@ -1,487 +1,63 @@
 'use client'
-import { useState, useEffect, createContext, useContext } from 'react'
-import { motion } from 'framer-motion'
-import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, Star, MessageSquare, Menu, X, ExternalLink, Send, CheckCircle, Briefcase, BookOpen, Compass, Globe, Calendar } from 'lucide-react'
-import { translations, Lang } from './translations'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowRight, Mail, MapPin, ChevronLeft, ChevronRight, MessageSquare, Menu, X, Send, CheckCircle, BookOpen, Globe, Calendar } from 'lucide-react'
 import Image from 'next/image'
+import { translations, Lang } from './translations'
+import { SiteSections } from './site-sections'
 
-// ── Language Context ──────────────────────────────────────
-const LangContext = createContext<{ lang: Lang; t: (key: string) => string; setLang: (l: Lang) => void }>({
-  lang: 'en', t: (k) => k, setLang: () => {},
-})
-function useLang() { return useContext(LangContext) }
-
-const LANG_FLAGS: Record<Lang, string> = { en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', de: '🇩🇪' }
-
-// ── Services data ─────────────────────────────────────────
-const SERVICES = [
-  {
-    id: 'ps',
-    Icon: Briefcase,
-    titleKey: 'services.ps.title',
-    descKey: 'services.ps.desc',
-    color: '#C8A96E',
-    includes: [
-      'Email & inbox management',
-      'Calendar & scheduling',
-      'Research & analysis',
-      'Task coordination & deadlines',
-      'Document preparation',
-      'Travel arrangements',
-    ],
-  },
-  {
-    id: 'el',
-    Icon: BookOpen,
-    titleKey: 'services.el.title',
-    descKey: 'services.el.desc',
-    color: '#E8B4B8',
-    includes: [
-      'Conversational English',
-      'Business & professional English',
-      'Children & young adults',
-      'Exam preparation (Cambridge, IELTS)',
-      'Pronunciation & accent coaching',
-      'Flexible online or in-person',
-    ],
-  },
-  {
-    id: 'ee',
-    Icon: Compass,
-    titleKey: 'services.ee.title',
-    descKey: 'services.ee.desc',
-    color: '#7B9E87',
-    includes: [
-      'Venue sourcing & coordination',
-      'Madrid city experiences & tours',
-      'Concierge planning for visitors',
-      'Group events & social gatherings',
-      'Restaurant & activity bookings',
-      'On-the-day coordination',
-    ],
-  },
-]
-
-const TESTIMONIALS = [
-  { id: 't1', text: "I moved to Madrid recently, and Lucy's lessons helped me feel at home so quickly. Her explanations are simple, her examples practical, and she makes learning fun. I feel far more confident speaking now.", name: 'Amelia Grant', role: 'English student', service: 'English Lessons' },
-  { id: 't2', text: "I've tried a few English tutors over the years, but Lucy stands out immediately. Her teaching style is clear, patient, and completely tailored to what I need. I genuinely look forward to our sessions each week.", name: 'Marco Hernández', role: 'Professional in Madrid', service: 'English Lessons' },
-  { id: 't3', text: "Lucy is an absolute gem. She took my scattered ideas and turned them into a beautifully organised event that felt effortless from start to finish. Her calm approach and attention to detail made the whole experience stress-free.", name: 'Sophie Aldridge', role: 'Private event client', service: 'Events & Experiences' },
-  { id: 't4', text: "I was drowning in admin and deadlines. Lucy stepped in and within a week everything was organised and running smoothly. She's incredibly reliable and nothing is too much trouble.", name: 'David Chen', role: 'Small business owner', service: 'Project Support' },
-  { id: 't5', text: "My daughter's confidence in English has absolutely soared since starting lessons with Lucy. She makes it feel like fun, not work. We couldn't be happier.", name: 'Isabel Moreno', role: 'Parent', service: 'English Lessons' },
-]
-
-// ── Nav ───────────────────────────────────────────────────
-function Nav() {
-  const { t, lang, setLang } = useLang()
-  const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [langOpen, setLangOpen] = useState(false)
-
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', h)
-    return () => window.removeEventListener('scroll', h)
-  }, [])
-
-  const navLinks = [
-    { l: t('nav.home'), h: '#', k: 'nav.home' },
-    { l: t('nav.services'), h: '#services', k: 'nav.services' },
-    { l: t('nav.faq'), h: '#about', k: 'nav.faq' },
-    { l: t('nav.contact'), h: '#contact', k: 'nav.contact' },
-  ]
-
-  return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
-      <div className="max-w-6xl mx-auto px-6 sm:px-8">
-        <div className="flex items-center justify-between h-20">
-          <a href="/" className="flex items-center gap-2">
-            <span className={`text-xl font-semibold italic transition-colors ${scrolled ? 'text-lucy-charcoal' : 'text-white'}`} style={{ fontFamily: 'var(--font-heading)' }} data-anyos="nav.brand">Left Hand Lucy</span>
-          </a>
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map(i => (
-              <a key={i.l} href={i.h} className={`text-sm font-medium transition-colors ${scrolled ? 'text-lucy-grey hover:text-lucy-charcoal' : 'text-white/70 hover:text-white'}`} data-anyos={i.k}>{i.l}</a>
-            ))}
-            <div className="relative">
-              <button onClick={() => setLangOpen(!langOpen)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${scrolled ? 'bg-lucy-cream text-lucy-charcoal' : 'bg-white/10 text-white'}`}>
-                {LANG_FLAGS[lang]} {lang.toUpperCase()}
-                <svg className={`w-3 h-3 transition-transform ${langOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-              </button>
-              {langOpen && (
-                <div className="absolute right-0 mt-2 bg-white rounded-xl shadow-xl border border-black/5 overflow-hidden">
-                  {(Object.keys(LANG_FLAGS) as Lang[]).map(l => (
-                    <button key={l} onClick={() => { setLang(l); setLangOpen(false) }} className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium w-full hover:bg-lucy-cream transition-colors ${l === lang ? 'bg-lucy-cream text-lucy-sage font-bold' : 'text-lucy-charcoal'}`}>
-                      {LANG_FLAGS[l]} {l.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <a href="#contact" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all hover:scale-105" data-anyos="nav.cta">{t('nav.contact')}</a>
-          </div>
-          <button className="md:hidden" onClick={() => setOpen(!open)}>
-            {open ? <X size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} /> : <Menu size={24} className={scrolled ? 'text-lucy-charcoal' : 'text-white'} />}
-          </button>
-        </div>
-      </div>
-      {open && (
-        <div className="md:hidden bg-white border-t border-black/5 px-6 py-4">
-          {navLinks.map(i => (
-            <a key={i.l} href={i.h} className="block py-2 text-lucy-grey text-base font-medium" onClick={() => setOpen(false)} data-anyos={i.k}>{i.l}</a>
-          ))}
-          <div className="flex gap-2 mt-3 mb-2">
-            {(Object.keys(LANG_FLAGS) as Lang[]).map(l => (
-              <button key={l} onClick={() => { setLang(l); setOpen(false) }} className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${l === lang ? 'bg-lucy-sage text-white' : 'bg-lucy-cream text-lucy-charcoal'}`}>
-                {LANG_FLAGS[l]}
-              </button>
-            ))}
-          </div>
-          <a href="#contact" className="block mt-2 bg-lucy-sage text-white px-5 py-3 rounded-full text-center font-bold" onClick={() => setOpen(false)} data-anyos="nav.cta">{t('nav.contact')}</a>
-        </div>
-      )}
-    </nav>
-  )
-}
-
-// ── Carousel speed from theme ─────────────────────────────
-// Auto-advance duration lives in the --carousel-ms CSS variable (globals.css)
-// so the anyOS Site Settings panel can change it. Re-read whenever edit.js
-// fires anyos:settings-changed so the new speed applies live.
-function readCarouselMs() {
-  if (typeof window === 'undefined') return 6000
-  const ms = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--carousel-ms'))
-  return Number.isFinite(ms) && ms > 0 ? ms : 6000
-}
-function useCarouselMs() {
-  const [ms, setMs] = useState(6000)
-  useEffect(() => {
-    const update = () => setMs(readCarouselMs())
-    update()
-    window.addEventListener('anyos:settings-changed', update)
-    return () => window.removeEventListener('anyos:settings-changed', update)
-  }, [])
-  return ms
-}
-
-// ── Testimonial Carousel ──────────────────────────────────
-function TestimonialCarousel() {
-  const [active, setActive] = useState(0)
-  const duration = useCarouselMs()
-  const next = () => setActive(a => (a + 1) % TESTIMONIALS.length)
-  const prev = () => setActive(a => (a - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
-  useEffect(() => { const interval = setInterval(next, duration); return () => clearInterval(interval) }, [duration])
-  const tm = TESTIMONIALS[active]
-  return (
-    <div className="max-w-2xl mx-auto">
-      <div className="relative">
-        <motion.div key={active} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center px-8">
-          <div className="flex justify-center gap-1 mb-6">{[...Array(5)].map((_, i) => <Star key={i} size={16} className="fill-lucy-gold text-lucy-gold" />)}</div>
-          <p className="text-lucy-charcoal text-lg sm:text-xl leading-relaxed mb-6 italic" style={{ fontFamily: 'var(--font-heading)' }}>&ldquo;<span data-anyos={`testimonials.${tm.id}.text`}>{tm.text}</span>&rdquo;</p>
-          <p className="text-lucy-charcoal font-bold text-sm" data-anyos={`testimonials.${tm.id}.name`}>{tm.name}</p>
-          <p className="text-lucy-grey text-xs mt-1"><span data-anyos={`testimonials.${tm.id}.role`}>{tm.role}</span> · <span data-anyos={`testimonials.${tm.id}.service`}>{tm.service}</span></p>
-        </motion.div>
-        <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronLeft size={18} className="text-lucy-charcoal" /></button>
-        <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronRight size={18} className="text-lucy-charcoal" /></button>
-      </div>
-      <div className="flex justify-center gap-2 mt-8">{TESTIMONIALS.map((_, i) => <button key={i} onClick={() => setActive(i)} className={`h-2 rounded-full transition-all ${i === active ? 'bg-lucy-sage w-6' : 'bg-black/10 w-2'}`} />)}</div>
-    </div>
-  )
-}
-
-// ── Services Carousel ─────────────────────────────────────
-// One service card at a time, auto-advancing with a filling progress bar
-// (Lucy's site used to present services this way — restored). Same aesthetic
-// as the testimonials carousel. Every data-anyos key is preserved so the
-// cards stay editable from anyOS.
-function ServicesCarousel() {
-  const { t } = useLang()
-  const [active, setActive] = useState(0)
-  const [progress, setProgress] = useState(0)
-  const duration = useCarouselMs()
-  useEffect(() => {
-    setProgress(0)
-    const start = performance.now()
-    let raf = 0
-    const tick = (now: number) => {
-      const p = Math.min(1, (now - start) / duration)
-      setProgress(p)
-      if (p < 1) raf = requestAnimationFrame(tick)
-      else setActive(a => (a + 1) % SERVICES.length)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [active, duration])
-  const go = (i: number) => setActive((i + SERVICES.length) % SERVICES.length)
-  const s = SERVICES[active]
-  const SIcon = s.Icon
-  return (
-    <div className="max-w-2xl mx-auto">
-      <div className="relative">
-        <motion.div key={active} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}
-          className="bg-lucy-cream rounded-2xl p-7 sm:p-10 min-h-[380px]">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: s.color + '15' }}>
-            <SIcon size={22} style={{ color: s.color }} strokeWidth={1.5} />
-          </div>
-          <h3 className="text-2xl font-semibold text-lucy-charcoal mb-3" style={{ fontFamily: 'var(--font-heading)' }} data-anyos={`services.${s.id}.title`}>{t(s.titleKey)}</h3>
-          <p className="text-lucy-grey text-sm leading-relaxed mb-5" data-anyos={`services.${s.id}.desc`}>{t(s.descKey)}</p>
-          <ul className="space-y-2 mb-6">
-            {s.includes.map((item, j) => (
-              <li key={item} className="flex items-start gap-2 text-sm text-lucy-charcoal">
-                <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: s.color }} />
-                <span data-anyos={`services.${s.id}.item${j + 1}`}>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <a href="#contact" className="inline-flex items-center gap-1.5 text-sm font-bold transition-all hover:gap-2.5" style={{ color: s.color }}>
-            <span data-anyos={`services.${s.id}.cta`}>Get in touch</span> <ArrowRight size={14} />
-          </a>
-        </motion.div>
-        <button onClick={() => go(active - 1)} aria-label="Previous service" className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronLeft size={18} className="text-lucy-charcoal" /></button>
-        <button onClick={() => go(active + 1)} aria-label="Next service" className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg"><ChevronRight size={18} className="text-lucy-charcoal" /></button>
-      </div>
-      {/* Scrolling progress bars — the active one fills, then advances. */}
-      <div className="max-w-sm mx-auto mt-8 flex items-center gap-3">
-        {SERVICES.map((sv, i) => (
-          <button key={sv.id} onClick={() => go(i)} className="relative h-1.5 flex-1 rounded-full bg-black/10 overflow-hidden" aria-label={`Go to service ${i + 1}`}>
-            <span className="absolute inset-y-0 left-0 rounded-full bg-lucy-sage" style={{ width: i < active ? '100%' : i === active ? `${progress * 100}%` : '0%' }} />
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── Contact Form ──────────────────────────────────────────
-function ContactForm() {
-  const { t } = useLang()
-  const [form, setForm] = useState({ name: '', email: '', service: '', message: '' })
-  const [sent, setSent] = useState(false)
+const LANGUAGES: Record<Lang, string> = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch' }
+import { SERVICES, TESTIMONIALS } from './site-data'
+type Translate = (key: string) => string
+function ContactForm({ t, lang }: { t: Translate; lang: Lang }) {
+  const [form, setForm] = useState({ name: '', email: '', service: '', message: '', website: '' })
   const [sending, setSending] = useState(false)
-
-  const serviceOptions = [
-    { key: 'contact.service.ps', value: 'Project Support' },
-    { key: 'contact.service.el', value: 'English Lessons' },
-    { key: 'contact.service.ee', value: 'Events & Experiences' },
-    { key: 'contact.service.other', value: 'Other' },
-  ]
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setSending(true)
-    const subject = `Website Enquiry: ${form.service || 'General'}`
-    const body = `Name: ${form.name}\nEmail: ${form.email}\nService: ${form.service}\n\n${form.message}`
-    window.location.href = `mailto:Lucy@lefthandlucy.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    setTimeout(() => { setSent(true); setSending(false) }, 500)
+  const [reference, setReference] = useState('')
+  const [error, setError] = useState('')
+  const request = useRef({ fingerprint: '', id: '' })
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault()
+    if (sending) return
+    setSending(true); setError('')
+    const fingerprint = JSON.stringify({ ...form, language: lang })
+    if (request.current.fingerprint !== fingerprint) request.current = { fingerprint, id: crypto.randomUUID() }
+    try {
+      const response = await fetch('https://platform.anyos.co.uk/api/public/website-enquiry?site=left-hand-lucy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, language: lang, requestId: request.current.id }), signal: AbortSignal.timeout(20000) })
+      const body = await response.json()
+      if (!response.ok || !body.ok || !body.reference) throw new Error('save_failed')
+      setReference(body.reference)
+    } catch { setError(t('contact.error')) } finally { setSending(false) }
   }
-
-  if (sent) {
-    return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-lucy-cream rounded-2xl p-10 text-center">
-        <CheckCircle size={48} className="text-lucy-sage mx-auto mb-4" />
-        <p className="text-lucy-charcoal font-bold text-lg" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="contact.sent">{t('contact.sent')}</p>
-      </motion.div>
-    )
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid sm:grid-cols-2 gap-4">
-        <input type="text" required placeholder={t('contact.name')} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-          className="w-full bg-lucy-cream border-2 border-transparent focus:border-lucy-sage rounded-xl px-5 py-3.5 text-sm text-lucy-charcoal placeholder:text-lucy-grey/60 outline-none transition-all" />
-        <input type="email" required placeholder={t('contact.email')} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-          className="w-full bg-lucy-cream border-2 border-transparent focus:border-lucy-sage rounded-xl px-5 py-3.5 text-sm text-lucy-charcoal placeholder:text-lucy-grey/60 outline-none transition-all" />
-      </div>
-      <div>
-        <p className="text-lucy-grey text-xs font-bold uppercase tracking-wide mb-2" data-anyos="contact.service">{t('contact.service')}</p>
-        <div className="flex flex-wrap gap-2">
-          {serviceOptions.map(s => (
-            <button key={s.value} type="button" onClick={() => setForm({ ...form, service: s.value })}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${form.service === s.value ? 'bg-lucy-sage text-white scale-105' : 'bg-lucy-cream text-lucy-charcoal hover:bg-lucy-sage/10'}`} data-anyos={s.key}>
-              {t(s.key)}
-            </button>
-          ))}
-        </div>
-      </div>
-      <textarea required placeholder={t('contact.message')} rows={4} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
-        className="w-full bg-lucy-cream border-2 border-transparent focus:border-lucy-sage rounded-xl px-5 py-3.5 text-sm text-lucy-charcoal placeholder:text-lucy-grey/60 outline-none transition-all resize-none" />
-      <button type="submit" disabled={sending}
-        className="w-full sm:w-auto bg-lucy-sage hover:bg-lucy-sage/90 text-white px-8 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm flex items-center gap-2 justify-center disabled:opacity-50">
-        <Send size={16} /> <span data-anyos="contact.send">{sending ? '...' : t('contact.send')}</span>
-      </button>
-    </form>
-  )
+  if (reference) return <div className="form-success" role="status"><CheckCircle size={32} /><h3 data-anyos="contact.sent">{t('contact.sent')}</h3><p className="form-reference">{t('contact.reference')}: {reference.slice(0, 8).toUpperCase()}</p></div>
+  return <form onSubmit={handleSubmit} className="contact-form">
+    <div className="form-row"><label>{t('contact.name')}<input autoComplete="name" name="name" required maxLength={160} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></label><label>{t('contact.email')}<input type="email" autoComplete="email" name="email" required maxLength={200} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></label></div>
+    <fieldset><legend data-anyos="contact.service">{t('contact.service')}</legend><div className="service-options">{[{ key: 'contact.service.ps', value: 'Project Support' }, { key: 'contact.service.el', value: 'English Lessons' }, { key: 'services.ee.title', value: 'Events & Experiences' }, { key: 'contact.service.other', value: 'Other' }].map(option => <button key={option.value} type="button" aria-pressed={form.service === option.value} onClick={() => setForm({ ...form, service: option.value })} data-anyos={option.key}>{t(option.key)}</button>)}</div></fieldset>
+    <label>{t('contact.message')}<textarea name="message" required maxLength={8000} rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} /></label>
+    <label className="form-trap" aria-hidden="true">Website<input tabIndex={-1} autoComplete="off" value={form.website} onChange={e => setForm({ ...form, website: e.target.value })} /></label>
+    {error && <p role="alert" className="form-error">{error}</p>}
+    <button className="button button-primary" type="submit" disabled={sending}><span data-anyos="contact.send">{sending ? t('contact.sending') : t('contact.send')}</span><Send size={16} /></button>
+  </form>
 }
 
-// ── Main Page ─────────────────────────────────────────────
 export default function HomePage() {
   const [lang, setLang] = useState<Lang>('en')
-  const t = (key: string) => translations[lang][key] || translations['en'][key] || key
-
-  return (
-    <LangContext.Provider value={{ lang, t, setLang }}>
-      <div className="min-h-screen bg-white">
-        <Nav />
-
-        {/* ── HERO — Left-aligned, clean, Lucy bg ─────────── */}
-        <section className="min-h-screen flex items-end relative overflow-hidden">
-          <div className="absolute inset-0">
-            {/* Full-bleed hero — the original high-res 5504×3072 LANDSCAPE photo, which
-                fills a wide screen with no zoom (the site had been switched to a cropped
-                600×900 portrait, which is what was zooming into Lucy's head). */}
-            {/* Mobile: crop aimed AT Lucy (she's at ~50% of the frame; 55% sits
-                her centre-to-slightly-left on screen — Jake's spec). Desktop
-                keeps the 72% framing from #5/#6. */}
-            <Image src="/images/lucy-hero.jpg" alt="Lucy smiling in Madrid" fill className="object-cover object-[55%_34%] md:object-[72%_34%]" priority data-anyos-img="hero.image" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent sm:from-black/75 sm:via-black/30" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-          </div>
-          <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 pb-16 sm:pb-20 pt-24 w-full">
-            <div className="max-w-xl">
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="text-lucy-sage font-bold text-xs tracking-[0.25em] uppercase mb-4" data-anyos="hero.tags">
-                {t('hero.tags')}
-              </motion.p>
-              <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.1] mb-5 text-white" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="hero.title">
-                Left Hand Lucy
-              </motion.h1>
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-                className="text-white/50 text-sm italic mb-5" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="hero.tagline">
-                {t('hero.tagline')}
-              </motion.p>
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="text-white/65 text-sm sm:text-base leading-relaxed mb-8 max-w-md" data-anyos="hero.intro">
-                {t('hero.intro')}
-              </motion.p>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap gap-3">
-                <a href="#services" className="bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm" data-anyos="hero.cta1">{t('hero.cta1')}</a>
-                <a href="#contact" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/20 px-7 py-3 rounded-full font-bold transition-all text-sm" data-anyos="hero.cta2">{t('hero.cta2')}</a>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── SERVICES — 3 full sections, no modals ────────── */}
-        <section id="services" className="section-space px-6 sm:px-8 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3" data-anyos="services.label">{t('services.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="services.title">{t('services.title')}</h2>
-            </div>
-
-            <ServicesCarousel />
-          </div>
-        </section>
-
-        {/* ── ABOUT ────────────────────────────────────────── */}
-        <section id="about" className="section-space px-6 sm:px-8 bg-lucy-cream">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-                <div className="relative">
-                  <div className="rounded-3xl overflow-hidden aspect-[4/5]">
-                    <Image src="/images/lucy.jpg" alt="Lucy" width={600} height={750} className="w-full h-full object-cover object-top" data-anyos-img="about.image" />
-                  </div>
-                  <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-4 shadow-lg">
-                    <p className="text-lucy-charcoal font-bold text-sm" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="about.badge">{t('about.badge')}</p>
-                    <p className="text-lucy-grey text-xs" data-anyos="about.badge.sub">{t('about.badge.sub')}</p>
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-                <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3" data-anyos="about.label">{t('about.label')}</p>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-2 leading-tight" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="about.title">
-                  {t('about.title1')}
-                </h2>
-                <h3 className="text-xl italic text-lucy-sage mb-6" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="about.title2">{t('about.title2')}</h3>
-                <div className="space-y-4 text-lucy-grey leading-relaxed text-sm">
-                  <p data-anyos="about.p1">{t('about.p1')}</p>
-                  <p data-anyos="about.p2">{t('about.p2')}</p>
-                  <p data-anyos="about.p3">{t('about.p3')}</p>
-                  <p data-anyos="about.p4">{t('about.p4')}</p>
-                </div>
-                <a href="#contact" className="inline-flex items-center gap-2 mt-8 bg-lucy-sage hover:bg-lucy-sage/90 text-white px-7 py-3.5 rounded-full font-bold transition-all hover:scale-105 shadow-lg shadow-lucy-sage/20 text-sm">
-                  <span data-anyos="about.cta">{t('about.cta')}</span> <ArrowRight size={14} />
-                </a>
-                <div className="flex flex-wrap gap-3 mt-6">
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Globe size={12} className="text-lucy-sage" /> <span data-anyos="about.tag.english">{t('about.tag.english')}</span></span>
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><MapPin size={12} className="text-lucy-blush" /> <span data-anyos="about.tag.madrid">{t('about.tag.madrid')}</span></span>
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><BookOpen size={12} className="text-lucy-gold" /> <span data-anyos="about.tag.teacher">{t('about.tag.teacher')}</span></span>
-                  <span className="bg-white px-4 py-2 rounded-full text-xs font-bold text-lucy-charcoal border border-black/5 flex items-center gap-1.5"><Calendar size={12} className="text-lucy-sage" /> <span data-anyos="about.tag.planner">{t('about.tag.planner')}</span></span>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── TESTIMONIALS ─────────────────────────────────── */}
-        <section id="testimonials" className="section-space px-6 sm:px-8 bg-lucy-cream">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="flex justify-center mb-3">
-                <MessageSquare size={20} className="text-lucy-blush" />
-              </div>
-              <p className="text-lucy-blush font-bold text-sm tracking-wide uppercase mb-3" data-anyos="testimonials.label">{t('testimonials.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="testimonials.title">{t('testimonials.title')}</h2>
-            </div>
-            <TestimonialCarousel />
-          </div>
-        </section>
-
-        {/* ── CONTACT ──────────────────────────────────────── */}
-        <section id="contact" className="section-space px-6 sm:px-8 bg-white">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="flex justify-center mb-3">
-                <Send size={20} className="text-lucy-sage" />
-              </div>
-              <p className="text-lucy-sage font-bold text-sm tracking-wide uppercase mb-3" data-anyos="contact.label">{t('contact.label')}</p>
-              <h2 className="text-3xl sm:text-4xl font-semibold text-lucy-charcoal mb-4" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="contact.title">{t('contact.title')}</h2>
-              <p className="text-lucy-grey max-w-lg mx-auto" data-anyos="contact.desc">{t('contact.desc')}</p>
-            </div>
-            <div className="grid sm:grid-cols-3 gap-6 mb-12">
-              {[
-                { Icon: Mail, k: 'email', label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com', color: '#7B9E87' },
-                { Icon: MapPin, k: 'location', label: 'Location', value: 'Madrid, Spain', href: '#', color: '#E8B4B8' },
-                { Icon: MessageSquare, k: 'whatsapp', label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/message', color: '#C8A96E' },
-              ].map(c => {
-                const CIcon = c.Icon
-                return (
-                  <a key={c.label} href={c.href} className="bg-lucy-cream rounded-2xl p-6 text-center hover:shadow-lg transition-all group">
-                    <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ backgroundColor: c.color + '15' }}>
-                      <CIcon size={20} style={{ color: c.color }} />
-                    </div>
-                    <p className="text-lucy-grey text-xs font-bold uppercase tracking-wide mb-1" data-anyos={`contact.card.${c.k}.label`}>{c.label}</p>
-                    <p className="text-lucy-charcoal font-medium text-sm group-hover:text-lucy-sage transition-colors" data-anyos={`contact.card.${c.k}.value`}>{c.value}</p>
-                  </a>
-                )
-              })}
-            </div>
-            <ContactForm />
-          </div>
-        </section>
-
-        {/* ── FOOTER ───────────────────────────────────────── */}
-        <footer className="bg-lucy-charcoal py-12 px-6 sm:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="text-center md:text-left">
-                <p className="text-white text-lg font-semibold italic mb-1" style={{ fontFamily: 'var(--font-heading)' }} data-anyos="footer.brand">Left Hand Lucy</p>
-                <p className="text-white/40 text-sm" data-anyos="footer.tagline">{t('footer.tagline')}</p>
-              </div>
-              <div className="flex items-center gap-6">
-                <a href="#services" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.services">{t('nav.services')}</a>
-                <a href="#about" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.about">{t('about.label')}</a>
-                <a href="https://connect-cardos.vercel.app" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.conectados">Conectados</a>
-                <a href="#contact" className="text-white/40 hover:text-white text-sm transition-colors" data-anyos="footer.link.contact">{t('nav.contact')}</a>
-              </div>
-            </div>
-            <div className="border-t border-white/10 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-2">
-              <p className="text-white/20 text-xs" data-anyos="footer.rights">{t('footer.rights')}</p>
-              <p className="text-white/20 text-xs" data-anyos="footer.contactline">Lucy@lefthandlucy.com · Madrid, Spain</p>
-            </div>
-          </div>
-        </footer>
-      </div>
-    </LangContext.Provider>
-  )
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [testimonial, setTestimonial] = useState(0)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  const t: Translate = key => translations[lang][key] || translations.en[key] || key
+  useEffect(() => { document.documentElement.lang = lang }, [lang])
+  useEffect(() => { const close = (event: KeyboardEvent) => { if (event.key === 'Escape') { setMenuOpen(false); menuButton.current?.focus() } }; document.addEventListener('keydown', close); return () => document.removeEventListener('keydown', close) }, [])
+  const nav = [{ key: 'nav.home', href: '#home' }, { key: 'nav.services', href: '#services' }, { key: 'about.label', href: '#about' }, { key: 'nav.contact', href: '#contact' }]
+  return <>
+    <a href="#main" className="skip-link">{t('nav.skip')}</a>
+    <header className="site-header"><div className="header-inner"><a className="wordmark" href="#home" data-anyos="nav.brand">Left Hand Lucy</a><nav aria-label="Main navigation" className="desktop-nav">{nav.slice(0, 3).map(item => <a href={item.href} key={item.key} data-anyos={item.key}>{t(item.key)}</a>)}</nav><label className="language-picker"><Globe size={15} /><span className="sr-only">Language</span><select value={lang} onChange={e => setLang(e.target.value as Lang)}>{Object.entries(LANGUAGES).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label><a className="header-cta button button-primary" href="#contact" data-anyos="nav.cta">{t('nav.contact')}<ArrowRight size={15} /></a><button className="menu-button icon-button" ref={menuButton} aria-label={menuOpen ? t('nav.close') : t('nav.open')} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button></div>{menuOpen && <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation">{nav.map((item, index) => <a href={item.href} key={item.key} onClick={() => setMenuOpen(false)}><span className="nav-number">0{index + 1}</span><span data-anyos={item.key}>{t(item.key)}</span><ArrowRight size={18} /></a>)}</nav>}</header>
+    <main id="main">
+      <section id="home" className="hero"><div className="hero-copy"><p className="eyebrow" data-anyos="hero.tags">{t('hero.tags')}</p><h1 data-anyos="hero.title">Left Hand Lucy</h1><p className="hero-tagline" data-anyos="hero.tagline">{t('hero.tagline')}</p><p className="hero-intro" data-anyos="hero.intro">{t('hero.intro')}</p><div className="hero-actions"><a href="#services" className="button button-primary"><span data-anyos="hero.cta1">{t('hero.cta1')}</span><ArrowRight size={16} /></a><a href="#contact" className="button button-secondary" data-anyos="hero.cta2">{t('hero.cta2')}</a></div></div><div className="hero-photo"><Image src="/images/lucy-hero.jpg" alt="Lucy smiling in Madrid" fill priority sizes="(max-width: 767px) 100vw, 52vw" data-anyos-img="hero.image" /><span className="photo-caption"><MapPin size={13} /><span data-anyos="about.tag.madrid">{t('about.tag.madrid')}</span></span></div></section>
+      <section id="services" className="section-space"><div className="container"><div className="section-heading"><p className="eyebrow" data-anyos="services.label">{t('services.label')}</p><h2 data-anyos="services.title">{t('services.title')}</h2></div><div className="services-grid">{SERVICES.map((service, index) => <article key={service.id} className="service-card"><div className="service-top"><span className="service-icon"><service.Icon size={22} strokeWidth={1.5} /></span><span className="service-number">0{index + 1}</span></div><h3 data-anyos={`services.${service.id}.title`}>{t(`services.${service.id}.title`)}</h3><p data-anyos={`services.${service.id}.desc`}>{t(`services.${service.id}.desc`)}</p><ul>{service.includes.map((item, i) => <li key={item}><span data-anyos={`services.${service.id}.item${i + 1}`}>{item}</span></li>)}</ul><a href="#contact" className="text-link"><span data-anyos={`services.${service.id}.cta`}>Get in touch</span><ArrowRight size={16} /></a></article>)}</div></div></section>
+      <section id="about" className="section-space about-section"><div className="container about-grid"><div className="about-photo"><Image src="/images/lucy.jpg" alt="Lucy" width={600} height={750} sizes="(max-width: 767px) 100vw, 40vw" data-anyos-img="about.image" /><div className="about-badge"><BookOpen size={20} /><div><strong data-anyos="about.badge">{t('about.badge')}</strong><span data-anyos="about.badge.sub">{t('about.badge.sub')}</span></div></div></div><div className="about-copy"><p className="eyebrow" data-anyos="about.label">{t('about.label')}</p><h2 data-anyos="about.title">{t('about.title1')}</h2><h3 data-anyos="about.title2">{t('about.title2')}</h3><div className="about-paragraphs">{[1, 2, 3, 4].map(i => <p key={i} data-anyos={`about.p${i}`}>{t(`about.p${i}`)}</p>)}</div><a href="#contact" className="text-link"><span data-anyos="about.cta">{t('about.cta')}</span><ArrowRight size={16} /></a><div className="about-tags">{[{ id: 'english', Icon: Globe }, { id: 'madrid', Icon: MapPin }, { id: 'teacher', Icon: BookOpen }, { id: 'planner', Icon: Calendar }].map(tag => <span key={tag.id}><tag.Icon size={13} /><span data-anyos={`about.tag.${tag.id}`}>{t(`about.tag.${tag.id}`)}</span></span>)}</div></div></div></section>
+      <section id="testimonials" className="section-space testimonials-section"><div className="container"><div className="section-heading"><p className="eyebrow" data-anyos="testimonials.label">{t('testimonials.label')}</p><h2 data-anyos="testimonials.title">{t('testimonials.title')}</h2></div><div className="testimonial-stage" aria-live="polite">{TESTIMONIALS.map((item, i) => <figure key={item.id} hidden={i !== testimonial}><blockquote><span className="quote-mark" aria-hidden="true">“</span><p data-anyos={`testimonials.${item.id}.text`}>{item.text}</p></blockquote><figcaption><strong data-anyos={`testimonials.${item.id}.name`}>{item.name}</strong><span><span data-anyos={`testimonials.${item.id}.role`}>{item.role}</span> · <span data-anyos={`testimonials.${item.id}.service`}>{item.service}</span></span></figcaption></figure>)}</div><div className="testimonial-controls"><button className="icon-button" aria-label={t('reviews.previous')} onClick={() => setTestimonial(i => (i + 4) % 5)}><ChevronLeft size={18} /></button><span>{String(testimonial + 1).padStart(2, '0')} / 05</span><button className="icon-button" aria-label={t('reviews.next')} onClick={() => setTestimonial(i => (i + 1) % 5)}><ChevronRight size={18} /></button></div></div></section>
+      <SiteSections lang={lang} />
+      <section id="contact" className="section-space contact-section"><div className="container contact-grid"><div className="contact-copy"><p className="eyebrow" data-anyos="contact.label">{t('contact.label')}</p><h2 data-anyos="contact.title">{t('contact.title')}</h2><p data-anyos="contact.desc">{t('contact.desc')}</p><div className="contact-links">{[{ Icon: Mail, key: 'email', label: 'Email', value: 'Lucy@lefthandlucy.com', href: 'mailto:Lucy@lefthandlucy.com' }, { Icon: MapPin, key: 'location', label: 'Location', value: 'Madrid, Spain', href: 'https://www.google.com/maps/search/?api=1&query=Madrid%2C%20Spain' }, { Icon: MessageSquare, key: 'whatsapp', label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/34697903144' }].map(link => <a href={link.href} key={link.key} className="contact-link"><link.Icon size={20} strokeWidth={1.5} /><span><span className="contact-link-label" data-anyos={`contact.card.${link.key}.label`}>{link.label}</span><strong data-anyos={`contact.card.${link.key}.value`}>{link.value}</strong></span><ArrowRight size={16} /></a>)}</div></div><ContactForm t={t} lang={lang} /></div></section>
+    </main>
+    <footer className="site-footer"><div className="container"><div className="footer-top"><div><p className="wordmark" data-anyos="footer.brand">Left Hand Lucy</p><p data-anyos="footer.tagline">{t('footer.tagline')}</p></div><nav aria-label="Footer navigation"><a href="#services" data-anyos="footer.link.services">{t('nav.services')}</a><a href="#about" data-anyos="footer.link.about">{t('about.label')}</a><a href="https://connect-cardos.vercel.app" data-anyos="footer.link.conectados">Conectados</a><a href="#contact" data-anyos="footer.link.contact">{t('nav.contact')}</a></nav></div><div className="footer-bottom"><p data-anyos="footer.rights">{t('footer.rights')}</p><p data-anyos="footer.contactline">Lucy@lefthandlucy.com · Madrid, Spain</p></div></div></footer>
+  </>
 }
