@@ -12,5 +12,5 @@ export function GET() {
   return Response.json({ version: 1, site: 'left-hand-lucy', text, images: { 'hero.image': '/images/lucy-hero.jpg', 'about.image': '/images/lucy.jpg' }, styles: {
     '__var.lucy-sage': { type: 'color', default: '#436c57' }, '__var.lucy-gold': { type: 'color', default: '#94713b' }, '__var.lucy-charcoal': { type: 'color', default: '#273d35' }, '__var.lucy-cream': { type: 'color', default: '#faf8f3' },
     '__var.section-space': { type: 'px', min: 24, max: 120, default: '72px' }, '__var.heading-size': { type: 'px', min: 36, max: 100, default: '68px' }, '__var.hero-image-height': { type: 'px', min: 400, max: 900, default: '620px' }, '__var.button-radius': { type: 'px', min: 0, max: 30, default: '8px' }, '__var.card-radius': { type: 'px', min: 0, max: 40, default: '16px' }, '__var.content-width': { type: 'px', min: 900, max: 1440, default: '1160px' },
-  }, sections: true })
+  }, sections: true, sectionRegistryVersion: 1, sectionRendererRevision: 2 })
 }

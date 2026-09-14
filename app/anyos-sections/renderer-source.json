@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "rendererRevision": 2,
+  "sources": {
+    "src/components/website/WebsiteSections.tsx": "6629801f5f38a1c34acb4156017171e66e5cb969425b814a6fee40a341582c8b",
+    "src/components/website/WebsiteSections.module.css": "a8fd920671ff71e331fc3b363fd50c8accd3253844c09e26b6671e8920fd56c0",
+    "src/lib/website/sections.ts": "c5e7c1e030737b293d2af2db09ca76706e19e4fd6b51535ec8372141256eec9e"
+  }
+}
