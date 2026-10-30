@@ -1,10 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
+
+// Testing copies set LHL_TESTING=1 on their own Vercel project so they are never indexed.
+const isTesting = process.env.LHL_TESTING === "1";
+
+// viewport-fit lets the mobile menu respect the iPhone home bar.
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#faf8f3" };
 
 export const metadata: Metadata = {
   title: "Left Hand Lucy — A trusted hand for life's busy corners",
   description: "Event planning, English lessons, and project support in Madrid. Lucy brings calm structure and thoughtful creativity to everything she does.",
+  ...(isTesting ? { robots: { index: false, follow: false } } : {}),
 };
 
 // anyOS Site Settings — read by edit.js to render the "Site Settings" panel.
@@ -41,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
         {/* Declared before edit.js loads so the Site Settings panel can render from it. */}
         <script dangerouslySetInnerHTML={{ __html: `window.ANYOS_SETTINGS = ${JSON.stringify(ANYOS_SETTINGS)};` }} />
       </head>
