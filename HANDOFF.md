@@ -11,8 +11,9 @@ still under reduced motion), service chapters, full-screen phone menu. Every `da
 `data-anyos-img` key, Site Settings variable, manifest, CMS sections, translations and site
 data are unchanged, except testimonials: a quote only renders when Lucy has saved BOTH its
 text and name in the editor (currently t1 only). The enquiry form posts only from
-lefthandlucy.com; other hosts show a note pointing to email/WhatsApp (`?enquiry-test` enables it
-for intercepted tests). No live enquiry, CMS write, platform change or production deploy was made.
+lefthandlucy.com; other hosts show a note pointing to email/WhatsApp. Testing builds (`LHL_TESTING=1`)
+also drop `?anyos_edit` tokens and block every non-GET request to platform.anyos.co.uk before edit.js
+loads, so they cannot save CMS content, upload/generate images or send enquiries. No live enquiry, CMS write, platform change or production deploy was made.
 
 # Lucy website refresh — 10 September 2026
 

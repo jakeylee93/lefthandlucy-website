@@ -34,7 +34,7 @@ function ContactForm({ t, lang, service, setService }: { t: Translate; lang: Lan
   const request = useRef({ fingerprint: '', id: '' })
   useEffect(() => {
     const host = window.location.hostname
-    setCanSend(LIVE_ENQUIRY_HOSTS.includes(host) || new URLSearchParams(window.location.search).has('enquiry-test'))
+    setCanSend(LIVE_ENQUIRY_HOSTS.includes(host))
   }, [])
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
