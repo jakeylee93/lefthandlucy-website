@@ -1,3 +1,19 @@
+# Lucy testing redesign — 30 October 2026
+
+Branch `claude/friendly-allen-bs8sve` (from `main` 25214a1). TESTING ONLY, not for release.
+Preview: https://lefthandlucy-testing-git-claude-friendly-allen-bs8sve-anyos.vercel.app
+(separate Vercel project `lefthandlucy-testing`, no Git link, `LHL_TESTING=1` → noindex).
+`vercel.json` disables automatic Git deploys for this branch so the live project never builds it.
+Remove that entry (and keep `LHL_TESTING` unset) if this design is ever released.
+
+What changed: editorial layout, arched hero with scroll-linked layers (reverses on scroll up,
+still under reduced motion), service chapters, full-screen phone menu. Every `data-anyos` /
+`data-anyos-img` key, Site Settings variable, manifest, CMS sections, translations and site
+data are unchanged, except testimonials: a quote only renders when Lucy has saved BOTH its
+text and name in the editor (currently t1 only). The enquiry form posts only from
+lefthandlucy.com; other hosts show a note pointing to email/WhatsApp (`?enquiry-test` enables it
+for intercepted tests). No live enquiry, CMS write, platform change or production deploy was made.
+
 # Lucy website refresh — 10 September 2026
 
 ## Modular renderer candidate — 14 September 2026
