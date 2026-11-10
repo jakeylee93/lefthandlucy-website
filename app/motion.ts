@@ -85,3 +85,55 @@ export function useHideEmptyEditable() {
     return () => { observer.disconnect(); cancelAnimationFrame(frame) }
   }, [])
 }
+
+/**
+ * Desktop wheel/trackpad: one gesture moves exactly one slide, up or down.
+ * Touch screens keep native scroll-snap. A slide taller than the screen
+ * scrolls normally until its edge, then the next gesture moves on.
+ */
+export function useSlideWheel() {
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let lockedUntil = 0
+    let gesture = 0
+    let lastWheel = 0
+    const stops = () => {
+      // Page stops only: whole slides plus the inner stops some long slides add.
+      // (The services carousel snaps sideways, so its cards are not page stops.)
+      const list = Array.from(document.querySelectorAll<HTMLElement>('.slide, .slide .about-paragraphs, .slide .form-card'))
+        .filter(el => el.classList.contains('slide') || getComputedStyle(el).scrollSnapAlign !== 'none')
+        .map(el => Math.round(el.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0)))
+      list.push(document.documentElement.scrollHeight - window.innerHeight)
+      return Array.from(new Set(list)).sort((a, b) => a - b)
+    }
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || document.body.classList.contains('menu-open')) return
+      const target = event.target as HTMLElement | null
+      if (target?.closest('textarea, select')) return
+      const now = performance.now()
+      // A new gesture starts after a short pause; trackpads send many events per flick.
+      if (now - lastWheel > 180) gesture = 0
+      lastWheel = now
+      const y = window.scrollY
+      const vh = window.innerHeight
+      const down = event.deltaY > 0
+      const all = stops()
+      const current = all.filter(s => s <= y + 2).pop() ?? 0
+      const next = down ? all.find(s => s > y + 2) : [...all].reverse().find(s => s < y - 2)
+      // Inside a slide taller than the screen: let the page scroll normally to its edge.
+      if (down && next !== undefined && next - y > vh + 2) return
+      if (!down && y - current > 2 && y - current < vh) { /* fall through to snap back to this slide's top */ }
+      else if (!down && current !== undefined && y - current >= vh) return
+      event.preventDefault()
+      if (now < lockedUntil || gesture) return
+      gesture = 1
+      const goal = !down && y - current > 2 ? current : next
+      if (goal === undefined) return
+      lockedUntil = now + (reduced.matches ? 250 : 750)
+      window.scrollTo({ top: goal, behavior: reduced.matches ? 'auto' : 'smooth' })
+    }
+    window.addEventListener('wheel', onWheel, { passive: false })
+    return () => window.removeEventListener('wheel', onWheel)
+  }, [])
+}

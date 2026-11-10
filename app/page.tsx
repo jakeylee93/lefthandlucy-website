@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, ArrowUpRight, Mail, MapPin, MessageSquare, Menu, X, Send, CheckCircle, Globe } from 'lucide-react'
 import { translations, Lang } from './translations'
 import { SiteSections } from './site-sections'
-import { SERVICES, TESTIMONIALS } from './site-data'
-import { useHideEmptyEditable, useReveal, useScrollLayers } from './motion'
+import { TESTIMONIALS } from './site-data'
+import { useHideEmptyEditable, useReveal, useScrollLayers, useSlideWheel } from './motion'
+import { ServicesCarousel } from './services-carousel'
 
 const LANGUAGES: Record<Lang, string> = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch' }
 const SERVICE_VALUES: Record<string, string> = { ps: 'Project Support', el: 'English Lessons', ee: 'Events & Experiences' }
@@ -75,6 +76,19 @@ function RotatingStamp({ t }: { t: Translate }) {
   </svg>
 }
 
+/** Side dots: one per full-screen slide, highlights the slide in view. */
+function SlideDots({ slides }: { slides: { id: string; label: string }[] }) {
+  const [active, setActive] = useState(slides[0]?.id)
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => { for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id) }, { threshold: 0.5 })
+    slides.forEach(slide => { const el = document.getElementById(slide.id); if (el) observer.observe(el) })
+    return () => observer.disconnect()
+  // Re-observe only when the set of slides changes, not on every render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slides.map(slide => slide.id).join()])
+  return <nav className="slide-dots" aria-label="Sections">{slides.map(slide => <a key={slide.id} href={`#${slide.id}`} aria-label={slide.label} aria-current={active === slide.id ? 'true' : undefined}><span className="dot-label">{slide.label}</span><span className="dot" /></a>)}</nav>
+}
+
 export default function HomePage() {
   const [lang, setLang] = useState<Lang>('en')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -90,6 +104,7 @@ export default function HomePage() {
   useScrollLayers([heroRef, aboutRef])
   useReveal()
   useHideEmptyEditable()
+  useSlideWheel()
 
   useEffect(() => { document.documentElement.lang = lang }, [lang])
   useEffect(() => {
@@ -134,6 +149,7 @@ export default function HomePage() {
   }, [])
 
   const chooseService = (id: string) => { setService(SERVICE_VALUES[id]); setMenuOpen(false) }
+  const slides = [{ id: 'home', label: t('nav.home') }, { id: 'services', label: t('nav.services') }, { id: 'about', label: t('about.label') }, ...(confirmed.length ? [{ id: 'kind-words', label: t('testimonials.label') }] : []), { id: 'contact', label: t('nav.contact') }]
   const nav = [{ key: 'nav.services', href: '#services' }, { key: 'about.label', href: '#about' }, ...(confirmed.length ? [{ key: 'testimonials.label', href: '#kind-words' }] : []), { key: 'nav.contact', href: '#contact' }]
 
   return <>
@@ -157,8 +173,9 @@ export default function HomePage() {
       </div>
     </header>
 
+    <SlideDots slides={slides} />
     <main id="main">
-      <section id="home" className="hero" ref={heroRef}>
+      <section id="home" className="slide hero" ref={heroRef}>
         <div className="hero-grid">
           <div className="hero-copy">
             <p className="eyebrow" data-anyos="hero.tags">{t('hero.tags')}</p>
@@ -186,22 +203,14 @@ export default function HomePage() {
         <a href="#services" className="scroll-cue" aria-hidden="true" tabIndex={-1}><span /></a>
       </section>
 
-      <section id="services" className="section-space services-section">
+      <section id="services" className="slide services-section">
         <div className="container">
           <div className="section-heading reveal"><p className="eyebrow" data-anyos="services.label">{t('services.label')}</p><h2 data-anyos="services.title">{t('services.title')}</h2></div>
-          <div className="services-list">{SERVICES.map((item, index) => <article key={item.id} id={`service-${item.id}`} className={`service-chapter service-${item.id} reveal`}>
-            <span className="service-number" aria-hidden="true">0{index + 1}</span>
-            <div className="service-main">
-              <h3 data-anyos={`services.${item.id}.title`}>{t(`services.${item.id}.title`)}</h3>
-              <p data-anyos={`services.${item.id}.desc`}>{t(`services.${item.id}.desc`)}</p>
-              <a href="#contact" className="text-link" onClick={() => chooseService(item.id)}><span data-anyos={`services.${item.id}.cta`}>Get in touch</span><ArrowRight size={16} /></a>
-            </div>
-            <ul className="service-includes">{item.includes.map((entry, i) => <li key={entry}><span data-anyos={`services.${item.id}.item${i + 1}`}>{entry}</span></li>)}</ul>
-          </article>)}</div>
+          <ServicesCarousel t={t} onChoose={chooseService} />
         </div>
       </section>
 
-      <section id="about" className="section-space about-section" ref={aboutRef}>
+      <section id="about" className="slide about-section" ref={aboutRef}>
         <div className="container about-grid">
           <div className="about-visual">
             <div className="about-backdrop" aria-hidden="true" />
@@ -218,7 +227,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {confirmed.length > 0 && <section id="kind-words" className="section-space words-section">
+      {confirmed.length > 0 && <section id="kind-words" className="slide words-section">
         <div className="container">
           <div className="section-heading reveal"><p className="eyebrow" data-anyos="testimonials.label">{t('testimonials.label')}</p><h2 data-anyos="testimonials.title">{t('testimonials.title')}</h2></div>
           <div className={`words-list count-${confirmed.length}`}>{confirmed.map(item => <figure key={item.id} className="reveal">
@@ -230,7 +239,7 @@ export default function HomePage() {
 
       <SiteSections lang={lang} />
 
-      <section id="contact" className="contact-section">
+      <section id="contact" className="slide contact-section">
         <div className="container contact-grid">
           <div className="contact-copy reveal">
             <p className="eyebrow" data-anyos="contact.label">{t('contact.label')}</p>

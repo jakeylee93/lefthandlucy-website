@@ -22,7 +22,7 @@
 }
 
 * { box-sizing: border-box }
-html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 12px) }
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory }
 body { margin: 0; font-family: var(--font-body); color: var(--lucy-charcoal); background: var(--lucy-cream); -webkit-font-smoothing: antialiased; overflow-x: clip }
 body.menu-open { overflow: hidden }
 h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 400; text-wrap: balance; margin: 0; font-variation-settings: 'SOFT' 50, 'WONK' 0 }
@@ -56,7 +56,7 @@ h2 { font-size: clamp(34px, 4.4vw, 56px); line-height: 1.08; letter-spacing: -.0
 /* Header */
 .skip-link { position: fixed; top: -100px; left: 16px; z-index: 200; padding: 12px 16px; background: #fff; border-radius: 8px }
 .skip-link:focus { top: 12px }
-.site-header { position: sticky; top: 0; z-index: 60; background: color-mix(in srgb, var(--lucy-cream) 0%, transparent); transition: background .3s, box-shadow .3s, backdrop-filter .3s }
+.site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 60; background: color-mix(in srgb, var(--lucy-cream) 0%, transparent); transition: background .3s, box-shadow .3s, backdrop-filter .3s }
 .site-header.is-scrolled { background: color-mix(in srgb, var(--lucy-cream) 92%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--line) }
 /* No backdrop-filter while open: it would trap the fixed menu sheet inside the header. */
 .site-header.is-open { background: var(--lucy-cream); backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: 0 1px 0 var(--line) }
@@ -112,15 +112,9 @@ h2 { font-size: clamp(34px, 4.4vw, 56px); line-height: 1.08; letter-spacing: -.0
 
 /* Services — editorial chapters */
 .services-section { border-top: 1px solid var(--line) }
-.services-list { border-top: 1px solid var(--line) }
-.service-chapter { position: relative; display: grid; grid-template-columns: 120px minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 56px); padding: clamp(36px, 5vw, 60px) 0; border-bottom: 1px solid var(--line) }
-.service-chapter::before { content: ''; position: absolute; inset: 0 calc(-1 * clamp(12px, 2vw, 28px)); border-radius: var(--card-radius); background: var(--rose-soft); opacity: 0; transition: opacity .4s var(--ease); z-index: -1 }
-.service-chapter:hover::before { opacity: 1 }
 .service-number { font-family: var(--font-heading); font-style: italic; font-size: clamp(44px, 5vw, 72px); line-height: .9; color: var(--lucy-blush) }
 .service-el .service-number { color: var(--lucy-sage) }
 .service-ee .service-number { color: var(--lucy-gold) }
-.service-main h3 { font-size: clamp(28px, 3vw, 38px); line-height: 1.12; margin-bottom: 16px }
-.service-main p { font-size: 16.5px; line-height: 1.75; color: var(--muted); margin-bottom: 18px; max-width: 54ch }
 .service-includes { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 0; align-content: start }
 .service-includes li { font-size: 15px; padding: 11px 0 11px 22px; border-bottom: 1px dashed var(--line); position: relative }
 .service-includes li::before { content: ''; position: absolute; left: 0; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; border: 1px solid var(--lucy-sage) }
@@ -230,8 +224,6 @@ h2 { font-size: clamp(34px, 4.4vw, 56px); line-height: 1.08; letter-spacing: -.0
   .hero h1 { font-size: clamp(46px, 13vw, 64px) }
   .scroll-cue { display: none }
 
-  .service-chapter { grid-template-columns: 1fr; gap: 12px }
-  .service-chapter::before { display: none }
   .about-grid, .contact-grid { grid-template-columns: 1fr }
   .about-visual { margin: 0 auto 8px; max-width: 290px }
   .about-badge { right: -2% }
@@ -252,4 +244,99 @@ h2 { font-size: clamp(34px, 4.4vw, 56px); line-height: 1.08; letter-spacing: -.0
   .hero-backdrop { transform: rotate(4deg) !important }
   .scroll-cue span { animation: none }
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important }
+}
+
+
+/* ── Full-screen slides ─────────────────────────────────────────────
+   Each section fills the screen and the page snaps one slide at a time.
+   A slide taller than a small phone still scrolls inside itself. */
+.slide { position: relative; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: calc(var(--header-h) + clamp(16px, 3vh, 36px)) 0 clamp(28px, 5vh, 56px); scroll-snap-align: start; scroll-snap-stop: always }
+.slide > .container, .slide > .hero-grid { width: 100% }
+.site-footer { scroll-snap-align: end }
+.hero.slide { padding-bottom: clamp(40px, 6vh, 72px) }
+.hero-visual { height: min(var(--hero-image-height), calc(100svh - var(--header-h) - 110px)); min-height: 380px }
+.services-section { border-top: 0; background: var(--rose-soft) }
+.slide .section-heading { margin-bottom: clamp(18px, 3vh, 32px) }
+
+/* Slide dots */
+.slide-dots { position: fixed; z-index: 55; right: clamp(12px, 2vw, 28px); top: 50%; transform: translateY(-50%); display: grid; gap: 4px }
+.slide-dots a { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-height: 28px; min-width: 28px }
+.slide-dots .dot { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--lucy-sage); background: transparent; transition: transform .3s var(--ease), background .3s }
+.slide-dots a[aria-current] .dot { background: var(--lucy-sage); transform: scale(1.35) }
+.slide-dots .dot-label { font-size: 12px; font-weight: 600; letter-spacing: .06em; padding: 4px 10px; border-radius: 999px; background: var(--lucy-cream); box-shadow: 0 6px 18px -10px rgba(39, 61, 53, .5); opacity: 0; transform: translateX(6px); transition: opacity .25s, transform .25s var(--ease); pointer-events: none; white-space: nowrap }
+.slide-dots a:hover .dot-label, .slide-dots a:focus-visible .dot-label { opacity: 1; transform: none }
+
+/* Services carousel */
+.carousel { display: grid; gap: clamp(14px, 2.4vh, 24px) }
+.carousel-tabs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px }
+.carousel-tabs::-webkit-scrollbar { display: none }
+.carousel-tabs button { flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--lucy-charcoal) 18%, transparent); background: var(--lucy-cream); font-size: 14px; transition: background .25s, color .25s, border-color .25s }
+.carousel-tabs button[aria-selected='true'] { background: var(--lucy-charcoal); border-color: var(--lucy-charcoal); color: var(--lucy-cream) }
+.tab-num { font-size: 11px; letter-spacing: .1em; opacity: .7 }
+.carousel-track { display: flex; gap: clamp(14px, 2vw, 24px); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; border-radius: calc(var(--card-radius) + 6px) }
+.carousel-track::-webkit-scrollbar { display: none }
+.service-card { flex: 0 0 min(84%, 900px); scroll-snap-align: start; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 48px); padding: clamp(22px, 3.4vw, 44px); border-radius: calc(var(--card-radius) + 6px); background: var(--lucy-cream); box-shadow: 0 30px 60px -45px rgba(39, 61, 53, .55); opacity: .55; transform: scale(.97); transition: opacity .45s var(--ease), transform .45s var(--ease) }
+.service-card.is-active { opacity: 1; transform: none }
+.service-card:last-child { margin-right: 16%  }
+.service-card-main { display: flex; flex-direction: column; align-items: flex-start }
+.service-card .service-number { font-size: clamp(40px, 4.4vw, 64px); margin-bottom: 10px }
+.service-card h3 { font-size: clamp(26px, 2.8vw, 38px); line-height: 1.1; margin-bottom: 14px }
+.service-card p { font-size: 16px; line-height: 1.7; color: var(--muted); margin-bottom: 22px; max-width: 50ch }
+.service-card .button { margin-top: auto }
+.service-card .service-includes { margin: 0; align-self: center }
+.service-card .service-includes li { font-size: 14.5px; padding: 10px 0 10px 22px }
+.carousel-controls { display: flex; align-items: center; gap: 14px }
+.carousel-arrow { width: 48px; height: 48px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--lucy-charcoal) 22%, transparent); background: var(--lucy-cream); display: grid; place-items: center; transition: background .2s, color .2s }
+.carousel-arrow:not(:disabled):hover { background: var(--lucy-charcoal); color: var(--lucy-cream) }
+.carousel-arrow:disabled { opacity: .35; cursor: default }
+.carousel-progress { flex: 1; display: flex; gap: 6px; max-width: 220px }
+.carousel-progress span { flex: 1; height: 3px; border-radius: 3px; background: color-mix(in srgb, var(--lucy-charcoal) 16%, transparent); transition: background .3s }
+.carousel-progress span.is-active { background: var(--lucy-sage) }
+.carousel-count { font-size: 13px; font-weight: 600; letter-spacing: .08em; color: var(--muted); margin-left: auto }
+
+/* About & contact fit the screen */
+.about-visual { max-height: calc(100svh - var(--header-h) - 120px); aspect-ratio: 2 / 3; width: auto; justify-self: center }
+.about-frame { height: 100% }
+.about-lede { font-size: clamp(20px, 1.9vw, 24px); margin: 22px 0 18px }
+.about-paragraphs { font-size: 15.5px; line-height: 1.7; gap: 12px; margin-bottom: 20px }
+.contact-section { padding-top: calc(var(--header-h) + 24px) }
+
+@media (max-width: 899px) {
+  .slide-dots { display: none }
+  .slide { padding-top: calc(var(--header-h) + 14px); padding-bottom: 20px }
+  .slide h2 { font-size: clamp(30px, 8.5vw, 40px) }
+  .slide .eyebrow { margin-bottom: 10px }
+  .hero-visual { height: clamp(210px, 33svh, 380px); min-height: 0 }
+  .hero h1 { font-size: clamp(40px, 11vw, 58px); margin-bottom: 12px }
+  .hero-tagline { font-size: 18px; margin-bottom: 10px }
+  .hero-intro { font-size: 15px; line-height: 1.6; margin-bottom: 18px }
+  .hero-grid { gap: 18px }
+  .carousel { gap: 12px }
+  .carousel-tabs button { min-height: 40px; padding: 6px 13px; font-size: 13px }
+  .service-card { flex-basis: 88%; grid-template-columns: 1fr; gap: 0; padding: 20px }
+  .service-card:last-child { margin-right: 12% }
+  .service-card-main { display: contents }
+  .service-card .service-number { font-size: 34px; margin-bottom: 4px }
+  .service-card h3 { font-size: 25px; margin-bottom: 8px }
+  .service-card p { font-size: 14.5px; line-height: 1.55; margin-bottom: 14px }
+  .service-card .service-includes { order: 2; display: grid; gap: 2px; margin-bottom: 16px; align-self: start }
+  .service-card .service-includes li { padding: 3px 0 3px 18px; font-size: 13.5px; line-height: 1.35; border: 0 }
+  .service-card .service-includes li::before { width: 6px; height: 6px; margin-top: -3px; background: var(--lucy-sage); border: 0 }
+  .service-card .button { order: 3; justify-self: start }
+  .carousel-arrow { width: 44px; height: 44px }
+  .about-grid { gap: 16px }
+  .about-visual { max-height: none; width: 42%; max-width: 190px; aspect-ratio: 2 / 3 }
+  .about-section .about-badge { display: none }
+  /* Long slides get a second stop so the rest snaps up as its own screen. */
+  .about-paragraphs, .contact-section .form-card { scroll-snap-align: start; scroll-margin-top: calc(var(--header-h) + 16px) }
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-card { transform: none !important }
+}
+@media (min-width: 900px) {
+  .about-section h2 { font-size: clamp(34px, 3.6vw, 50px) }
+  .about-subtitle { margin-top: 6px }
+  .about-lede { margin: 16px 0 14px }
+  .about-paragraphs { gap: 10px; margin-bottom: 16px }
+  .about-tags { margin-bottom: 8px }
 }
