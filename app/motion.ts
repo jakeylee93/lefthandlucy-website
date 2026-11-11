@@ -87,53 +87,84 @@ export function useHideEmptyEditable() {
 }
 
 /**
- * Desktop wheel/trackpad: one gesture moves exactly one slide, up or down.
- * Touch screens keep native scroll-snap. A slide taller than the screen
- * scrolls normally until its edge, then the next gesture moves on.
+ * The page's one scroll helper. Scrolling itself is always the browser's own.
+ * This only adds two visitor-controlled moves, both cancelled the instant the
+ * visitor scrolls, touches, clicks or presses a key:
+ *   1. Links to a section (menu, "Next" control, dots) glide there.
+ *   2. Magnetic settling: when scrolling STOPS within a short distance of a
+ *      section's top, the page eases onto it. It never acts mid-scroll, never
+ *      advances on a timer, and is off for reduced motion, short screens,
+ *      enlarged layouts and while typing in a field.
  */
-export function useSlideWheel() {
+export function useSectionScroll() {
   useEffect(() => {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
-    let lockedUntil = 0
-    let gesture = 0
-    let lastWheel = 0
-    const stops = () => {
-      // Page stops only: whole slides plus the inner stops some long slides add.
-      // (The services carousel snaps sideways, so its cards are not page stops.)
-      const list = Array.from(document.querySelectorAll<HTMLElement>('.slide, .slide .about-paragraphs, .slide .form-card'))
-        .filter(el => el.classList.contains('slide') || getComputedStyle(el).scrollSnapAlign !== 'none')
-        .map(el => Math.round(el.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0)))
-      list.push(document.documentElement.scrollHeight - window.innerHeight)
-      return Array.from(new Set(list)).sort((a, b) => a - b)
+    let frame = 0
+    let idle = 0
+    let touching = false
+    let animating = false
+    const cancel = () => { if (frame) cancelAnimationFrame(frame); frame = 0; animating = false }
+    const animateTo = (target: number, duration: number) => {
+      cancel()
+      const start = window.scrollY
+      const distance = target - start
+      if (Math.abs(distance) < 1) return
+      if (reduced.matches) { window.scrollTo(0, target); return }
+      const began = performance.now()
+      animating = true
+      const step = (now: number) => {
+        const progress = Math.min(1, (now - began) / duration)
+        window.scrollTo(0, start + distance * (1 - Math.pow(1 - progress, 3)))
+        if (progress < 1) frame = requestAnimationFrame(step)
+        else { frame = 0; animating = false }
+      }
+      frame = requestAnimationFrame(step)
     }
-    const onWheel = (event: WheelEvent) => {
-      if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || document.body.classList.contains('menu-open')) return
-      const target = event.target as HTMLElement | null
-      if (target?.closest('textarea, select')) return
-      const now = performance.now()
-      // A new gesture starts after a short pause; trackpads send many events per flick.
-      if (now - lastWheel > 180) gesture = 0
-      lastWheel = now
+    const interrupt = () => { cancel(); window.clearTimeout(idle) }
+    const onTouchStart = () => { touching = true; interrupt() }
+    const onTouchEnd = () => { touching = false; schedule() }
+
+    const settle = () => {
+      if (animating || touching || reduced.matches || window.innerHeight < 640 || document.body.classList.contains('menu-open')) return
+      const focused = document.activeElement
+      if (focused && /^(INPUT|TEXTAREA|SELECT)$/.test(focused.tagName)) return
       const y = window.scrollY
-      const vh = window.innerHeight
-      const down = event.deltaY > 0
-      const all = stops()
-      const current = all.filter(s => s <= y + 2).pop() ?? 0
-      const next = down ? all.find(s => s > y + 2) : [...all].reverse().find(s => s < y - 2)
-      // Inside a slide taller than the screen: let the page scroll normally to its edge.
-      if (down && next !== undefined && next - y > vh + 2) return
-      if (!down && y - current > 2 && y - current < vh) { /* fall through to snap back to this slide's top */ }
-      else if (!down && current !== undefined && y - current >= vh) return
-      event.preventDefault()
-      if (now < lockedUntil || gesture) return
-      gesture = 1
-      const goal = !down && y - current > 2 ? current : next
-      if (goal === undefined) return
-      lockedUntil = now + (reduced.matches ? 250 : 750)
-      window.scrollTo({ top: goal, behavior: reduced.matches ? 'auto' : 'smooth' })
+      const reach = Math.min(window.innerHeight * 0.08, 72)
+      let best: number | null = null
+      document.querySelectorAll<HTMLElement>('.slide').forEach(slide => {
+        const top = Math.round(slide.getBoundingClientRect().top + y)
+        if (Math.abs(top - y) <= reach && (best === null || Math.abs(top - y) < Math.abs(best - y))) best = top
+      })
+      if (best !== null && Math.abs(best - y) >= 1) animateTo(best, 260)
     }
-    window.addEventListener('wheel', onWheel, { passive: false })
-    return () => window.removeEventListener('wheel', onWheel)
+    const schedule = () => { window.clearTimeout(idle); if (!animating) idle = window.setTimeout(settle, 160) }
+
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      const link = (event.target as HTMLElement | null)?.closest<HTMLAnchorElement>('a[href^="#"]')
+      const id = link?.getAttribute('href')?.slice(1)
+      const target = id ? document.getElementById(id) : null
+      if (!link || !target) return
+      event.preventDefault()
+      history.pushState(null, '', `#${id}`)
+      const top = Math.round(target.getBoundingClientRect().top + window.scrollY)
+      // Let the click's own state changes (closing the menu) apply first.
+      requestAnimationFrame(() => animateTo(Math.min(top, document.documentElement.scrollHeight - window.innerHeight), Math.min(650, 320 + Math.abs(top - window.scrollY) * 0.18)))
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1')
+      target.focus({ preventScroll: true })
+    }
+    window.addEventListener('wheel', interrupt, { passive: true })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchend', onTouchEnd, { passive: true })
+    window.addEventListener('touchcancel', onTouchEnd, { passive: true })
+    window.addEventListener('keydown', interrupt)
+    window.addEventListener('mousedown', interrupt)
+    window.addEventListener('scroll', schedule, { passive: true })
+    document.addEventListener('click', onClick)
+    return () => {
+      interrupt()
+      window.removeEventListener('wheel', interrupt); window.removeEventListener('touchstart', onTouchStart); window.removeEventListener('touchend', onTouchEnd); window.removeEventListener('touchcancel', onTouchEnd)
+      window.removeEventListener('keydown', interrupt); window.removeEventListener('mousedown', interrupt); window.removeEventListener('scroll', schedule); document.removeEventListener('click', onClick)
+    }
   }, [])
 }

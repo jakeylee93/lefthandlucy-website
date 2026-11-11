@@ -1,3 +1,22 @@
+# Lucy redesign v3 — 11 November 2026 (branch `claude/friendly-allen-bs8sve`)
+
+Owner: this Claude session (site renderer + adapter). Backend/editor owner: AnyVendor session.
+- **Scroll:** no CSS snapping, no wheel hijack. `useSectionScroll` (app/motion.ts) glides section
+  links and settles onto a section only after scrolling stops within 72px of its top; any wheel,
+  touch, key or mouse press cancels. Off for reduced motion, screens under 640px tall, and while
+  a form field has focus. Nothing advances on a timer.
+- **Design:** full-screen chapters, portrait crops from the 5504px `lucy-hero.jpg`, no decorative
+  shapes. `app/hand.tsx` = one left hand, nine poses, one shown at a time (header; follows the
+  section in view). Faint line icons in Services follow the active service. In-flow "Next — …"
+  control at the foot of each chapter.
+- **Content model:** `app/content/model.ts` (typed sections, validated layout), `sources.ts`
+  (anyOS live adapter; AnyVendor placeholder), `anyvendor-v1.ts` + `GET /site-manifest`
+  (anyvendor.site/v1 manifest, seed, field-to-element map). See docs/ANYVENDOR-ADAPTER.md.
+  **Not frozen** until the backend's v1.1 schema arrives; no editor round trip tested yet.
+- New editable field `hero.availability` ("Remote · In person in Madrid · Available to travel").
+  "Available to travel" comes from Jake's brief, not Lucy's saved content: confirm with Lucy.
+- Production (`main`, lefthandlucy.com) untouched. Cut-over gates are listed in the chat report.
+
 # Lucy testing redesign — 30 October 2026
 
 Branch `claude/friendly-allen-bs8sve` (from `main` 25214a1). TESTING ONLY, not for release.

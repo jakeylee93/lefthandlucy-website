@@ -6,7 +6,7 @@ import { SERVICES } from './site-data'
 type Translate = (key: string) => string
 
 /** Swipeable service cards: native horizontal scroll-snap, with tabs, arrows and a counter. */
-export function ServicesCarousel({ t, onChoose }: { t: Translate; onChoose: (id: string) => void }) {
+export function ServicesCarousel({ t, onChoose, onActive }: { t: Translate; onChoose: (id: string) => void; onActive?: (id: string) => void }) {
   const track = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
 
@@ -27,6 +27,8 @@ export function ServicesCarousel({ t, onChoose }: { t: Translate; onChoose: (id:
     window.addEventListener('resize', onScroll)
     return () => { el.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); cancelAnimationFrame(frame) }
   }, [])
+
+  useEffect(() => { onActive?.(SERVICES[active].id) }, [active, onActive])
 
   const go = (index: number) => {
     const el = track.current
