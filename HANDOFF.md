@@ -1,3 +1,16 @@
+# LIVE CUTOVER — 12 November 2026
+
+www.lefthandlucy.com (apex redirects to www) now serves commit `901acb1` from branch
+`claude/friendly-allen-bs8sve`: deployment `dpl_4B6tz3EYCCFQVSj2aRvGffeCTJ1V`, production target of
+the existing project `lefthandlucy-website` (prj_5Lzp4FfH0STCD1h1UMdA8DNvTlSq). No DNS or domain change.
+Rollback: promote `dpl_GUEd3TSMj2eb89XxZggc7aP5ZdjV` (main `25214a1`).
+Production env added (plain, production only): ANYVENDOR_CONTENT_ORIGIN, ANYVENDOR_EDITOR_ORIGINS,
+ANYVENDOR_PUBLIC_CONTENT. LHL_TESTING is NOT set there. Existing ADMIN_* / BLOB settings untouched.
+Content source: AnyVendor published revision b396f399-3325-43f9-881c-5e8a930a1aa7 (v3); no anyOS script.
+
+**`main` is still the old site (25214a1).** A push to `main` would auto-deploy the old site over this
+one. Merge this branch into `main` (and drop the branch entry in `vercel.json`) before anyone pushes there.
+
 # Lucy × AnyVendor bridge — 12 November 2026 (branch `claude/friendly-allen-bs8sve`)
 
 Site owner: this Claude session. Parent integrator: AnyVendor session 01CzLnDpr3YPPf5ZDVHo4KAa.
