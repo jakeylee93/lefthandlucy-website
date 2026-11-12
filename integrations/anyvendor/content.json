@@ -1,0 +1,172 @@
+{
+  "page": {
+    "chapters": [
+      {
+        "chapter": "services",
+        "visible": true
+      },
+      {
+        "chapter": "about",
+        "visible": true
+      },
+      {
+        "chapter": "testimonials",
+        "visible": true
+      },
+      {
+        "chapter": "contact",
+        "visible": true
+      }
+    ]
+  },
+  "hero": {
+    "tags": "IN PERSON. VIRTUAL. ADAPTABLE.",
+    "title": "Left Hand Lucy",
+    "tagline": "The steady hand that makes things happen, driven by quiet and personal care.",
+    "intro": "I'm Lucy - an experienced Executive Assistant, event planner and organiser based in Madrid. I support businesses, and individuals with everything from day-to-day organisation to events and experiences, both remotely and in person.",
+    "availability": "Remote · In person in Madrid · Available to travel",
+    "about_tag_madrid": "🇪🇸 Based in Madrid",
+    "cta1": "Explore Services",
+    "cta2": "Let's Talk",
+    "image": {
+      "src": "/images/lucy-hero.jpg",
+      "alt": "Lucy smiling on a bench in Madrid"
+    }
+  },
+  "services": {
+    "label": "What I Do",
+    "title": "How I can help",
+    "ps_title": "Project & Business Support",
+    "ps_desc": "When life gets busy, I can help. From admin to scheduling and task organisation, I'll help you stay on track, meet deadlines, and keep projects moving.",
+    "ps_cta": "Get in touch",
+    "el_title": "English Lessons",
+    "el_desc": "English coaching designed to build confidence. Whether you want to improve conversation, writing, or professional communication, I adapt to your goals and learning style.",
+    "el_cta": "Get in touch",
+    "ee_title": "Events & Experiences",
+    "ee_desc": "Whether you're planning a celebration or visiting Madrid for the first time, I'm your personal concierge. From curated city experiences and restaurant bookings to full event coordination — I make sure every detail is taken care of so you can simply enjoy the moment.",
+    "ee_cta": "Get in touch",
+    "ps_includes": [
+      {
+        "text": "Email & inbox management"
+      },
+      {
+        "text": "Calendar & scheduling"
+      },
+      {
+        "text": "Research & analysis"
+      },
+      {
+        "text": "Project Management"
+      },
+      {
+        "text": "Document preparation"
+      },
+      {
+        "text": "Travel arrangements"
+      }
+    ],
+    "el_includes": [
+      {
+        "text": "Conversational English"
+      },
+      {
+        "text": "Business & professional English"
+      },
+      {
+        "text": "Children & young adults"
+      },
+      {
+        "text": "Exam preparation (Cambridge, IELTS)"
+      },
+      {
+        "text": "Pronunciation & accent coaching"
+      },
+      {
+        "text": "Flexible online or in-person"
+      }
+    ],
+    "ee_includes": [
+      {
+        "text": "Venue sourcing & coordination"
+      },
+      {
+        "text": "Madrid city experiences & tours"
+      },
+      {
+        "text": "Concierge planning for visitors"
+      },
+      {
+        "text": "Group events & social gatherings"
+      },
+      {
+        "text": "Restaurant & activity bookings"
+      },
+      {
+        "text": "On-the-day coordination"
+      }
+    ]
+  },
+  "about": {
+    "label": "About Lucy",
+    "title": "Welcome to Left Hand Lucy",
+    "title2": "I'm glad you found me!",
+    "p1": "\"Another string to your bow\" is something I've heard often when people describe my life and career — and it perfectly sums up my journey.",
+    "p2": "I've built a colourful career supporting High Net Worth Executives, teaching English as a Foreign Language to children and adults in Madrid, creating unforgettable events, and building strong connections along the way.",
+    "p3": "Left Hand Lucy grew from a desire to combine my passions: supporting people with their personal and business projects, helping people gain confidence in English, and bringing people together through meaningful events.",
+    "p4": "From handling administrative tasks seamlessly, perfecting that tricky English word or accent, to helping plan that special event, I'm here to be the extra hand you need to succeed and grow.",
+    "badge": "",
+    "badge_sub": "",
+    "tag_english": "🇬🇧 Native English",
+    "tag_teacher": "",
+    "tag_planner": "🎉 Event Planner",
+    "cta": "Let's talk?",
+    "image": {
+      "src": "/images/lucy-portrait-1200.jpg",
+      "alt": "Lucy"
+    }
+  },
+  "testimonials": {
+    "label": "Kind Words",
+    "title": "What people say",
+    "items": [
+      {
+        "text": "Lucy helps me as a VA for a few hours a week and the amount of time it gives back to me to do other things, is incredible. I couldn't be happier!",
+        "name": "Julia Lopez",
+        "role": "",
+        "service": "Virtual Assistant"
+      },
+      {
+        "text": "I've tried a few English tutors over the years, but Lucy stands out immediately. Her teaching style is clear, patient, and completely tailored to what I need. I really look forward to our sessions each week.",
+        "name": "",
+        "role": "",
+        "service": ""
+      },
+      {
+        "text": "I have recently started my own business and I was struggling with keeping myself organised with all of the admin and prioritisation. I hired Lucy to help me organise things and within a couple of weeks there was already a huge difference. She's very reliable and nothing is ever too much trouble.",
+        "name": "",
+        "role": "",
+        "service": ""
+      },
+      {
+        "text": "My daughter's confidence in English has really improved since starting lessons with Lucy. She makes it feel like fun, not an extra hour at school. We couldn't be happier.",
+        "name": "",
+        "role": "",
+        "service": ""
+      }
+    ]
+  },
+  "contact": {
+    "label": "Get in Touch",
+    "title": "Let's talk about what you need",
+    "desc": "Whether you have a question, want to book a lesson, or need help planning something special — I'd love to hear from you.",
+    "card_email_value": {
+      "href": "mailto:Lucy@lefthandlucy.com",
+      "label": "Lucy@lefthandlucy.com"
+    },
+    "card_whatsapp_value": "Message me",
+    "card_location_value": "Madrid, Spain",
+    "service": "What can I help with?",
+    "send": "Send Message",
+    "sent": "Message sent! Lucy will be in touch soon."
+  }
+}

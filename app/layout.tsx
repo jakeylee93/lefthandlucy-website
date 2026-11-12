@@ -1,16 +1,53 @@
-import type { Metadata } from "next";
-import Script from "next/script";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+// Testing copies set LHL_TESTING=1 on their own Vercel project so they are never indexed.
+const isTesting = process.env.LHL_TESTING === "1";
+
+// viewport-fit lets the mobile menu respect the iPhone home bar.
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#faf8f3" };
+
+const SITE_URL = "https://www.lefthandlucy.com";
+const DESCRIPTION = "Event planning, English lessons, and project support in Madrid. Lucy brings calm structure and thoughtful creativity to everything she does.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Left Hand Lucy — A trusted hand for life's busy corners",
-  description: "Event planning, English lessons, and project support in Madrid. Lucy brings calm structure and thoughtful creativity to everything she does.",
+  description: DESCRIPTION,
+  // The one canonical address is the www domain, on every copy of the site.
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", url: SITE_URL, siteName: "Left Hand Lucy", title: "Left Hand Lucy", description: DESCRIPTION, images: [{ url: "/images/lucy-hero-2400.jpg", width: 2400, height: 1340, alt: "Lucy smiling on a bench in Madrid" }] },
+  ...(isTesting ? { robots: { index: false, follow: false } } : {}),
 };
 
 // anyOS Site Settings — read by edit.js to render the "Site Settings" panel.
 // Each setting maps to a CSS custom property on :root (globals.css); edit.js
 // hydrates saved overrides via document.documentElement.style.setProperty(cssVar, value)
 // and fires "anyos:settings-changed" so JS consumers (the carousels) re-read live.
+// Testing copies are read-only. Before edit.js loads: drop any edit link token
+// and refuse every non-GET request to the anyOS platform, so a testing page can
+// never save editor content, upload or generate images, or send an enquiry.
+// Reading Lucy's saved content (GET) still works, so the copy shows her edits.
+const TESTING_READ_ONLY_GUARD = `(function(){
+  var PLATFORM = "platform.anyos.co.uk";
+  var SAFE = { GET: 1, HEAD: 1, OPTIONS: 1 };
+  function isPlatform(url){ try { return new URL(url, location.href).hostname === PLATFORM; } catch (e) { return false; } }
+  try { var u = new URL(location.href); if (u.searchParams.has("anyos_edit")) { u.searchParams.delete("anyos_edit"); history.replaceState(null, "", u.href); } } catch (e) {}
+  try { Object.keys(sessionStorage).forEach(function(k){ if (k.indexOf("anyosEditToken:") === 0) sessionStorage.removeItem(k); }); } catch (e) {}
+  var realFetch = window.fetch;
+  window.fetch = function(input, init){
+    var url = typeof input === "string" ? input : (input && input.url) || String(input);
+    var method = String((init && init.method) || (input && input.method) || "GET").toUpperCase();
+    if (isPlatform(url) && !SAFE[method]) return Promise.reject(new TypeError("Testing site is read-only: " + method + " to anyOS blocked"));
+    return realFetch.apply(this, arguments);
+  };
+  var open = XMLHttpRequest.prototype.open, send = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function(method, url){ this.__lhlBlocked = isPlatform(url) && !SAFE[String(method).toUpperCase()]; return open.apply(this, arguments); };
+  XMLHttpRequest.prototype.send = function(){ if (this.__lhlBlocked) throw new Error("Testing site is read-only"); return send.apply(this, arguments); };
+  if (navigator.sendBeacon) { var beacon = navigator.sendBeacon.bind(navigator); navigator.sendBeacon = function(url, data){ return isPlatform(url) ? false : beacon(url, data); }; }
+  window.__LHL_TESTING_READ_ONLY__ = true;
+})();`;
+
 const ANYOS_SETTINGS = [
     {
       id: "colours",
@@ -41,14 +78,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        {isTesting && <script dangerouslySetInnerHTML={{ __html: TESTING_READ_ONLY_GUARD }} />}
         {/* Declared before edit.js loads so the Site Settings panel can render from it. */}
         <script dangerouslySetInnerHTML={{ __html: `window.ANYOS_SETTINGS = ${JSON.stringify(ANYOS_SETTINGS)};` }} />
       </head>
       <body>
         {children}
-        {/* anyOS live-edit: hydrates data-anyos text / data-anyos-img images + click-to-edit from the anyOS Website module. */}
-        <Script src="https://platform.anyos.co.uk/edit.js?v=6" data-site="left-hand-lucy" strategy="afterInteractive" />
       </body>
     </html>
   );

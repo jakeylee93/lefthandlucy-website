@@ -1,3 +1,69 @@
+# LIVE CUTOVER — 12 November 2026
+
+www.lefthandlucy.com (apex redirects to www) now serves commit `901acb1` from branch
+`claude/friendly-allen-bs8sve`: deployment `dpl_4B6tz3EYCCFQVSj2aRvGffeCTJ1V`, production target of
+the existing project `lefthandlucy-website` (prj_5Lzp4FfH0STCD1h1UMdA8DNvTlSq). No DNS or domain change.
+Rollback: promote `dpl_GUEd3TSMj2eb89XxZggc7aP5ZdjV` (main `25214a1`).
+Production env added (plain, production only): ANYVENDOR_CONTENT_ORIGIN, ANYVENDOR_EDITOR_ORIGINS,
+ANYVENDOR_PUBLIC_CONTENT. LHL_TESTING is NOT set there. Existing ADMIN_* / BLOB settings untouched.
+Content source: AnyVendor published revision b396f399-3325-43f9-881c-5e8a930a1aa7 (v3); no anyOS script.
+
+This branch is merged into `main`, so `main` is the rebuilt site and a push there redeploys it.
+The temporary `vercel.json` (which stopped the live project building this branch) is removed.
+
+# Lucy × AnyVendor bridge — 12 November 2026 (branch `claude/friendly-allen-bs8sve`)
+
+Site owner: this Claude session. Parent integrator: AnyVendor session 01CzLnDpr3YPPf5ZDVHo4KAa.
+Contract read from jakeylee93/anyvendor@1f2379e. Packet: `integrations/anyvendor/` (6 sections, 50 fields).
+- `/preview?token=<uuid>[&av_edit=1]`: server-side draft read, 404 for a missing/malformed/wrong token,
+  `no-store`, noindex, `no-referrer`, `frame-ancestors 'self' https://platform.anyvendor.co.uk`
+  (+ `ANYVENDOR_EDITOR_ORIGINS`). No anyOS script on it. Bridge = unchanged copy, started only with `av_edit=1`.
+- Live in the frame: text and image description (`set`), `highlight`, `select`, chapter add/hide/reorder
+  (`onChapters` → React state), `reload`. A draft never submits the form.
+- Public page unchanged: anyOS + `edit.js`. It switches to AnyVendor's published content only with
+  `ANYVENDOR_PUBLIC_CONTENT=1` on the deployment AND published content; otherwise built-in + anyOS.
+- Tested against a stand-in API and editor only (18 checks). NOT yet run against the real editor:
+  Lucy's site is not bound in AnyVendor (the real API returns 404 for `left-hand-lucy`).
+- Not editable through AnyVendor: navigation and footer text, form field labels, WhatsApp number and map
+  link targets, button link targets, the hand signature and service icons, style settings, the three
+  non-English translations, and anyOS "added modules" (none saved today).
+
+# Lucy redesign v3 — 11 November 2026 (branch `claude/friendly-allen-bs8sve`)
+
+Owner: this Claude session (site renderer + adapter). Backend/editor owner: AnyVendor session.
+- **Scroll:** no CSS snapping, no wheel hijack. `useSectionScroll` (app/motion.ts) glides section
+  links and settles onto a section only after scrolling stops within 72px of its top; any wheel,
+  touch, key or mouse press cancels. Off for reduced motion, screens under 640px tall, and while
+  a form field has focus. Nothing advances on a timer.
+- **Design:** full-screen chapters, portrait crops from the 5504px `lucy-hero.jpg`, no decorative
+  shapes. `app/hand.tsx` = one left hand, nine poses, one shown at a time (header; follows the
+  section in view). Faint line icons in Services follow the active service. In-flow "Next — …"
+  control at the foot of each chapter.
+- **Content model:** `app/content/model.ts` (typed sections, validated layout), `sources.ts`
+  (anyOS live adapter; AnyVendor placeholder), `anyvendor-v1.ts` + `GET /site-manifest`
+  (anyvendor.site/v1 manifest, seed, field-to-element map). See docs/ANYVENDOR-ADAPTER.md.
+  **Not frozen** until the backend's v1.1 schema arrives; no editor round trip tested yet.
+- New editable field `hero.availability` ("Remote · In person in Madrid · Available to travel").
+  "Available to travel" comes from Jake's brief, not Lucy's saved content: confirm with Lucy.
+- Production (`main`, lefthandlucy.com) untouched. Cut-over gates are listed in the chat report.
+
+# Lucy testing redesign — 30 October 2026
+
+Branch `claude/friendly-allen-bs8sve` (from `main` 25214a1). TESTING ONLY, not for release.
+Preview: https://lefthandlucy-testing-git-claude-friendly-allen-bs8sve-anyos.vercel.app
+(separate Vercel project `lefthandlucy-testing`, no Git link, `LHL_TESTING=1` → noindex).
+`vercel.json` disables automatic Git deploys for this branch so the live project never builds it.
+Remove that entry (and keep `LHL_TESTING` unset) if this design is ever released.
+
+What changed: editorial layout, arched hero with scroll-linked layers (reverses on scroll up,
+still under reduced motion), service chapters, full-screen phone menu. Every `data-anyos` /
+`data-anyos-img` key, Site Settings variable, manifest, CMS sections, translations and site
+data are unchanged, except testimonials: a quote only renders when Lucy has saved BOTH its
+text and name in the editor (currently t1 only). The enquiry form posts only from
+lefthandlucy.com; other hosts show a note pointing to email/WhatsApp. Testing builds (`LHL_TESTING=1`)
+also drop `?anyos_edit` tokens and block every non-GET request to platform.anyos.co.uk before edit.js
+loads, so they cannot save CMS content, upload/generate images or send enquiries. No live enquiry, CMS write, platform change or production deploy was made.
+
 # Lucy website refresh — 10 September 2026
 
 ## Modular renderer candidate — 14 September 2026
