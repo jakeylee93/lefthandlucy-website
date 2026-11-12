@@ -4,7 +4,8 @@
  * five fingers in a different position, so poses share one silhouette and
  * ease naturally from one to the next. Only one gesture shows at a time.
  */
-import type { CSSProperties } from 'react'
+'use client'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
 export type HandPose = 'wave' | 'thumbsUp' | 'ok' | 'pointRight' | 'pointDown' | 'peace' | 'three' | 'palm' | 'fist'
 export const HAND_POSES: HandPose[] = ['wave', 'thumbsUp', 'ok', 'pointRight', 'pointDown', 'peace', 'three', 'palm', 'fist']
@@ -27,7 +28,7 @@ const POSES: Record<HandPose, Pose> = {
 const FINGERS = [{ x: 22.2, len: 12.5 }, { x: 27.9, len: 16.5 }, { x: 33.6, len: 18 }, { x: 39.3, len: 16 }]
 const KNUCKLE_Y = 30
 
-export function LeftHand({ pose, className = '', title }: { pose: HandPose; className?: string; title?: string }) {
+function SvgHand({ pose, className = '', title }: { pose: HandPose; className?: string; title?: string }) {
   const p = POSES[pose]
   const digit = (d: Digit, x: number, y: number): CSSProperties => ({ transformOrigin: `${x}px ${y}px`, transform: `rotate(${d[0]}deg) scaleY(${d[1]})` })
   return <svg className={`left-hand pose-${pose} ${className}`} viewBox="0 0 64 64" role={title ? 'img' : undefined} aria-label={title} aria-hidden={title ? undefined : true} focusable="false">
@@ -38,4 +39,54 @@ export function LeftHand({ pose, className = '', title }: { pose: HandPose; clas
       <line className="hand-thumb" x1="40.2" y1="42" x2="40.2" y2="29.5" style={digit(p.thumb, 40.2, 42)} />
     </g>
   </svg>
+}
+
+// ── Rendered hand (Blender) ──────────────────────────────────────────────
+// public/hand/sheet.webp is a 9 × 9 grid rendered from assets-src/hand/hand.blend:
+// one row per pose (HAND_POSES order), column 0 = relaxed open hand, column 8 = the pose.
+// Changing pose plays the current row back to the open hand, then the new row forward.
+const SHEET = '/hand/sheet.webp'
+const FRAMES = 9
+const FRAME_MS = 30 // ≈ 16 steps ≈ 480 ms per change
+const cell = (row: number, col: number) => `${(col / (FRAMES - 1)) * 100}% ${(row / (HAND_POSES.length - 1)) * 100}%`
+
+/**
+ * The hand signature. Shows the rendered Blender hand once its sprite sheet has
+ * loaded (the flat SVG hand is the lightweight first paint and the fallback).
+ * It only animates on a pose change, never in a loop; with reduced motion, or
+ * while the tab is hidden, it switches straight to the final still.
+ */
+export function LeftHand({ pose, className = '', title }: { pose: HandPose; className?: string; title?: string }) {
+  const [ready, setReady] = useState(false)
+  const el = useRef<HTMLSpanElement>(null)
+  const shown = useRef<{ row: number; col: number }>({ row: HAND_POSES.indexOf(pose), col: FRAMES - 1 })
+
+  useEffect(() => {
+    // Fetch the sheet after the page has settled, so it never competes with first paint.
+    const load = () => { const image = new Image(); image.onload = () => setReady(true); image.src = SHEET }
+    const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback
+    const timer = idle ? idle(load) : window.setTimeout(load, 1200)
+    return () => { if (!idle) window.clearTimeout(timer) }
+  }, [])
+
+  useEffect(() => {
+    const node = el.current
+    if (!ready || !node) return
+    const target = HAND_POSES.indexOf(pose)
+    const paint = (row: number, col: number) => { shown.current = { row, col }; node.style.backgroundPosition = cell(row, col) }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.hidden || shown.current.row === target) { paint(target, FRAMES - 1); return }
+    let timer = 0
+    const step = () => {
+      const { row, col } = shown.current
+      if (row !== target) { if (col > 0) paint(row, col - 1); else paint(target, 0) }   // back to the open hand, then switch row
+      else if (col < FRAMES - 1) paint(row, col + 1)
+      if (shown.current.row !== target || shown.current.col < FRAMES - 1) timer = window.setTimeout(step, FRAME_MS)
+    }
+    timer = window.setTimeout(step, FRAME_MS)
+    return () => window.clearTimeout(timer)
+  }, [pose, ready])
+
+  if (!ready) return <SvgHand pose={pose} className={className} title={title} />
+  return <span ref={el} className={`hand-sprite ${className}`} data-pose={pose} role={title ? 'img' : undefined} aria-label={title} aria-hidden={title ? undefined : true}
+    style={{ backgroundImage: `url(${SHEET})`, backgroundSize: `${FRAMES * 100}% ${HAND_POSES.length * 100}%`, backgroundPosition: cell(shown.current.row, shown.current.col) }} />
 }

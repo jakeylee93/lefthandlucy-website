@@ -14,36 +14,6 @@ function useReducedMotion(callback: (reduced: boolean) => void | (() => void)) {
   }, [])
 }
 
-/**
- * Writes scroll progress into CSS custom properties so the layers are moved by
- * CSS transforms only. Progress is derived from the current scroll position,
- * so scrolling back up plays every layer in reverse. Reduced motion: no values.
- *   --p : 0 when the element's top is at the viewport top, 1 when it has left.
- *   --q : 0 when the element enters at the bottom, 1 when it leaves at the top.
- */
-export function useScrollLayers(refs: RefObject<HTMLElement | null>[]) {
-  useReducedMotion(reduced => {
-    const elements = refs.map(ref => ref.current).filter(Boolean) as HTMLElement[]
-    if (reduced) { elements.forEach(el => { el.style.removeProperty('--p'); el.style.removeProperty('--q') }); return }
-    let frame = 0
-    const update = () => {
-      frame = 0
-      const vh = window.innerHeight
-      for (const el of elements) {
-        const rect = el.getBoundingClientRect()
-        if (rect.bottom < -vh || rect.top > vh * 2) continue
-        el.style.setProperty('--p', clamp(-rect.top / Math.max(rect.height, 1)).toFixed(4))
-        el.style.setProperty('--q', clamp((vh - rect.top) / (vh + rect.height)).toFixed(4))
-      }
-    }
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
-    update()
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule)
-    return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule) }
-  })
-}
-
 /** Gentle one-way fade-up for blocks marked .reveal. Content stays visible without JS or with reduced motion. */
 export function useReveal() {
   useReducedMotion(reduced => {
@@ -87,84 +57,89 @@ export function useHideEmptyEditable() {
 }
 
 /**
- * The page's one scroll helper. Scrolling itself is always the browser's own.
- * This only adds two visitor-controlled moves, both cancelled the instant the
- * visitor scrolls, touches, clicks or presses a key:
- *   1. Links to a section (menu, "Next" control, dots) glide there.
- *   2. Magnetic settling: when scrolling STOPS within a short distance of a
- *      section's top, the page eases onto it. It never acts mid-scroll, never
- *      advances on a timer, and is off for reduced motion, short screens,
- *      enlarged layouts and while typing in a field.
+ * Section links (menu, "Next", dots) glide the chapter container to their target.
+ * Everything else is the browser's own scrolling and CSS scroll-snap, so the
+ * magnet works in both directions and never fights the visitor. The glide is
+ * cancelled the instant the visitor scrolls, touches, clicks or presses a key;
+ * snapping is paused only for the glide itself and restored on finish or cancel.
  */
-export function useSectionScroll() {
+export function useSectionScroll(scroller: RefObject<HTMLElement | null>) {
   useEffect(() => {
+    const box = scroller.current
+    if (!box) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
     let frame = 0
-    let idle = 0
-    let touching = false
-    let animating = false
-    const cancel = () => { if (frame) cancelAnimationFrame(frame); frame = 0; animating = false }
-    const animateTo = (target: number, duration: number) => {
-      cancel()
-      const start = window.scrollY
+    let origin = 0   // where the current glide started
+    let goal = -1    // where it is heading (-1: no glide)
+    const finish = () => { if (frame) cancelAnimationFrame(frame); frame = 0; goal = -1; box.style.removeProperty('scroll-snap-type') }
+    const glide = (target: number) => {
+      finish()
+      origin = box.scrollTop; goal = target
+      const start = box.scrollTop
       const distance = target - start
       if (Math.abs(distance) < 1) return
-      if (reduced.matches) { window.scrollTo(0, target); return }
+      if (reduced.matches) { box.scrollTop = target; return }
+      const duration = Math.min(620, 300 + Math.abs(distance) * 0.18)
       const began = performance.now()
-      animating = true
+      box.style.scrollSnapType = 'none'
       const step = (now: number) => {
         const progress = Math.min(1, (now - began) / duration)
-        window.scrollTo(0, start + distance * (1 - Math.pow(1 - progress, 3)))
+        box.scrollTop = start + distance * (1 - Math.pow(1 - progress, 3))
         if (progress < 1) frame = requestAnimationFrame(step)
-        else { frame = 0; animating = false }
+        else finish()
       }
       frame = requestAnimationFrame(step)
     }
-    const interrupt = () => { cancel(); window.clearTimeout(idle) }
-    const onTouchStart = () => { touching = true; interrupt() }
-    const onTouchEnd = () => { touching = false; schedule() }
-
-    const settle = () => {
-      if (animating || touching || reduced.matches || window.innerHeight < 640 || document.body.classList.contains('menu-open')) return
-      const focused = document.activeElement
-      if (focused && /^(INPUT|TEXTAREA|SELECT)$/.test(focused.tagName)) return
-      const y = window.scrollY
-      const reach = Math.min(window.innerHeight * 0.08, 72)
-      let best: number | null = null
-      document.querySelectorAll<HTMLElement>('.slide').forEach(slide => {
-        const top = Math.round(slide.getBoundingClientRect().top + y)
-        if (Math.abs(top - y) <= reach && (best === null || Math.abs(top - y) < Math.abs(best - y))) best = top
-      })
-      if (best !== null && Math.abs(best - y) >= 1) animateTo(best, 260)
-    }
-    const schedule = () => { window.clearTimeout(idle); if (!animating) idle = window.setTimeout(settle, 160) }
-
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const link = (event.target as HTMLElement | null)?.closest<HTMLAnchorElement>('a[href^="#"]')
       const id = link?.getAttribute('href')?.slice(1)
       const target = id ? document.getElementById(id) : null
-      if (!link || !target) return
+      if (!link || !target || !box.contains(target)) return
       event.preventDefault()
-      history.pushState(null, '', `#${id}`)
-      const top = Math.round(target.getBoundingClientRect().top + window.scrollY)
+      history.replaceState(null, '', `#${id}`)
       // Let the click's own state changes (closing the menu) apply first.
-      requestAnimationFrame(() => animateTo(Math.min(top, document.documentElement.scrollHeight - window.innerHeight), Math.min(650, 320 + Math.abs(top - window.scrollY) * 0.18)))
+      requestAnimationFrame(() => glide(Math.min(target.offsetTop, box.scrollHeight - box.clientHeight)))
       if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1')
       target.focus({ preventScroll: true })
     }
-    window.addEventListener('wheel', interrupt, { passive: true })
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchend', onTouchEnd, { passive: true })
-    window.addEventListener('touchcancel', onTouchEnd, { passive: true })
-    window.addEventListener('keydown', interrupt)
-    window.addEventListener('mousedown', interrupt)
-    window.addEventListener('scroll', schedule, { passive: true })
-    document.addEventListener('click', onClick)
-    return () => {
-      interrupt()
-      window.removeEventListener('wheel', interrupt); window.removeEventListener('touchstart', onTouchStart); window.removeEventListener('touchend', onTouchEnd); window.removeEventListener('touchcancel', onTouchEnd)
-      window.removeEventListener('keydown', interrupt); window.removeEventListener('mousedown', interrupt); window.removeEventListener('scroll', schedule); document.removeEventListener('click', onClick)
+    const cancel = () => { if (frame) finish() }
+
+    // A notched mouse wheel moves in ~100px steps, which native snapping would pull
+    // straight back. So one notch = one chapter in the direction turned. A notch the
+    // other way during the move turns it round at once; extra notches the same way
+    // are simply absorbed until it lands. Trackpads and touch are left fully native.
+    const tops = () => Array.from(box.querySelectorAll<HTMLElement>('.chapter')).map(chapter => chapter.offsetTop)
+    const onWheel = (event: WheelEvent) => {
+      const legacy = (event as WheelEvent & { wheelDeltaY?: number }).wheelDeltaY
+      const notched = event.deltaMode === 1 || (Math.abs(event.deltaY) >= 50 && Number.isInteger(event.deltaY) && typeof legacy === 'number' && legacy !== 0 && Math.abs(legacy) % 120 === 0)
+      if (!notched || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) { cancel(); return }
+      const down = event.deltaY > 0
+      if (goal >= 0) {                                 // a move is under way
+        event.preventDefault()
+        if (down !== goal > origin) glide(origin)      // other way: turn round now (same way: already going there)
+        return
+      }
+      if (getComputedStyle(box).scrollSnapType === 'none' || box.classList.contains('is-relaxed') || reduced.matches) return
+      if ((event.target as HTMLElement | null)?.closest('textarea, select')) return
+      event.preventDefault()
+      const all = tops()
+      const here = all.reduce((best, top) => Math.abs(top - box.scrollTop) < Math.abs(best - box.scrollTop) ? top : best, all[0] ?? 0)
+      const next = down ? all.find(top => top > here + 1) : [...all].reverse().find(top => top < here - 1)
+      if (next !== undefined) glide(next)
     }
-  }, [])
+    // Chapters taller than the screen (enlarged text, an opened "more"): relax snapping so every part stays reachable.
+    const relax = () => box.classList.toggle('is-relaxed', Array.from(box.querySelectorAll<HTMLElement>('.chapter')).some(chapter => chapter.offsetHeight > box.clientHeight + 1))
+    const sizes = new ResizeObserver(relax)
+    box.querySelectorAll('.chapter').forEach(chapter => sizes.observe(chapter))
+    sizes.observe(box)
+    // Keys scroll the chapters even before anything inside has focus.
+    if (document.activeElement === document.body) box.focus({ preventScroll: true })
+    box.addEventListener('wheel', onWheel, { passive: false })
+    box.addEventListener('touchstart', cancel, { passive: true })
+    window.addEventListener('keydown', cancel)
+    window.addEventListener('mousedown', cancel)
+    document.addEventListener('click', onClick)
+    return () => { finish(); sizes.disconnect(); box.removeEventListener('wheel', onWheel); box.removeEventListener('touchstart', cancel); window.removeEventListener('keydown', cancel); window.removeEventListener('mousedown', cancel); document.removeEventListener('click', onClick) }
+  }, [scroller])
 }

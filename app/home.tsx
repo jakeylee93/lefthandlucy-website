@@ -1,11 +1,12 @@
 'use client'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, BookOpen, CalendarDays, CheckCircle, Globe, GraduationCap, Luggage, Mail, MapPin, Menu, MessageSquare, PartyPopper, PenLine, Plane, Send, X } from 'lucide-react'
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, CheckCircle, ChevronDown, Globe, Mail, MapPin, Menu, MessageSquare, Send, X } from 'lucide-react'
 import { translations, Lang } from './translations'
 import { SiteSections } from './site-sections'
 import { TESTIMONIALS } from './site-data'
-import { useHideEmptyEditable, useReveal, useScrollLayers, useSectionScroll } from './motion'
+import { useHideEmptyEditable, useReveal, useSectionScroll } from './motion'
 import { ServicesCarousel } from './services-carousel'
+import { More } from './more'
 import { HAND_POSES, LeftHand, type HandPose } from './hand'
 import Script from 'next/script'
 import { DEFAULT_LAYOUT, SITE_KEY, type SectionInstance, type SectionKind } from './content/model'
@@ -22,8 +23,6 @@ const LIVE_ENQUIRY_HOSTS = ['lefthandlucy.com', 'www.lefthandlucy.com']
 // One gesture per moment: the header hand follows the section in view.
 const SECTION_POSE: Record<string, HandPose> = { home: 'wave', about: 'ok', 'kind-words': 'thumbsUp', more: 'three', contact: 'pointDown' }
 const SERVICE_POSE: Record<string, HandPose> = { ps: 'palm', el: 'pointRight', ee: 'peace' }
-// Faint line icons tied to the service on show.
-const SERVICE_ICONS = { ps: [CalendarDays, PenLine], el: [GraduationCap, BookOpen], ee: [PartyPopper, Plane, Luggage] } as const
 
 type Translate = (key: string) => string
 type Testimonial = (typeof TESTIMONIALS)[number] & { shownText: string; shownName: string; shownRole: string; shownService: string }
@@ -79,13 +78,12 @@ function SlideDots({ slides, active }: { slides: Slide[]; active: string }) {
 function NextControl({ slides, id, t }: { slides: Slide[]; id: string; t: Translate }) {
   const next = slides[slides.findIndex(slide => slide.id === id) + 1]
   if (!next) return null
-  return <a className="next-control" href={`#${next.id}`}><span className="next-word">{t('nav.next')}</span><span className="next-label">{next.label}</span><ArrowDown size={15} strokeWidth={1.8} /></a>
+  return <a className="next-control" href={`#${next.id}`}><span className="next-word">{t('nav.next')}</span><span className="next-label">{next.label}</span><ArrowDown size={14} strokeWidth={1.8} /></a>
 }
 
 export default function Home({ source = 'anyos', av, draft = false, edit = false, editorOrigins = [] }: HomeProps) {
   const [lang, setLang] = useState<Lang>('en')
   const [menuOpen, setMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
   const [service, setService] = useState('')
   const [activeService, setActiveService] = useState('ps')
   const [activeSlide, setActiveSlide] = useState('home')
@@ -94,22 +92,15 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
   const [confirmed, setConfirmed] = useState<Testimonial[]>(() => (av?.quotes ?? []).map(quote => ({ id: `q${quote.index}`, text: quote.text, name: quote.name, role: quote.role, service: quote.service, shownText: quote.text, shownName: quote.name, shownRole: quote.role, shownService: quote.service })))
   const menuButton = useRef<HTMLButtonElement>(null)
   const firstMenuLink = useRef<HTMLAnchorElement>(null)
-  const heroRef = useRef<HTMLElement>(null)
+  const scroller = useRef<HTMLElement>(null)
   // Saved AnyVendor text wins over the built-in text (as anyOS overrides do today), even when saved empty.
   const t: Translate = key => { const id = key === 'about.title1' ? 'about.title' : key; return av && id in av.fields ? av.fields[id] : translations[lang][key] || translations.en[key] || key }
 
-  useScrollLayers([heroRef])
   useReveal()
   useHideEmptyEditable()
-  useSectionScroll()
+  useSectionScroll(scroller)
 
   useEffect(() => { document.documentElement.lang = lang }, [lang])
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
   useEffect(() => {
     const close = (event: KeyboardEvent) => { if (event.key === 'Escape' && menuOpen) { setMenuOpen(false); menuButton.current?.focus() } }
     document.addEventListener('keydown', close)
@@ -177,7 +168,6 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
   const pose: HandPose = posePick ?? (activeSlide === 'services' ? SERVICE_POSE[activeService] : SECTION_POSE[activeSlide]) ?? 'wave'
   const nextPose = () => setPosePick(HAND_POSES[(HAND_POSES.indexOf(pose) + 1) % HAND_POSES.length])
   const nav = slides.filter(slide => slide.id !== 'home')
-  const DecorIcons = SERVICE_ICONS[activeService as keyof typeof SERVICE_ICONS] || SERVICE_ICONS.ps
 
   const quoteMark = (id: string, index: number, sub: string) => source === 'anyvendor' ? (edit ? { 'data-av-field': `testimonials.items.${id.slice(1)}.${sub}` } : {}) : { 'data-anyos': `testimonials.${id}.${sub}` }
   const chapter = (kind: SectionKind) => (source === 'anyvendor' && CHAPTER_KEY[kind] ? { 'data-av-chapter': CHAPTER_KEY[kind] } : {})
@@ -185,60 +175,60 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
   const customHero = heroImage && heroImage.src !== '/images/lucy-hero.jpg', customAbout = aboutImage && aboutImage.src !== '/images/lucy-portrait-1200.jpg'
   const email = av?.email ?? { href: 'mailto:Lucy@lefthandlucy.com', label: 'Lucy@lefthandlucy.com' }
 
+  const contactLinks = [{ Icon: Mail, key: 'email', label: 'Email', value: email.label, href: email.href }, { Icon: MessageSquare, key: 'whatsapp', label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/34697903144' }, { Icon: MapPin, key: 'location', label: 'Location', value: 'Madrid, Spain', href: 'https://www.google.com/maps/search/?api=1&query=Madrid%2C%20Spain' }]
+  const saved = (key: string, fallback: string) => (av && key in av.fields ? av.fields[key] : fallback)
+
+  // Each chapter is one composed screen: one purpose, one main action. Longer detail sits behind a named "more" control.
   const sections: Record<SectionKind, (id: string) => React.ReactNode> = {
-    hero: id => <section key={id} id={id} className="slide hero" ref={heroRef}>
-      <div className="slide-body hero-grid">
-        <div className="hero-copy">
-          <p className="eyebrow" data-anyos="hero.tags">{t('hero.tags')}</p>
-          <h1 data-anyos="hero.title">{t('hero.title')}</h1>
-          <p className="hero-tagline" data-anyos="hero.tagline">{t('hero.tagline')}</p>
-          <p className="hero-intro" data-anyos="hero.intro">{t('hero.intro')}</p>
-          <div className="hero-actions">
-            <a href="#services" className="button button-primary"><span data-anyos="hero.cta1">{t('hero.cta1')}</span><ArrowRight size={16} /></a>
-            <a href="#contact" className="button button-ghost" data-anyos="hero.cta2">{t('hero.cta2')}</a>
-          </div>
-          <p className="hero-facts"><span className="hero-place" data-hide-empty><MapPin size={14} strokeWidth={1.7} /><span data-anyos="about.tag.madrid">{t('about.tag.madrid')}</span></span><span data-anyos="hero.availability">{t('hero.availability')}</span></p>
+    hero: id => <section key={id} id={id} className="chapter hero">
+      <div className="hero-media">
+        {customHero ? <img src={heroImage.src} alt={heroImage.alt} fetchPriority="high" data-anyos-img="hero.image" /> : <img src="/images/lucy-hero.jpg" srcSet="/images/lucy-hero-portrait-1100.jpg 1100w, /images/lucy-hero-portrait-2000.jpg 2000w" sizes="(max-width: 899px) 100vw, 46vw" alt={heroImage?.alt || 'Lucy smiling on a bench in Madrid'} fetchPriority="high" data-anyos-img="hero.image" />}
+      </div>
+      <div className="hero-copy">
+        <p className="eyebrow" data-anyos="hero.tags">{t('hero.tags')}</p>
+        <h1 data-anyos="hero.title">{t('hero.title')}</h1>
+        <p className="hero-tagline" data-anyos="hero.tagline">{t('hero.tagline')}</p>
+        <p className="hero-intro" data-anyos="hero.intro">{t('hero.intro')}</p>
+        <div className="hero-actions">
+          <a href="#contact" className="button button-primary"><span data-anyos="hero.cta2">{t('hero.cta2')}</span><ArrowRight size={16} /></a>
+          <a href="#services" className="button button-ghost"><span data-anyos="hero.cta1">{t('hero.cta1')}</span></a>
         </div>
-        <div className="hero-media">
-          {customHero ? <img src={heroImage.src} alt={heroImage.alt} fetchPriority="high" data-anyos-img="hero.image" /> : <picture>
-            <source media="(max-width: 899px)" srcSet="/images/lucy-hero-1400.jpg 1400w, /images/lucy-hero-2400.jpg 2400w" sizes="100vw" />
-            <img src="/images/lucy-hero.jpg" srcSet="/images/lucy-hero-portrait-1100.jpg 1100w, /images/lucy-hero-portrait-2000.jpg 2000w" sizes="(max-width: 899px) 100vw, 46vw" alt={heroImage?.alt || 'Lucy smiling on a bench in Madrid'} fetchPriority="high" data-anyos-img="hero.image" />
-          </picture>}
-        </div>
+        <p className="hero-facts"><span className="hero-place" data-hide-empty><MapPin size={14} strokeWidth={1.7} /><span data-anyos="about.tag.madrid">{t('about.tag.madrid')}</span></span><span data-anyos="hero.availability">{t('hero.availability')}</span></p>
       </div>
       <NextControl slides={slides} id={id} t={t} />
     </section>,
 
-    services: id => <section key={id} id={id} className="slide services-section" {...chapter('services')}>
-      <div className="service-decor" aria-hidden="true" key={activeService}>{DecorIcons.map((Icon, i) => <Icon key={i} strokeWidth={1.1} style={{ '--i': i } as React.CSSProperties} />)}</div>
-      <div className="slide-body"><div className="container">
-        <div className="section-heading reveal"><p className="eyebrow" data-anyos="services.label">{t('services.label')}</p><h2 data-anyos="services.title">{t('services.title')}</h2></div>
-        <ServicesCarousel t={t} onChoose={chooseService} onActive={setActiveService} includes={av?.includes} edit={edit} />
+    services: id => <section key={id} id={id} className="chapter services-section" {...chapter('services')}>
+      <div className="chapter-body"><div className="container">
+        <ServicesCarousel t={t} onChoose={chooseService} onActive={setActiveService} includes={av?.includes} edit={edit} heading={<><p className="eyebrow" data-anyos="services.label">{t('services.label')}</p><h2 data-anyos="services.title">{t('services.title')}</h2></>} />
       </div></div>
       <NextControl slides={slides} id={id} t={t} />
     </section>,
 
-    about: id => <section key={id} id={id} className="slide about-section" {...chapter('about')}>
-      <div className="slide-body"><div className="container about-grid">
+    about: id => <section key={id} id={id} className="chapter about-section" {...chapter('about')}>
+      <div className="chapter-body"><div className="container about-grid">
         <div className="about-visual">
-          <div className="about-frame">{customAbout ? <img src={aboutImage.src} alt={aboutImage.alt} loading="lazy" data-anyos-img="about.image" /> : <img src="/images/lucy-portrait-1200.jpg" srcSet="/images/lucy-portrait-800.jpg 800w, /images/lucy-portrait-1200.jpg 1200w" sizes="(max-width: 899px) 60vw, 34vw" alt={aboutImage?.alt || 'Lucy'} width={1200} height={1607} loading="lazy" data-anyos-img="about.image" />}</div>
+          <div className="about-frame">{customAbout ? <img src={aboutImage.src} alt={aboutImage.alt} loading="lazy" data-anyos-img="about.image" /> : <img src="/images/lucy-portrait-1200.jpg" srcSet="/images/lucy-portrait-800.jpg 800w, /images/lucy-portrait-1200.jpg 1200w" sizes="(max-width: 899px) 40vw, 34vw" alt={aboutImage?.alt || 'Lucy'} width={1200} height={1607} loading="lazy" data-anyos-img="about.image" />}</div>
           <div className="about-badge" data-hide-empty><strong data-anyos="about.badge">{t('about.badge')}</strong><span data-anyos="about.badge.sub">{t('about.badge.sub')}</span></div>
         </div>
+        <div className="about-head"><p className="eyebrow" data-anyos="about.label">{t('about.label')}</p><h2 data-anyos="about.title">{t('about.title1')}</h2><p className="about-subtitle" data-anyos="about.title2">{t('about.title2')}</p></div>
         <div className="about-copy">
-          <div className="reveal"><p className="eyebrow" data-anyos="about.label">{t('about.label')}</p><h2 data-anyos="about.title">{t('about.title1')}</h2><p className="about-subtitle" data-anyos="about.title2">{t('about.title2')}</p></div>
-          <p className="about-lede reveal" data-anyos="about.p1">{t('about.p1')}</p>
-          <div className="about-paragraphs reveal">{[2, 3, 4].map(i => <p key={i} data-anyos={`about.p${i}`}>{t(`about.p${i}`)}</p>)}</div>
-          <div className="about-tags reveal">{['english', 'teacher', 'planner'].map(tag => <span key={tag} data-hide-empty><span data-anyos={`about.tag.${tag}`}>{t(`about.tag.${tag}`)}</span></span>)}</div>
-          <a href="#contact" className="text-link reveal"><span data-anyos="about.cta">{t('about.cta')}</span><ArrowRight size={16} /></a>
+          <p className="about-lede" data-anyos="about.p1">{t('about.p1')}</p>
+          <p className="about-first" data-anyos="about.p2">{t('about.p2')}</p>
+          <More id="about-story" label={t('more.story')} less={t('more.less')} desktopOpen>
+            <div className="about-paragraphs">{[3, 4].map(i => <p key={i} data-anyos={`about.p${i}`}>{t(`about.p${i}`)}</p>)}</div>
+            <div className="about-tags">{['english', 'teacher', 'planner'].map(tag => <span key={tag} data-hide-empty><span data-anyos={`about.tag.${tag}`}>{t(`about.tag.${tag}`)}</span></span>)}</div>
+          </More>
+          <a href="#contact" className="text-link"><span data-anyos="about.cta">{t('about.cta')}</span><ArrowRight size={16} /></a>
         </div>
       </div></div>
       <NextControl slides={slides} id={id} t={t} />
     </section>,
 
-    testimonials: id => confirmed.length > 0 && <section key={id} id={id} className="slide words-section" {...chapter('testimonials')}>
-      <div className="slide-body"><div className="container">
-        <div className="section-heading reveal"><p className="eyebrow" data-anyos="testimonials.label">{t('testimonials.label')}</p><h2 data-anyos="testimonials.title">{t('testimonials.title')}</h2></div>
-        <div className={`words-list count-${confirmed.length}`}>{confirmed.map((item, i) => <figure key={item.id} className="reveal">
+    testimonials: id => confirmed.length > 0 && <section key={id} id={id} className="chapter words-section" {...chapter('testimonials')}>
+      <div className="chapter-body"><div className="container">
+        <div className="section-heading"><p className="eyebrow" data-anyos="testimonials.label">{t('testimonials.label')}</p><h2 data-anyos="testimonials.title">{t('testimonials.title')}</h2></div>
+        <div className={`words-list count-${confirmed.length}`}>{confirmed.map((item, i) => <figure key={item.id}>
           <blockquote><p {...quoteMark(item.id, i, 'text')}>{item.shownText}</p></blockquote>
           <figcaption><strong {...quoteMark(item.id, i, 'name')}>{item.shownName}</strong><span>{item.shownRole && <span {...quoteMark(item.id, i, 'role')}>{item.shownRole}</span>}{item.shownRole && item.shownService && ' · '}{item.shownService && <span {...quoteMark(item.id, i, 'service')}>{item.shownService}</span>}</span></figcaption>
         </figure>)}</div>
@@ -249,16 +239,23 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
     // Extra modules live in anyOS only; AnyVendor v1 declares no added section types.
     custom: id => source === 'anyos' ? <SiteSections key={id} lang={lang} /> : null,
 
-    contact: id => <section key={id} id={id} className="slide contact-section" {...chapter('contact')}>
-      <div className="slide-body"><div className="container contact-grid">
-        <div className="contact-copy reveal">
+    contact: id => <section key={id} id={id} className="chapter contact-section" {...chapter('contact')}>
+      <div className="chapter-body"><div className="container contact-grid">
+        <div className="contact-copy">
           <p className="eyebrow" data-anyos="contact.label">{t('contact.label')}</p>
           <h2 data-anyos="contact.title">{t('contact.title')}</h2>
           <p className="contact-desc" data-anyos="contact.desc">{t('contact.desc')}</p>
-          <div className="contact-links">{[{ Icon: Mail, key: 'email', label: 'Email', value: email.label, href: email.href }, { Icon: MessageSquare, key: 'whatsapp', label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/34697903144' }, { Icon: MapPin, key: 'location', label: 'Location', value: 'Madrid, Spain', href: 'https://www.google.com/maps/search/?api=1&query=Madrid%2C%20Spain' }].map(link => <a href={link.href} key={link.key} className="contact-link" {...(link.href.startsWith('https') ? { target: '_blank', rel: 'noopener' } : {})}><link.Icon size={20} strokeWidth={1.4} /><span><span className="contact-link-label" data-anyos={`contact.card.${link.key}.label`}>{link.label}</span><strong data-anyos={`contact.card.${link.key}.value`}>{av && `contact.card.${link.key}.value` in av.fields ? av.fields[`contact.card.${link.key}.value`] : link.value}</strong></span><ArrowUpRight size={18} strokeWidth={1.5} /></a>)}</div>
+          <div className="contact-links">{contactLinks.map(link => <a href={link.href} key={link.key} className="contact-link" {...(link.href.startsWith('https') ? { target: '_blank', rel: 'noopener' } : {})}><link.Icon size={20} strokeWidth={1.4} /><span><span className="contact-link-label" data-anyos={`contact.card.${link.key}.label`}>{link.label}</span><strong data-anyos={`contact.card.${link.key}.value`}>{saved(`contact.card.${link.key}.value`, link.value)}</strong></span><ArrowUpRight size={18} strokeWidth={1.5} /></a>)}</div>
         </div>
-        <ContactForm t={t} lang={lang} service={service} setService={setService} draft={draft} />
+        <More id="contact-form" label={t('more.form')} less={t('more.less')} desktopOpen className="contact-more">
+          <ContactForm t={t} lang={lang} service={service} setService={setService} draft={draft} />
+        </More>
       </div></div>
+      <footer className="site-footer">
+        <p className="footer-wordmark"><span data-anyos="footer.brand">Left Hand Lucy</span><span className="footer-tagline" data-anyos="footer.tagline">{t('footer.tagline')}</span></p>
+        <nav aria-label="Footer navigation"><a href="#services" data-anyos="footer.link.services">{t('nav.services')}</a><a href="#about" data-anyos="footer.link.about">{t('about.label')}</a><a href="https://connect-cardos.vercel.app" data-anyos="footer.link.conectados">Conectados</a><a href="#home" className="to-top"><ArrowUp size={14} />{t('nav.top')}</a></nav>
+        <p className="footer-small"><span data-anyos="footer.rights">{t('footer.rights')}</span><span data-anyos="footer.contactline">Lucy@lefthandlucy.com · Madrid, Spain</span></p>
+      </footer>
     </section>,
   }
 
@@ -268,14 +265,14 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
     {edit && editorOrigins.length > 0 && <Script src="/anyvendor-bridge.js" strategy="afterInteractive" onReady={startBridge} />}
     {draft && <p className="draft-badge" role="status">Draft preview</p>}
     <a href="#main" className="skip-link">{t('nav.skip')}</a>
-    <header className={`site-header${scrolled ? ' is-scrolled' : ''}${menuOpen ? ' is-open' : ''}${activeSlide === 'contact' && !menuOpen ? ' on-dark' : ''}`}>
+    <header className={`site-header${menuOpen ? ' is-open' : ''}${activeSlide === 'contact' && !menuOpen ? ' on-dark' : ''}`}>
       <div className="header-inner">
         <button type="button" className="hand-button" onClick={nextPose} aria-label="Left Hand Lucy hand signal: show another gesture"><LeftHand pose={pose} /></button>
         <a className="wordmark" href="#home" data-anyos="nav.brand" onClick={() => setMenuOpen(false)}>Left Hand Lucy</a>
         <nav aria-label="Main navigation" className="desktop-nav">{nav.filter(item => item.id !== 'contact').map(item => <a href={`#${item.id}`} key={item.id} aria-current={activeSlide === item.id ? 'true' : undefined}>{item.label}</a>)}</nav>
         <label className="language-picker desktop-only"><Globe size={15} strokeWidth={1.6} /><span className="sr-only">Language</span><select value={lang} onChange={e => setLang(e.target.value as Lang)}>{Object.entries(LANGUAGES).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
-        <a className="header-cta button button-primary desktop-only" href="#contact" data-anyos="nav.cta">{t('nav.contact')}</a>
-        <button className="menu-button" ref={menuButton} aria-label={menuOpen ? t('nav.close') : t('nav.open')} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
+        <a className="header-cta button button-primary" href="#contact" data-anyos="nav.cta" onClick={() => setMenuOpen(false)}>{t('nav.contact')}</a>
+        <button className="menu-button" ref={menuButton} aria-label={menuOpen ? t('nav.close') : t('nav.open')} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button>
       </div>
       <div id="mobile-navigation" className="mobile-sheet" hidden={!menuOpen}>
         <nav aria-label="Mobile navigation">
@@ -289,16 +286,7 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
     </header>
 
     <SlideDots slides={slides} active={activeSlide} />
-    <main id="main">{layout.filter(section => !section.hidden).map(section => sections[section.kind](section.id))}</main>
-
-    <footer className="site-footer">
-      <div className="container">
-        <div className="footer-top">
-          <div><p className="footer-wordmark" data-anyos="footer.brand">Left Hand Lucy</p><p className="footer-tagline" data-anyos="footer.tagline">{t('footer.tagline')}</p></div>
-          <nav aria-label="Footer navigation"><a href="#services" data-anyos="footer.link.services">{t('nav.services')}</a><a href="#about" data-anyos="footer.link.about">{t('about.label')}</a><a href="https://connect-cardos.vercel.app" data-anyos="footer.link.conectados">Conectados</a><a href="#contact" data-anyos="footer.link.contact">{t('nav.contact')}</a><a href="#home" className="to-top"><ArrowUp size={14} />{t('nav.top')}</a></nav>
-        </div>
-        <div className="footer-bottom"><p data-anyos="footer.rights">{t('footer.rights')}</p><p data-anyos="footer.contactline">Lucy@lefthandlucy.com · Madrid, Spain</p></div>
-      </div>
-    </footer>
+    {/* One native scroll container: each chapter is a snap point (see globals.css). */}
+    <main id="main" className="chapters" ref={scroller} tabIndex={-1}>{layout.filter(section => !section.hidden).map(section => sections[section.kind](section.id))}</main>
   </>
 }

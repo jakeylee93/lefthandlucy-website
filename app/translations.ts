@@ -2,6 +2,7 @@ export type Lang = 'en' | 'es' | 'fr' | 'de'
 
 export const translations: Record<Lang, Record<string, string>> = {
   en: {
+    'more.included': "What's included", 'more.story': "More of Lucy's story", 'more.form': 'Write to Lucy here', 'more.less': 'Show less',
     'nav.next': 'Next', 'nav.top': 'Back to top', 'hero.availability': 'Remote · In person in Madrid · Available to travel', 'next.kind-words': 'Kind words', 'next.contact': 'Contact',
     'nav.skip': 'Skip to content', 'nav.open': 'Open menu', 'nav.close': 'Close menu',
     'contact.sending': 'Sending…', 'contact.reference': 'Reference', 'contact.error': 'Your message could not be saved. Please try again, or use the email or WhatsApp link.',
@@ -84,6 +85,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     'footer.rights': '© 2026 Left Hand Lucy. All rights reserved.',
   },
   es: {
+    'more.included': 'Qué incluye', 'more.story': 'Más sobre Lucy', 'more.form': 'Escribe a Lucy aquí', 'more.less': 'Ver menos',
     'nav.next': 'Siguiente', 'nav.top': 'Volver arriba', 'hero.availability': 'En remoto · Presencial en Madrid · Disponible para viajar', 'next.kind-words': 'Testimonios', 'next.contact': 'Contacto',
     'nav.skip': 'Ir al contenido', 'nav.open': 'Abrir menú', 'nav.close': 'Cerrar menú',
     'contact.sending': 'Enviando…', 'contact.reference': 'Referencia', 'contact.error': 'No se ha podido guardar tu mensaje. Inténtalo de nuevo o usa el enlace de email o WhatsApp.',
@@ -151,6 +153,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     'footer.rights': '© 2026 Left Hand Lucy. Todos los derechos reservados.',
   },
   fr: {
+    'more.included': 'Ce qui est inclus', 'more.story': "La suite de l'histoire de Lucy", 'more.form': 'Écrire à Lucy ici', 'more.less': 'Voir moins',
     'nav.next': 'Suivant', 'nav.top': 'Haut de page', 'hero.availability': 'À distance · En personne à Madrid · Disponible pour voyager', 'next.kind-words': 'Témoignages', 'next.contact': 'Contact',
     'nav.skip': 'Aller au contenu', 'nav.open': 'Ouvrir le menu', 'nav.close': 'Fermer le menu',
     'contact.sending': 'Envoi…', 'contact.reference': 'Référence', 'contact.error': 'Votre message n’a pas pu être enregistré. Réessayez ou utilisez le lien email ou WhatsApp.',
@@ -218,6 +221,7 @@ export const translations: Record<Lang, Record<string, string>> = {
     'footer.rights': '© 2026 Left Hand Lucy. Tous droits réservés.',
   },
   de: {
+    'more.included': 'Was enthalten ist', 'more.story': 'Mehr über Lucy', 'more.form': 'Hier an Lucy schreiben', 'more.less': 'Weniger anzeigen',
     'nav.next': 'Weiter', 'nav.top': 'Nach oben', 'hero.availability': 'Remote · Vor Ort in Madrid · Reisebereit', 'next.kind-words': 'Stimmen', 'next.contact': 'Kontakt',
     'nav.skip': 'Zum Inhalt', 'nav.open': 'Menü öffnen', 'nav.close': 'Menü schließen',
     'contact.sending': 'Wird gesendet…', 'contact.reference': 'Referenz', 'contact.error': 'Deine Nachricht konnte nicht gespeichert werden. Bitte versuche es erneut oder nutze den E-Mail- oder WhatsApp-Link.',
