@@ -7,9 +7,16 @@ const isTesting = process.env.LHL_TESTING === "1";
 // viewport-fit lets the mobile menu respect the iPhone home bar.
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#faf8f3" };
 
+const SITE_URL = "https://www.lefthandlucy.com";
+const DESCRIPTION = "Event planning, English lessons, and project support in Madrid. Lucy brings calm structure and thoughtful creativity to everything she does.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Left Hand Lucy — A trusted hand for life's busy corners",
-  description: "Event planning, English lessons, and project support in Madrid. Lucy brings calm structure and thoughtful creativity to everything she does.",
+  description: DESCRIPTION,
+  // The one canonical address is the www domain, on every copy of the site.
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", url: SITE_URL, siteName: "Left Hand Lucy", title: "Left Hand Lucy", description: DESCRIPTION, images: [{ url: "/images/lucy-hero-2400.jpg", width: 2400, height: 1340, alt: "Lucy smiling on a bench in Madrid" }] },
   ...(isTesting ? { robots: { index: false, follow: false } } : {}),
 };
 
