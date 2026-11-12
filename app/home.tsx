@@ -93,8 +93,16 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
   const menuButton = useRef<HTMLButtonElement>(null)
   const firstMenuLink = useRef<HTMLAnchorElement>(null)
   const scroller = useRef<HTMLElement>(null)
-  // Saved AnyVendor text wins over the built-in text (as anyOS overrides do today), even when saved empty.
-  const t: Translate = key => { const id = key === 'about.title1' ? 'about.title' : key; return av && id in av.fields ? av.fields[id] : translations[lang][key] || translations.en[key] || key }
+  // Saved AnyVendor text wins over the built-in text, even when saved empty. In the other three
+  // languages the built-in translation shows unless that field was changed from its English
+  // default (the same effect anyOS overrides have today: customised text shows in every language).
+  const t: Translate = key => {
+    const id = key === 'about.title1' ? 'about.title' : key
+    const builtIn = translations[lang][key] || translations.en[key] || key
+    if (!av || !(id in av.fields)) return builtIn
+    const saved = av.fields[id]
+    return lang === 'en' || !(key in translations.en) || saved !== translations.en[key] ? saved : builtIn
+  }
 
   useReveal()
   useHideEmptyEditable()
