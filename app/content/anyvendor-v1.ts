@@ -81,16 +81,17 @@ export function buildV1(saved: Record<string, string> = {}) {
       service.includes.forEach((_, i) => { elements[`services.${key}.${i}.text`] = { attr: 'data-av-field', anyosKey: `services.${service.id}.item${i + 1}` } })
     }
     if (def.kind === 'testimonials') {
-      // One row per real quote. Template placeholders are never seeded: only quotes whose words AND name the owner saved.
+      // One row per quote text the owner saved. Template placeholder names are never seeded: a saved text with
+      // no saved name is kept as a draft row with a blank name, and stays off the page until a name is added.
       fields.push({ key: 'items', type: 'list', label: 'Quotes', max: MAX_QUOTES, fields: [
         { key: 'text', label: 'Their words', type: 'textarea', max: 600 }, { key: 'name', label: 'Name', type: 'text', max: 80 },
         { key: 'role', label: 'Role', type: 'text', max: 80 }, { key: 'service', label: 'Service', type: 'text', max: 80 } ] })
       const rows: Row[] = []
       for (let n = 1; n <= 5; n++) {
         const text = saved[`testimonials.t${n}.text`], name = saved[`testimonials.t${n}.name`]
-        if (!text || !name) continue
+        if (!text) continue
         ;(['text', 'name', 'role', 'service'] as const).forEach(sub => { elements[`testimonials.items.${rows.length}.${sub}`] = { attr: 'data-av-field', anyosKey: `testimonials.t${n}.${sub}` } })
-        rows.push({ text, name, role: saved[`testimonials.t${n}.role`] ?? '', service: saved[`testimonials.t${n}.service`] ?? '' })
+        rows.push({ text, name: name ?? '', role: saved[`testimonials.t${n}.role`] ?? '', service: saved[`testimonials.t${n}.service`] ?? '' })
       }
       values.items = rows
     }
@@ -102,7 +103,7 @@ export function buildV1(saved: Record<string, string> = {}) {
 
 // ── Reading saved content back ───────────────────────────────────────────
 
-export interface AvQuote { text: string; name: string; role: string; service: string }
+export interface AvQuote { /** Row position in testimonials.items (rows without a name are skipped on the page). */ index: number; text: string; name: string; role: string; service: string }
 export interface AvView {
   /** data-anyos key → saved text. A key that is present wins over the built-in text, even when empty. */
   fields: Record<string, string>
@@ -144,9 +145,9 @@ export function viewFromV1(content: unknown): AvView {
     if (Array.isArray(rows)) view.includes[service.id] = rows.slice(0, MAX_INCLUDES).map(row => str((row as Row)?.text, 80) ?? '').filter(Boolean)
   }
   const quotes = c.testimonials?.items
-  if (Array.isArray(quotes)) for (const row of quotes.slice(0, MAX_QUOTES) as Row[]) {
+  if (Array.isArray(quotes)) (quotes.slice(0, MAX_QUOTES) as Row[]).forEach((row, index) => {
     const text = str(row?.text, 600)?.trim(), name = str(row?.name, 80)?.trim()
-    if (text && name) view.quotes.push({ text, name, role: str(row.role, 80) ?? '', service: str(row.service, 80) ?? '' })
-  }
+    if (text && name) view.quotes.push({ index, text, name, role: str(row.role, 80) ?? '', service: str(row.service, 80) ?? '' })
+  })
   return view
 }

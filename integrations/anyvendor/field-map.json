@@ -241,6 +241,54 @@
       "attr": "data-av-field",
       "anyosKey": "testimonials.t1.service"
     },
+    "testimonials.items.1.text": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t2.text"
+    },
+    "testimonials.items.1.name": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t2.name"
+    },
+    "testimonials.items.1.role": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t2.role"
+    },
+    "testimonials.items.1.service": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t2.service"
+    },
+    "testimonials.items.2.text": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t4.text"
+    },
+    "testimonials.items.2.name": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t4.name"
+    },
+    "testimonials.items.2.role": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t4.role"
+    },
+    "testimonials.items.2.service": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t4.service"
+    },
+    "testimonials.items.3.text": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t5.text"
+    },
+    "testimonials.items.3.name": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t5.name"
+    },
+    "testimonials.items.3.role": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t5.role"
+    },
+    "testimonials.items.3.service": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t5.service"
+    },
     "contact.label": {
       "attr": "data-av-field",
       "anyosKey": "contact.label"

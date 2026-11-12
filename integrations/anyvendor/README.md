@@ -17,7 +17,9 @@ These three files are generated from `app/content/anyvendor-v1.ts` and are also 
   is always shown (bridge `keepVisible`). A chapter left out of the list is removed; add it back from the list.
 - **Lists:** `services.ps_includes` / `el_includes` / `ee_includes` (rows `{ text }`, max 8) and
   `testimonials.items` (rows `{ text, name, role, service }`, max 6). A quote shows only with both
-  words and a name. Only Lucy's one confirmed quote is seeded; template placeholders are not.
+  words and a name. All four quote texts saved in anyOS are seeded: one has a saved name and shows; three have no saved
+  name, so they are kept as rows with a blank name and stay off the page until a name is added.
+  Template placeholder names are never seeded.
 - **Site side:** `/preview?token=<uuid>[&av_edit=1]` (fail-closed 404), server-side reader
   `app/content/anyvendor-server.ts`, bridge `public/anyvendor-bridge.js` (unchanged copy),
   capabilities `{ text: true, image: true, chapters: true }` with `onChapters` applied in React.

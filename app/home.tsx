@@ -91,7 +91,7 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
   const [activeSlide, setActiveSlide] = useState('home')
   const [posePick, setPosePick] = useState<HandPose | null>(null)
   const [layout, setLayout] = useState<SectionInstance[]>(av?.layout ?? DEFAULT_LAYOUT)
-  const [confirmed, setConfirmed] = useState<Testimonial[]>(() => (av?.quotes ?? []).map((quote, i) => ({ id: `q${i}`, text: quote.text, name: quote.name, role: quote.role, service: quote.service, shownText: quote.text, shownName: quote.name, shownRole: quote.role, shownService: quote.service })))
+  const [confirmed, setConfirmed] = useState<Testimonial[]>(() => (av?.quotes ?? []).map(quote => ({ id: `q${quote.index}`, text: quote.text, name: quote.name, role: quote.role, service: quote.service, shownText: quote.text, shownName: quote.name, shownRole: quote.role, shownService: quote.service })))
   const menuButton = useRef<HTMLButtonElement>(null)
   const firstMenuLink = useRef<HTMLAnchorElement>(null)
   const heroRef = useRef<HTMLElement>(null)
@@ -179,7 +179,7 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
   const nav = slides.filter(slide => slide.id !== 'home')
   const DecorIcons = SERVICE_ICONS[activeService as keyof typeof SERVICE_ICONS] || SERVICE_ICONS.ps
 
-  const quoteMark = (id: string, index: number, sub: string) => source === 'anyvendor' ? (edit ? { 'data-av-field': `testimonials.items.${index}.${sub}` } : {}) : { 'data-anyos': `testimonials.${id}.${sub}` }
+  const quoteMark = (id: string, index: number, sub: string) => source === 'anyvendor' ? (edit ? { 'data-av-field': `testimonials.items.${id.slice(1)}.${sub}` } : {}) : { 'data-anyos': `testimonials.${id}.${sub}` }
   const chapter = (kind: SectionKind) => (source === 'anyvendor' && CHAPTER_KEY[kind] ? { 'data-av-chapter': CHAPTER_KEY[kind] } : {})
   const heroImage = av?.images['hero.image'], aboutImage = av?.images['about.image']
   const customHero = heroImage && heroImage.src !== '/images/lucy-hero.jpg', customAbout = aboutImage && aboutImage.src !== '/images/lucy-portrait-1200.jpg'
