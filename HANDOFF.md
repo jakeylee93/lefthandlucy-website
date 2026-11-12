@@ -8,8 +8,8 @@ Production env added (plain, production only): ANYVENDOR_CONTENT_ORIGIN, ANYVEND
 ANYVENDOR_PUBLIC_CONTENT. LHL_TESTING is NOT set there. Existing ADMIN_* / BLOB settings untouched.
 Content source: AnyVendor published revision b396f399-3325-43f9-881c-5e8a930a1aa7 (v3); no anyOS script.
 
-**`main` is still the old site (25214a1).** A push to `main` would auto-deploy the old site over this
-one. Merge this branch into `main` (and drop the branch entry in `vercel.json`) before anyone pushes there.
+This branch is merged into `main`, so `main` is the rebuilt site and a push there redeploys it.
+The temporary `vercel.json` (which stopped the live project building this branch) is removed.
 
 # Lucy × AnyVendor bridge — 12 November 2026 (branch `claude/friendly-allen-bs8sve`)
 
