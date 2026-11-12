@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import "./globals.css";
 
 // Testing copies set LHL_TESTING=1 on their own Vercel project so they are never indexed.
@@ -79,8 +78,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
-        {/* anyOS live-edit: hydrates data-anyos text / data-anyos-img images + click-to-edit from the anyOS Website module. */}
-        <Script src="https://platform.anyos.co.uk/edit.js?v=6" data-site="left-hand-lucy" strategy="afterInteractive" />
       </body>
     </html>
   );

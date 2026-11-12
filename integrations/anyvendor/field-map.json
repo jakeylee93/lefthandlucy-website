@@ -1,0 +1,281 @@
+{
+  "schema": "anyvendor.site/v1",
+  "slug": "left-hand-lucy",
+  "kind": "bespoke",
+  "marker": "data-av-field on the element (set on /preview?token=…&av_edit=1); data-av-chapter on each chapter wrapper",
+  "renderedBy": "app/home.tsx and app/services-carousel.tsx",
+  "fields": {
+    "page.chapters": {
+      "attr": "data-av-chapter",
+      "note": "one wrapper per chapter: services, about, testimonials, contact"
+    },
+    "hero.tags": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.tags"
+    },
+    "hero.title": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.title"
+    },
+    "hero.tagline": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.tagline"
+    },
+    "hero.intro": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.intro"
+    },
+    "hero.availability": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.availability"
+    },
+    "hero.about_tag_madrid": {
+      "attr": "data-av-field",
+      "anyosKey": "about.tag.madrid"
+    },
+    "hero.cta1": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.cta1"
+    },
+    "hero.cta2": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.cta2"
+    },
+    "hero.image": {
+      "attr": "data-av-field",
+      "anyosKey": "hero.image"
+    },
+    "services.label": {
+      "attr": "data-av-field",
+      "anyosKey": "services.label"
+    },
+    "services.title": {
+      "attr": "data-av-field",
+      "anyosKey": "services.title"
+    },
+    "services.ps_title": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.title"
+    },
+    "services.ps_desc": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.desc"
+    },
+    "services.ps_cta": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.cta"
+    },
+    "services.el_title": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.title"
+    },
+    "services.el_desc": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.desc"
+    },
+    "services.el_cta": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.cta"
+    },
+    "services.ee_title": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.title"
+    },
+    "services.ee_desc": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.desc"
+    },
+    "services.ee_cta": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.cta"
+    },
+    "services.ps_includes.0.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.item1"
+    },
+    "services.ps_includes.1.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.item2"
+    },
+    "services.ps_includes.2.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.item3"
+    },
+    "services.ps_includes.3.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.item4"
+    },
+    "services.ps_includes.4.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.item5"
+    },
+    "services.ps_includes.5.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ps.item6"
+    },
+    "services.el_includes.0.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.item1"
+    },
+    "services.el_includes.1.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.item2"
+    },
+    "services.el_includes.2.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.item3"
+    },
+    "services.el_includes.3.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.item4"
+    },
+    "services.el_includes.4.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.item5"
+    },
+    "services.el_includes.5.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.el.item6"
+    },
+    "services.ee_includes.0.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.item1"
+    },
+    "services.ee_includes.1.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.item2"
+    },
+    "services.ee_includes.2.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.item3"
+    },
+    "services.ee_includes.3.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.item4"
+    },
+    "services.ee_includes.4.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.item5"
+    },
+    "services.ee_includes.5.text": {
+      "attr": "data-av-field",
+      "anyosKey": "services.ee.item6"
+    },
+    "about.label": {
+      "attr": "data-av-field",
+      "anyosKey": "about.label"
+    },
+    "about.title": {
+      "attr": "data-av-field",
+      "anyosKey": "about.title"
+    },
+    "about.title2": {
+      "attr": "data-av-field",
+      "anyosKey": "about.title2"
+    },
+    "about.p1": {
+      "attr": "data-av-field",
+      "anyosKey": "about.p1"
+    },
+    "about.p2": {
+      "attr": "data-av-field",
+      "anyosKey": "about.p2"
+    },
+    "about.p3": {
+      "attr": "data-av-field",
+      "anyosKey": "about.p3"
+    },
+    "about.p4": {
+      "attr": "data-av-field",
+      "anyosKey": "about.p4"
+    },
+    "about.badge": {
+      "attr": "data-av-field",
+      "anyosKey": "about.badge"
+    },
+    "about.badge_sub": {
+      "attr": "data-av-field",
+      "anyosKey": "about.badge.sub"
+    },
+    "about.tag_english": {
+      "attr": "data-av-field",
+      "anyosKey": "about.tag.english"
+    },
+    "about.tag_teacher": {
+      "attr": "data-av-field",
+      "anyosKey": "about.tag.teacher"
+    },
+    "about.tag_planner": {
+      "attr": "data-av-field",
+      "anyosKey": "about.tag.planner"
+    },
+    "about.cta": {
+      "attr": "data-av-field",
+      "anyosKey": "about.cta"
+    },
+    "about.image": {
+      "attr": "data-av-field",
+      "anyosKey": "about.image"
+    },
+    "testimonials.label": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.label"
+    },
+    "testimonials.title": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.title"
+    },
+    "testimonials.items.0.text": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t1.text"
+    },
+    "testimonials.items.0.name": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t1.name"
+    },
+    "testimonials.items.0.role": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t1.role"
+    },
+    "testimonials.items.0.service": {
+      "attr": "data-av-field",
+      "anyosKey": "testimonials.t1.service"
+    },
+    "contact.label": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.label"
+    },
+    "contact.title": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.title"
+    },
+    "contact.desc": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.desc"
+    },
+    "contact.card_email_value": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.card.email.value"
+    },
+    "contact.card_whatsapp_value": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.card.whatsapp.value"
+    },
+    "contact.card_location_value": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.card.location.value"
+    },
+    "contact.service": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.service"
+    },
+    "contact.send": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.send"
+    },
+    "contact.sent": {
+      "attr": "data-av-field",
+      "anyosKey": "contact.sent"
+    }
+  }
+}

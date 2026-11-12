@@ -1,3 +1,20 @@
+# Lucy × AnyVendor bridge — 12 November 2026 (branch `claude/friendly-allen-bs8sve`)
+
+Site owner: this Claude session. Parent integrator: AnyVendor session 01CzLnDpr3YPPf5ZDVHo4KAa.
+Contract read from jakeylee93/anyvendor@1f2379e. Packet: `integrations/anyvendor/` (6 sections, 50 fields).
+- `/preview?token=<uuid>[&av_edit=1]`: server-side draft read, 404 for a missing/malformed/wrong token,
+  `no-store`, noindex, `no-referrer`, `frame-ancestors 'self' https://platform.anyvendor.co.uk`
+  (+ `ANYVENDOR_EDITOR_ORIGINS`). No anyOS script on it. Bridge = unchanged copy, started only with `av_edit=1`.
+- Live in the frame: text and image description (`set`), `highlight`, `select`, chapter add/hide/reorder
+  (`onChapters` → React state), `reload`. A draft never submits the form.
+- Public page unchanged: anyOS + `edit.js`. It switches to AnyVendor's published content only with
+  `ANYVENDOR_PUBLIC_CONTENT=1` on the deployment AND published content; otherwise built-in + anyOS.
+- Tested against a stand-in API and editor only (18 checks). NOT yet run against the real editor:
+  Lucy's site is not bound in AnyVendor (the real API returns 404 for `left-hand-lucy`).
+- Not editable through AnyVendor: navigation and footer text, form field labels, WhatsApp number and map
+  link targets, button link targets, the hand signature and service icons, style settings, the three
+  non-English translations, and anyOS "added modules" (none saved today).
+
 # Lucy redesign v3 — 11 November 2026 (branch `claude/friendly-allen-bs8sve`)
 
 Owner: this Claude session (site renderer + adapter). Backend/editor owner: AnyVendor session.

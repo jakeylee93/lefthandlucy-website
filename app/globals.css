@@ -312,3 +312,4 @@ h2 { font-size: clamp(2.1rem, 4.2vw, 3.4rem); line-height: 1.08; letter-spacing:
   .hero-media { height: clamp(260px, 42svh, 560px) }
   .about-visual { max-width: 300px }
 }
+.draft-badge { position: fixed; left: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 70; margin: 0; padding: 6px 10px; border-radius: 6px; background: var(--lucy-charcoal); color: var(--lucy-cream); font-size: .72rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; pointer-events: none }

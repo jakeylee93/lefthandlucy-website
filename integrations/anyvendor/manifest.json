@@ -1,0 +1,420 @@
+{
+  "version": 1,
+  "name": "Left Hand Lucy",
+  "sections": [
+    {
+      "key": "page",
+      "label": "Page layout",
+      "help": "The introduction always opens the page. Choose which chapters follow, and in what order.",
+      "fields": [
+        {
+          "key": "chapters",
+          "label": "Chapters after the introduction",
+          "type": "list",
+          "max": 4,
+          "fields": [
+            {
+              "key": "chapter",
+              "label": "Chapter",
+              "type": "select",
+              "options": [
+                {
+                  "value": "services",
+                  "label": "How I can help"
+                },
+                {
+                  "value": "about",
+                  "label": "About Lucy"
+                },
+                {
+                  "value": "testimonials",
+                  "label": "Kind words"
+                },
+                {
+                  "value": "contact",
+                  "label": "Contact"
+                }
+              ]
+            },
+            {
+              "key": "visible",
+              "label": "Show on the page",
+              "type": "boolean"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "hero",
+      "label": "Introduction",
+      "fields": [
+        {
+          "key": "tags",
+          "type": "text",
+          "label": "Small heading",
+          "max": 160
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Name",
+          "max": 160
+        },
+        {
+          "key": "tagline",
+          "type": "text",
+          "label": "Tagline",
+          "max": 160
+        },
+        {
+          "key": "intro",
+          "type": "textarea",
+          "label": "Introduction",
+          "max": 1200
+        },
+        {
+          "key": "availability",
+          "type": "text",
+          "label": "Where and how Lucy works",
+          "max": 160
+        },
+        {
+          "key": "about_tag_madrid",
+          "type": "text",
+          "label": "Location note",
+          "max": 160
+        },
+        {
+          "key": "cta1",
+          "type": "text",
+          "label": "First button",
+          "max": 160
+        },
+        {
+          "key": "cta2",
+          "type": "text",
+          "label": "Second button",
+          "max": 160
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Portrait"
+        }
+      ]
+    },
+    {
+      "key": "services",
+      "label": "Services",
+      "fields": [
+        {
+          "key": "label",
+          "type": "text",
+          "label": "Small heading",
+          "max": 160
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Heading",
+          "max": 160
+        },
+        {
+          "key": "ps_title",
+          "type": "text",
+          "label": "PS: Service name",
+          "max": 160
+        },
+        {
+          "key": "ps_desc",
+          "type": "textarea",
+          "label": "PS: Description",
+          "max": 1200
+        },
+        {
+          "key": "ps_cta",
+          "type": "text",
+          "label": "PS: Button",
+          "max": 160
+        },
+        {
+          "key": "el_title",
+          "type": "text",
+          "label": "EL: Service name",
+          "max": 160
+        },
+        {
+          "key": "el_desc",
+          "type": "textarea",
+          "label": "EL: Description",
+          "max": 1200
+        },
+        {
+          "key": "el_cta",
+          "type": "text",
+          "label": "EL: Button",
+          "max": 160
+        },
+        {
+          "key": "ee_title",
+          "type": "text",
+          "label": "EE: Service name",
+          "max": 160
+        },
+        {
+          "key": "ee_desc",
+          "type": "textarea",
+          "label": "EE: Description",
+          "max": 1200
+        },
+        {
+          "key": "ee_cta",
+          "type": "text",
+          "label": "EE: Button",
+          "max": 160
+        },
+        {
+          "key": "ps_includes",
+          "type": "list",
+          "label": "PS: what is included",
+          "max": 8,
+          "fields": [
+            {
+              "key": "text",
+              "label": "Line",
+              "type": "text",
+              "max": 80
+            }
+          ]
+        },
+        {
+          "key": "el_includes",
+          "type": "list",
+          "label": "EL: what is included",
+          "max": 8,
+          "fields": [
+            {
+              "key": "text",
+              "label": "Line",
+              "type": "text",
+              "max": 80
+            }
+          ]
+        },
+        {
+          "key": "ee_includes",
+          "type": "list",
+          "label": "EE: what is included",
+          "max": 8,
+          "fields": [
+            {
+              "key": "text",
+              "label": "Line",
+              "type": "text",
+              "max": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "about",
+      "label": "About Lucy",
+      "fields": [
+        {
+          "key": "label",
+          "type": "text",
+          "label": "Small heading",
+          "max": 160
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Heading",
+          "max": 160
+        },
+        {
+          "key": "title2",
+          "type": "text",
+          "label": "Sub-heading",
+          "max": 160
+        },
+        {
+          "key": "p1",
+          "type": "textarea",
+          "label": "Paragraph 1",
+          "max": 1200
+        },
+        {
+          "key": "p2",
+          "type": "textarea",
+          "label": "Paragraph 2",
+          "max": 1200
+        },
+        {
+          "key": "p3",
+          "type": "textarea",
+          "label": "Paragraph 3",
+          "max": 1200
+        },
+        {
+          "key": "p4",
+          "type": "textarea",
+          "label": "Paragraph 4",
+          "max": 1200
+        },
+        {
+          "key": "badge",
+          "type": "text",
+          "label": "Badge",
+          "max": 160
+        },
+        {
+          "key": "badge_sub",
+          "type": "text",
+          "label": "Badge detail",
+          "max": 160
+        },
+        {
+          "key": "tag_english",
+          "type": "text",
+          "label": "Tag",
+          "max": 160
+        },
+        {
+          "key": "tag_teacher",
+          "type": "text",
+          "label": "Tag",
+          "max": 160
+        },
+        {
+          "key": "tag_planner",
+          "type": "text",
+          "label": "Tag",
+          "max": 160
+        },
+        {
+          "key": "cta",
+          "type": "text",
+          "label": "Link text",
+          "max": 160
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "label": "Photo"
+        }
+      ]
+    },
+    {
+      "key": "testimonials",
+      "label": "Kind words",
+      "fields": [
+        {
+          "key": "label",
+          "type": "text",
+          "label": "Small heading",
+          "max": 160
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Heading",
+          "max": 160
+        },
+        {
+          "key": "items",
+          "type": "list",
+          "label": "Quotes",
+          "max": 6,
+          "fields": [
+            {
+              "key": "text",
+              "label": "Their words",
+              "type": "textarea",
+              "max": 600
+            },
+            {
+              "key": "name",
+              "label": "Name",
+              "type": "text",
+              "max": 80
+            },
+            {
+              "key": "role",
+              "label": "Role",
+              "type": "text",
+              "max": 80
+            },
+            {
+              "key": "service",
+              "label": "Service",
+              "type": "text",
+              "max": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "contact",
+      "label": "Contact",
+      "fields": [
+        {
+          "key": "label",
+          "type": "text",
+          "label": "Small heading",
+          "max": 160
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Heading",
+          "max": 160
+        },
+        {
+          "key": "desc",
+          "type": "textarea",
+          "label": "Introduction",
+          "max": 1200
+        },
+        {
+          "key": "card_email_value",
+          "type": "link",
+          "label": "Email"
+        },
+        {
+          "key": "card_whatsapp_value",
+          "type": "text",
+          "label": "WhatsApp label",
+          "max": 160
+        },
+        {
+          "key": "card_location_value",
+          "type": "text",
+          "label": "Location",
+          "max": 160
+        },
+        {
+          "key": "service",
+          "type": "text",
+          "label": "Form question",
+          "max": 160
+        },
+        {
+          "key": "send",
+          "type": "text",
+          "label": "Send button",
+          "max": 160
+        },
+        {
+          "key": "sent",
+          "type": "text",
+          "label": "Sent message",
+          "max": 160
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { SERVICES } from './site-data'
 type Translate = (key: string) => string
 
 /** Swipeable service cards: native horizontal scroll-snap, with tabs, arrows and a counter. */
-export function ServicesCarousel({ t, onChoose, onActive }: { t: Translate; onChoose: (id: string) => void; onActive?: (id: string) => void }) {
+export function ServicesCarousel({ t, onChoose, onActive, includes, edit }: { t: Translate; onChoose: (id: string) => void; onActive?: (id: string) => void; includes?: Record<string, string[]>; edit?: boolean }) {
   const track = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
 
@@ -50,9 +50,10 @@ export function ServicesCarousel({ t, onChoose, onActive }: { t: Translate; onCh
           <span className="service-number" aria-hidden="true">0{index + 1}</span>
           <h3 data-anyos={`services.${item.id}.title`}>{t(`services.${item.id}.title`)}</h3>
           <p data-anyos={`services.${item.id}.desc`}>{t(`services.${item.id}.desc`)}</p>
-          <a href="#contact" className="button button-primary" onClick={() => onChoose(item.id)}><span data-anyos={`services.${item.id}.cta`}>Get in touch</span><ArrowRight size={16} /></a>
+          <a href="#contact" className="button button-primary" onClick={() => onChoose(item.id)}><span data-anyos={`services.${item.id}.cta`}>{t(`services.${item.id}.cta`) === `services.${item.id}.cta` ? 'Get in touch' : t(`services.${item.id}.cta`)}</span><ArrowRight size={16} /></a>
         </div>
-        <ul className="service-includes">{item.includes.map((entry, i) => <li key={entry}><span data-anyos={`services.${item.id}.item${i + 1}`}>{entry}</span></li>)}</ul>
+        {/* Saved AnyVendor rows replace the built-in list (the owner can add or remove lines). */}
+        <ul className="service-includes">{includes?.[item.id] ? includes[item.id].map((entry, i) => <li key={i}><span {...(edit ? { 'data-av-field': `services.${item.id}_includes.${i}.text` } : {})}>{entry}</span></li>) : item.includes.map((entry, i) => <li key={entry}><span data-anyos={`services.${item.id}.item${i + 1}`}>{entry}</span></li>)}</ul>
       </article>)}
     </div>
     <div className="carousel-controls">
