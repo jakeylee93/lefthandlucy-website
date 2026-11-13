@@ -89,7 +89,7 @@ h2 { font-size: clamp(1.75rem, 3.6vw, 3rem); line-height: 1.08; letter-spacing: 
 .header-cta { min-height: 38px; padding: 7px 14px; font-size: .8rem; white-space: nowrap }
 .menu-button { display: grid; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: transparent; place-items: center; flex: none }
 .site-header.on-dark { background: color-mix(in srgb, var(--lucy-charcoal) 96%, transparent); color: var(--lucy-cream); box-shadow: 0 1px 0 rgba(250, 248, 243, .12) }
-.site-header.on-dark .hand-sprite { filter: brightness(1.9) saturate(.7) }
+.site-header.on-dark .hand-sprite { filter: brightness(0) invert(.93) sepia(.12) } /* ink lines turn cream on the dark chapter */
 .site-header.on-dark .header-cta { background: var(--lucy-cream); color: var(--lucy-charcoal) }
 .site-header.on-dark .menu-button { border-color: rgba(250, 248, 243, .3) }
 .site-header.on-dark select option { color: #111 }
