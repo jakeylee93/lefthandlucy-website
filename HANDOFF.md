@@ -36,7 +36,7 @@ Owner: this Claude session (site renderer + adapter). Backend/editor owner: AnyV
   touch, key or mouse press cancels. Off for reduced motion, screens under 640px tall, and while
   a form field has focus. Nothing advances on a timer.
 - **Design:** full-screen chapters, portrait crops from the 5504px `lucy-hero.jpg`, no decorative
-  shapes. `app/hand.tsx` = one left hand, nine poses, one shown at a time (header; follows the
+  shapes. `app/hand.tsx` = one fine-line ink left hand (OpenArt-drawn, sources in `assets-src/hand`; the earlier Blender hand is retired), nine poses, one shown at a time (header; follows the
   section in view). Faint line icons in Services follow the active service. In-flow "Next — …"
   control at the foot of each chapter.
 - **Content model:** `app/content/model.ts` (typed sections, validated layout), `sources.ts`
