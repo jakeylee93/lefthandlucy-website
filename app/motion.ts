@@ -99,7 +99,12 @@ export function useSectionScroll(scroller: RefObject<HTMLElement | null>) {
       event.preventDefault()
       history.replaceState(null, '', `#${id}`)
       // Let the click's own state changes (closing the menu) apply first.
-      requestAnimationFrame(() => glide(Math.min(target.offsetTop, box.scrollHeight - box.clientHeight)))
+      // Chapters start at the very top; a target inside a chapter (the form) stops just below the header.
+      requestAnimationFrame(() => {
+        const header = target.classList.contains('chapter') ? 0 : (document.querySelector<HTMLElement>('.site-header .header-inner')?.offsetHeight ?? 0) + 12
+        const top = target.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - header
+        glide(Math.max(0, Math.min(top, box.scrollHeight - box.clientHeight)))
+      })
       if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1')
       target.focus({ preventScroll: true })
     }

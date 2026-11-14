@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, CheckCircle, ChevronDown, Globe, Mail, MapPin, Menu, MessageSquare, Send, X } from 'lucide-react'
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, CheckCircle, ChevronDown, Globe, Mail, MapPin, Menu, MessageSquare, Send, X, PhoneCall } from 'lucide-react'
 import { translations, Lang } from './translations'
 import { SiteSections } from './site-sections'
 import { TESTIMONIALS } from './site-data'
@@ -11,6 +11,7 @@ import { HAND_POSES, LeftHand, type HandPose } from './hand'
 import Script from 'next/script'
 import { DEFAULT_LAYOUT, SITE_KEY, type SectionInstance, type SectionKind } from './content/model'
 import { contentSource, plainText } from './content/sources'
+import { WhatsAppLogo, WHATSAPP_URL } from './whatsapp'
 import { AV_PATHS, KEEP_VISIBLE, layoutFromChapters, type AvView } from './content/anyvendor-v1'
 
 const LANGUAGES: Record<Lang, string> = { en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch' }
@@ -32,8 +33,11 @@ export interface HomeProps { source?: 'anyos' | 'anyvendor'; av?: AvView; draft?
 declare global { interface Window { AnyVendorBridge?: { start(options: Record<string, unknown>): boolean } } }
 const CHAPTER_KEY: Partial<Record<SectionKind, string>> = { services: 'services', about: 'about', testimonials: 'testimonials', contact: 'contact' }
 
-function ContactForm({ t, lang, service, setService, draft }: { t: Translate; lang: Lang; service: string; setService: (value: string) => void; draft: boolean }) {
+function ContactForm({ t, lang, service, setService, draft, callRequest }: { t: Translate; lang: Lang; service: string; setService: (value: string) => void; draft: boolean; callRequest: number }) {
   const [form, setForm] = useState({ name: '', email: '', message: '', website: '' })
+  // "Book a call" starts the message for the visitor (never overwrites what they have typed).
+  useEffect(() => { if (callRequest) setForm(current => current.message.trim() ? current : { ...current, message: t('contact.call.message') }) // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callRequest])
   const [sending, setSending] = useState(false)
   const [reference, setReference] = useState('')
   const [error, setError] = useState('')
@@ -160,6 +164,8 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
       onChapters: (order: { chapter: string; visible: boolean }[]) => setLayout(layoutFromChapters(order)) })
   }, [editorOrigins])
 
+  const [callRequest, setCallRequest] = useState(0)
+  const bookCall = () => { setCallRequest(count => count + 1); setMenuOpen(false) }
   const chooseService = useCallback((id: string) => { setService(SERVICE_VALUES[id]); setMenuOpen(false) }, [])
   const visible = layout.filter(section => !section.hidden && (section.kind !== 'testimonials' || confirmed.length > 0) && section.kind !== 'custom')
   const labels: Record<SectionKind, string> = { hero: t('nav.home'), services: t('services.title'), about: t('about.label'), testimonials: t('next.kind-words'), contact: t('next.contact'), custom: '' }
@@ -183,7 +189,7 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
   const customHero = heroImage && heroImage.src !== '/images/lucy-hero.jpg', customAbout = aboutImage && aboutImage.src !== '/images/lucy-portrait-1200.jpg'
   const email = av?.email ?? { href: 'mailto:Lucy@lefthandlucy.com', label: 'Lucy@lefthandlucy.com' }
 
-  const contactLinks = [{ Icon: Mail, key: 'email', label: 'Email', value: email.label, href: email.href }, { Icon: MessageSquare, key: 'whatsapp', label: 'WhatsApp', value: 'Message me', href: 'https://wa.me/34697903144' }, { Icon: MapPin, key: 'location', label: 'Location', value: 'Madrid, Spain', href: 'https://www.google.com/maps/search/?api=1&query=Madrid%2C%20Spain' }]
+  const contactLinks = [{ Icon: Mail, key: 'email', label: 'Email', value: email.label, href: email.href }, { Icon: WhatsAppLogo, key: 'whatsapp', label: 'WhatsApp', value: 'Message me', href: WHATSAPP_URL }, { Icon: MapPin, key: 'location', label: 'Location', value: 'Madrid, Spain', href: 'https://www.google.com/maps/search/?api=1&query=Madrid%2C%20Spain' }]
   const saved = (key: string, fallback: string) => (av && key in av.fields ? av.fields[key] : fallback)
 
   // Each chapter is one composed screen: one purpose, one main action. Longer detail sits behind a named "more" control.
@@ -253,10 +259,14 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
           <p className="eyebrow" data-anyos="contact.label">{t('contact.label')}</p>
           <h2 data-anyos="contact.title">{t('contact.title')}</h2>
           <p className="contact-desc" data-anyos="contact.desc">{t('contact.desc')}</p>
+          <div className="contact-actions">
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener" className="button button-whatsapp"><WhatsAppLogo size={20} /><span>{t('contact.whatsapp')}</span></a>
+            <a href="#contact-form" className="button button-call" onClick={bookCall}><PhoneCall size={17} strokeWidth={1.8} /><span>{t('contact.call')}</span></a>
+          </div>
           <div className="contact-links">{contactLinks.map(link => <a href={link.href} key={link.key} className="contact-link" {...(link.href.startsWith('https') ? { target: '_blank', rel: 'noopener' } : {})}><link.Icon size={20} strokeWidth={1.4} /><span><span className="contact-link-label" data-anyos={`contact.card.${link.key}.label`}>{link.label}</span><strong data-anyos={`contact.card.${link.key}.value`}>{saved(`contact.card.${link.key}.value`, link.value)}</strong></span><ArrowUpRight size={18} strokeWidth={1.5} /></a>)}</div>
         </div>
-        <More id="contact-form" label={t('more.form')} less={t('more.less')} desktopOpen className="contact-more">
-          <ContactForm t={t} lang={lang} service={service} setService={setService} draft={draft} />
+        <More id="contact-form" label={t('more.form')} less={t('more.less')} desktopOpen className="contact-more" openSignal={callRequest}>
+          <ContactForm t={t} lang={lang} service={service} setService={setService} draft={draft} callRequest={callRequest} />
         </More>
       </div></div>
       <footer className="site-footer">
@@ -288,12 +298,15 @@ export default function Home({ source = 'anyos', av, draft = false, edit = false
         </nav>
         <div className="sheet-foot">
           <label className="language-picker"><Globe size={15} strokeWidth={1.6} /><span className="sr-only">Language</span><select value={lang} onChange={e => setLang(e.target.value as Lang)}>{Object.entries(LANGUAGES).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
-          <div className="sheet-contact"><a href={email.href}><Mail size={16} strokeWidth={1.6} />{email.label}</a><a href="https://wa.me/34697903144"><MessageSquare size={16} strokeWidth={1.6} />WhatsApp</a></div>
+          <div className="sheet-contact"><a href={email.href}><Mail size={16} strokeWidth={1.6} />{email.label}</a></div>
+          <div className="sheet-actions"><a href={WHATSAPP_URL} target="_blank" rel="noopener" className="button button-whatsapp"><WhatsAppLogo size={20} /><span>WhatsApp</span></a><a href="#contact-form" className="button button-call" onClick={bookCall}><PhoneCall size={17} strokeWidth={1.8} /><span>{t('contact.call')}</span></a></div>
         </div>
       </div>
     </header>
 
     <SlideDots slides={slides} active={activeSlide} />
+    {/* Always-there WhatsApp shortcut; steps aside on the contact chapter, which has its own buttons. */}
+    {!menuOpen && activeSlide !== 'contact' && <a href={WHATSAPP_URL} target="_blank" rel="noopener" className="whatsapp-fab" aria-label={t('contact.whatsapp')}><WhatsAppLogo size={26} /></a>}
     {/* One native scroll container: each chapter is a snap point (see globals.css). */}
     <main id="main" className="chapters" ref={scroller} tabIndex={-1}>{layout.filter(section => !section.hidden).map(section => sections[section.kind](section.id))}</main>
   </>
