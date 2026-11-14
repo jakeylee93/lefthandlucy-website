@@ -1,5 +1,7 @@
 # LIVE CUTOVER — 12 November 2026
 
+**14 Nov 2026:** wordmark is now the pen script Italianno (`--font-logo`); WhatsApp button (real logo, `app/whatsapp.tsx`), floating WhatsApp shortcut and a "Book a call" button were added. Book a call opens the enquiry form with a starter message: there is no calendar tool yet, so swap its target if Lucy gets one.
+
 www.lefthandlucy.com (apex redirects to www) now serves commit `901acb1` from branch
 `claude/friendly-allen-bs8sve`: deployment `dpl_4B6tz3EYCCFQVSj2aRvGffeCTJ1V`, production target of
 the existing project `lefthandlucy-website` (prj_5Lzp4FfH0STCD1h1UMdA8DNvTlSq). No DNS or domain change.

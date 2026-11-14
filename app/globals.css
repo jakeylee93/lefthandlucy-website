@@ -8,6 +8,8 @@
 :root {
   --font-heading: 'Fraunces', 'Playfair Display', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-logo: 'Italianno', 'Fraunces', Georgia, cursive;
+  --whatsapp: #25d366;
   --lucy-charcoal: #273d35; --lucy-sage: #436c57; --lucy-gold: #94713b; --lucy-cream: #faf8f3;
   --lucy-blush: #a96366; --lucy-grey: #5f6860;
   --sand: color-mix(in srgb, var(--lucy-gold) 9%, var(--lucy-cream));
@@ -82,7 +84,8 @@ h2 { font-size: clamp(1.75rem, 3.6vw, 3rem); line-height: 1.08; letter-spacing: 
 .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 60; background: color-mix(in srgb, var(--lucy-cream) 96%, transparent); box-shadow: 0 1px 0 var(--line); transition: background .25s, color .25s }
 .site-header.is-open { background: var(--lucy-cream) }
 .header-inner { max-width: 1360px; height: var(--header-h); padding: 0 var(--gutter); margin: auto; display: flex; align-items: center; gap: 8px }
-.wordmark { font-family: var(--font-heading); font-size: 1.2rem; font-style: italic; white-space: nowrap; letter-spacing: -.01em; margin-right: auto }
+/* The wordmark: a fine pen script to sit beside the ink hand. */
+.wordmark { font-family: var(--font-logo); font-size: 2.15rem; line-height: 1; white-space: nowrap; margin-right: auto; padding-top: 4px }
 .language-picker { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem }
 .desktop-nav, .desktop-only, .language-picker.desktop-only { display: none }
 .language-picker select { appearance: none; background: transparent; border: 0; padding: 10px 4px; min-height: 44px }
@@ -211,6 +214,20 @@ h2 { font-size: clamp(1.75rem, 3.6vw, 3rem); line-height: 1.08; letter-spacing: 
 .contact-section .eyebrow { color: color-mix(in srgb, var(--lucy-cream) 70%, var(--lucy-gold)) }
 .contact-grid { display: grid; gap: 12px }
 .contact-desc { font-size: .92rem; line-height: 1.55; opacity: .85; margin: 10px 0 14px; max-width: 46ch }
+/* Two direct routes, each in its own colour: WhatsApp's own green, and a warm gold for calls. */
+.contact-actions, .sheet-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px }
+.contact-actions .button, .sheet-actions .button { flex: 1 1 150px }
+.button-whatsapp { background: var(--whatsapp); color: #0b2e1a }
+.button-whatsapp svg { color: #fff }
+.button-whatsapp:hover { background: color-mix(in srgb, var(--whatsapp) 88%, black) }
+.button-call { background: #e9c98a; color: #33260f }
+.button-call:hover { background: #dfba72 }
+.contact-link[href*='wa.me'] > svg { color: var(--whatsapp) }
+.contact-actions .button, .sheet-actions .button { padding-inline: 12px; white-space: nowrap }
+/* On phones the green button is the WhatsApp route; the list row returns on wide screens. */
+@media (max-width: 899px) { .contact-link[href*='wa.me'] { display: none } }
+.whatsapp-fab { position: fixed; z-index: 58; right: 14px; bottom: calc(14px + var(--safe-b)); width: 50px; height: 50px; display: grid; place-items: center; border-radius: 50%; background: var(--whatsapp); color: #fff; box-shadow: 0 6px 18px rgba(20, 40, 30, .28); transition: transform .2s }
+.whatsapp-fab:hover { transform: scale(1.06) }
 .contact-links { display: grid; border-top: 1px solid rgba(250, 248, 243, .18) }
 .contact-link { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; min-height: 58px; padding: 9px 2px; border-bottom: 1px solid rgba(250, 248, 243, .18); transition: background .2s }
 .contact-link:hover { background: rgba(250, 248, 243, .05) }
@@ -239,6 +256,7 @@ h2 { font-size: clamp(1.75rem, 3.6vw, 3rem); line-height: 1.08; letter-spacing: 
 .form-success h3 { font-size: 1.5rem; color: var(--lucy-charcoal) }
 .form-reference { font-size: .875rem; color: var(--muted) }
 .site-footer { padding: 10px var(--gutter) calc(10px + var(--safe-b)); border-top: 1px solid rgba(250, 248, 243, .14); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 18px; font-size: .74rem; color: color-mix(in srgb, var(--lucy-cream) 72%, transparent) }
+.footer-wordmark > span:first-child { font-family: var(--font-logo); font-style: normal; font-size: 1.7rem; line-height: 1 }
 .footer-wordmark { font-family: var(--font-heading); font-style: italic; font-size: 1rem; color: var(--lucy-cream); display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px }
 .footer-tagline { font-family: var(--font-body); font-style: normal; font-size: .74rem; color: color-mix(in srgb, var(--lucy-cream) 72%, transparent) }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 0 14px }
@@ -269,7 +287,7 @@ h2 { font-size: clamp(1.75rem, 3.6vw, 3rem); line-height: 1.08; letter-spacing: 
   :root { --header-h: 64px; --gutter: 40px }
   .menu-button, .mobile-sheet { display: none }
   .desktop-only, .language-picker.desktop-only { display: inline-flex }
-  .wordmark { font-size: 1.4rem }
+  .wordmark { font-size: 2.5rem }
   .desktop-nav { display: flex; gap: 28px; font-size: .875rem; padding-right: 8px }
   .desktop-nav a { position: relative; padding: 10px 0 }
   .desktop-nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 4px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .25s var(--ease) }
